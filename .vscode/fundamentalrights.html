@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundamental Rights Treasure Hunt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+       body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #040c19;
+            color: #2d3748;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .game-container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #2c5282;
+            margin-bottom: 0.5rem;
+        }
+
+        .scene {
+            position: relative;
+            height: 400px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+            background-image: radial-gradient(circle, #cbd5e0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .hidden-right {
+            position: absolute;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .hidden-right:hover {
+            transform: scale(1.2);
+        }
+
+        .rights-found {
+            background: #ebf8ff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .rights-found h3 {
+            margin-top: 0;
+            color: #2b6cb0;
+        }
+
+        #found-list {
+            text-align: left;
+            padding-left: 1.5rem;
+        }
+
+        .right-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            text-align: left;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .next-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-family: 'Poppins';
+            float: right;
+        }
+
+        .next-btn:hover {
+            background: #3182ce;
+        }
+
+        .right-details {
+            margin-top: 1rem;
+        }
+
+        .right-details h3 {
+            color: #2b6cb0;
+            margin-bottom: 0.5rem;
+        }
+
+        .right-details ul {
+            padding-left: 1.5rem;
+        }
+
+        .right-details li {
+            margin-bottom: 0.5rem;
+        }
+
+        .key-articles {
+            background: #ebf8ff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .key-articles h4 {
+            margin-top: 0;
+            color: #2c5282;
+        }
+
+        .score-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .completion-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .completion-message h2 {
+            color: #2c5282;
+            margin-top: 0;
+        }
+
+        .celebration {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="score-display">
+        Score: <span id="score">0</span>
+    </div>
+    
+    <div class="game-container">
+        <h1>Find Your Fundamental Rights!</h1>
+        <p>Click on hidden rights in the scene to learn about them and earn points.</p>
+        
+        <div class="scene">
+            <div class="hidden-right" data-right="1" style="top: 20%; left: 15%;">🔍</div>
+            <div class="hidden-right" data-right="2" style="top: 60%; left: 70%;">🔍</div>
+            <div class="hidden-right" data-right="3" style="top: 40%; left: 45%;">🔍</div>
+            <div class="hidden-right" data-right="4" style="top: 75%; left: 25%;">🔍</div>
+            <div class="hidden-right" data-right="5" style="top: 30%; left: 80%;">🔍</div>
+            <div class="hidden-right" data-right="6" style="top: 50%; left: 10%;">🔍</div>
+        </div>
+        
+        <div class="rights-found">
+            <h3>Found Rights:</h3>
+            <ul id="found-list"></ul>
+        </div>
+    </div>
+
+    <div class="right-modal" id="rightModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title">Right to Equality</h2>
+            <p id="modal-desc">(Article 14-18) Ensures equality before law and prohibits discrimination.</p>
+            <div class="right-details" id="right-details"></div>
+            <button class="next-btn" id="nextRightBtn">Find Next Right</button>
+        </div>
+    </div>
+
+    <div class="completion-message" id="completionMessage">
+        <div class="celebration">🎉</div>
+        <h2>Congratulations!</h2>
+        <p>You've found all 6 Fundamental Rights!</p>
+        <p>Your final score: <span id="finalScore">0</span> points</p>
+        <button class="next-btn" onclick="resetGame()">Play Again</button>
+    </div>
+
+    <script>
+        const rightsData = {
+            1: { 
+                title: "Right to Equality (Articles 14-18)", 
+                desc: "Ensures equality before law and prohibits discrimination.",
+                points: 100,
+                details: `
+                    <div class="key-articles">
+                        <h4>Key Articles:</h4>
+                        <ul>
+                            <li><strong>Article 14:</strong> Equality before law and equal protection of laws</li>
+                            <li><strong>Article 15:</strong> Prohibition of discrimination on grounds of religion, race, caste, sex or place of birth</li>
+                            <li><strong>Article 16:</strong> Equality of opportunity in public employment</li>
+                            <li><strong>Article 17:</strong> Abolition of untouchability</li>
+                            <li><strong>Article 18:</strong> Abolition of titles except military and academic</li>
+                        </ul>
+                    </div>
+                    <h3>Key Features:</h3>
+                    <ul>
+                        <li>Provides both positive equality (equal treatment) and negative equality (prohibition of discrimination)</li>
+                        <li>Allows for affirmative action (reservations) for disadvantaged groups</li>
+                        <li>Prohibits both state and private discrimination in certain cases</li>
+                        <li>Has been interpreted to include the principle of non-arbitrariness</li>
+                    </ul>
+                    <h3>Important Cases:</h3>
+                    <ul>
+                        <li>Indra Sawhney v. Union of India (1992) - Established 50% cap on reservations</li>
+                        <li>Navtej Singh Johar v. Union of India (2018) - Decriminalized homosexuality under Article 14</li>
+                    </ul>
+                `
+            },
+            2: { 
+                title: "Right to Freedom (Articles 19-22)", 
+                desc: "Protects various freedoms essential for democratic functioning.",
+                points: 100,
+                details: `
+                    <div class="key-articles">
+                        <h4>Key Articles:</h4>
+                        <ul>
+                            <li><strong>Article 19:</strong> Six freedoms (speech, assembly, association, movement, residence, profession)</li>
+                            <li><strong>Article 20:</strong> Protection in respect of conviction for offenses</li>
+                            <li><strong>Article 21:</strong> Protection of life and personal liberty</li>
+                            <li><strong>Article 21A:</strong> Right to education (added by 86th Amendment)</li>
+                            <li><strong>Article 22:</strong> Protection against arrest and detention</li>
+                        </ul>
+                    </div>
+                    <h3>Key Features:</h3>
+                    <ul>
+                        <li>Article 19 freedoms are subject to reasonable restrictions</li>
+                        <li>Article 21 has been expanded to include many rights like privacy, health, etc.</li>
+                        <li>Article 22 provides safeguards against arbitrary arrest</li>
+                        <li>Preventive detention laws must follow constitutional safeguards</li>
+                    </ul>
+                    <h3>Important Cases:</h3>
+                    <ul>
+                        <li>Maneka Gandhi v. Union of India (1978) - Expanded Article 21's scope</li>
+                        <li>Justice K.S. Puttaswamy v. Union of India (2017) - Recognized right to privacy</li>
+                    </ul>
+                `
+            },
+            3: { 
+                title: "Right Against Exploitation (Articles 23-24)", 
+                desc: "Prohibits forced labor and child labor in hazardous jobs.",
+                points: 100,
+                details: `
+                    <div class="key-articles">
+                        <h4>Key Articles:</h4>
+                        <ul>
+                            <li><strong>Article 23:</strong> Prohibition of traffic in human beings and forced labor</li>
+                            <li><strong>Article 24:</strong> Prohibition of employment of children in factories, etc.</li>
+                        </ul>
+                    </div>
+                    <h3>Key Features:</h3>
+                    <ul>
+                        <li>Article 23 covers both state and private actions</li>
+                        <li>Includes prohibition of all forms of forced labor including bonded labor</li>
+                        <li>Article 24 prohibits child labor only in hazardous occupations</li>
+                        <li>Does not prohibit child labor completely (other laws regulate this)</li>
+                    </ul>
+                    <h3>Important Cases:</h3>
+                    <ul>
+                        <li>Bandhua Mukti Morcha v. Union of India (1984) - On bonded labor</li>
+                        <li>M.C. Mehta v. State of Tamil Nadu (1996) - On child labor</li>
+                    </ul>
+                `
+            },
+            4: { 
+                title: "Right to Freedom of Religion (Articles 25-28)", 
+                desc: "Guarantees freedom to practice and propagate any religion.",
+                points: 100,
+                details: `
+                    <div class="key-articles">
+                        <h4>Key Articles:</h4>
+                        <ul>
+                            <li><strong>Article 25:</strong> Freedom of conscience and free profession, practice and propagation of religion</li>
+                            <li><strong>Article 26:</strong> Freedom to manage religious affairs</li>
+                            <li><strong>Article 27:</strong> Freedom from payment of taxes for promotion of any religion</li>
+                            <li><strong>Article 28:</strong> Freedom from religious instruction in certain educational institutions</li>
+                        </ul>
+                    </div>
+                    <h3>Key Features:</h3>
+                    <ul>
+                        <li>Subject to public order, morality and health</li>
+                        <li>State can regulate economic, financial or other secular activities associated with religion</li>
+                        <li>Does not provide absolute separation of religion and state</li>
+                        <li>Allows for reform of Hindu religious institutions (Article 25(2)(b))</li>
+                    </ul>
+                    <h3>Important Cases:</h3>
+                    <ul>
+                        <li>S.R. Bommai v. Union of India (1994) - On secularism</li>
+                        <li>Shirur Mutt Case (1954) - Defined essential religious practices</li>
+                    </ul>
+                `
+            },
+            5: { 
+                title: "Cultural & Educational Rights (Articles 29-30)", 
+                desc: "Protects minority rights to conserve their culture and education.",
+                points: 100,
+                details: `
+                    <div class="key-articles">
+                        <h4>Key Articles:</h4>
+                        <ul>
+                            <li><strong>Article 29:</strong> Protection of interests of minorities</li>
+                            <li><strong>Article 30:</strong> Right of minorities to establish and administer educational institutions</li>
+                        </ul>
+                    </div>
+                    <h3>Key Features:</h3>
+                    <ul>
+                        <li>Available to both linguistic and religious minorities</li>
+                        <li>Minority status determined state-wise, not nationally</li>
+                        <li>Includes right to admit students of their choice (subject to regulations)</li>
+                        <li>Right to receive government aid without discrimination</li>
+                    </ul>
+                    <h3>Important Cases:</h3>
+                    <ul>
+                        <li>T.M.A. Pai Foundation v. State of Karnataka (2002) - On minority rights</li>
+                        <li>P.A. Inamdar v. State of Maharashtra (2005) - On admissions in minority institutions</li>
+                    </ul>
+                `
+            },
+            6: { 
+                title: "Right to Constitutional Remedies (Article 32)", 
+                desc: "Allows citizens to move to court if rights are violated.",
+                points: 100,
+                details: `
+                    <div class="key-articles">
+                        <h4>Key Articles:</h4>
+                        <ul>
+                            <li><strong>Article 32:</strong> Right to move Supreme Court for enforcement of fundamental rights</li>
+                            <li><strong>Article 226:</strong> High Courts' power to issue writs (not fundamental right but important)</li>
+                        </ul>
+                    </div>
+                    <h3>Key Features:</h3>
+                    <ul>
+                        <li>Called the "heart and soul" of the Constitution by Dr. Ambedkar</li>
+                        <li>Five types of writs: Habeas Corpus, Mandamus, Prohibition, Certiorari, Quo Warranto</li>
+                        <li>Public Interest Litigation (PIL) developed under this right</li>
+                        <li>Supreme Court can award compensation for rights violations</li>
+                    </ul>
+                    <h3>Important Cases:</h3>
+                    <ul>
+                        <li>Maneka Gandhi v. Union of India (1978) - Expanded judicial review</li>
+                        <li>Hussainara Khatoon v. State of Bihar (1979) - First PIL case</li>
+                    </ul>
+                `
+            }
+        };
+
+        const hiddenRights = document.querySelectorAll('.hidden-right');
+        const foundList = document.getElementById('found-list');
+        const modal = document.getElementById('rightModal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDesc = document.getElementById('modal-desc');
+        const rightDetails = document.getElementById('right-details');
+        const nextRightBtn = document.getElementById('nextRightBtn');
+        const scoreDisplay = document.getElementById('score');
+        const completionMessage = document.getElementById('completionMessage');
+        const finalScoreDisplay = document.getElementById('finalScore');
+        
+        let foundCount = 0;
+        let score = 0;
+        let foundRights = [];
+
+        // Load saved score if it exists
+        const savedScore = localStorage.getItem('fundamentalrightsScore');
+        if (savedScore) {
+            score = parseInt(savedScore);
+            scoreDisplay.textContent = score;
+        }
+
+        hiddenRights.forEach(right => {
+            right.addEventListener('click', function() {
+                const rightNum = this.getAttribute('data-right');
+                
+                // Don't allow finding the same right multiple times
+                if (foundRights.includes(rightNum)) return;
+                
+                const rightInfo = rightsData[rightNum];
+                
+                modalTitle.textContent = rightInfo.title;
+                modalDesc.textContent = rightInfo.desc;
+                rightDetails.innerHTML = rightInfo.details;
+                modal.style.display = "flex";
+                
+                this.style.display = "none";
+                foundCount++;
+                foundRights.push(rightNum);
+                
+                // Add points
+                score += rightInfo.points;
+                scoreDisplay.textContent = score;
+                
+                // Save score to localStorage
+                localStorage.setItem('fundamentalrightsScore', score);
+                
+                // Add to found list
+                const listItem = document.createElement('li');
+                listItem.textContent = `${rightInfo.title} (+${rightInfo.points} points)`;
+                foundList.appendChild(listItem);
+                
+                if (foundCount === 6) {
+                    setTimeout(showCompletionMessage, 500);
+                }
+            });
+        });
+
+        function showCompletionMessage() {
+            modal.style.display = "none";
+            finalScoreDisplay.textContent = score;
+            completionMessage.style.display = "block";
+        }
+
+        function resetGame() {
+            // Reset all variables
+            foundCount = 0;
+            score = 0;
+            foundRights = [];
+            
+            // Reset localStorage
+            localStorage.setItem('fundamentalrightsScore', '0');
+            
+            // Reset UI
+            hiddenRights.forEach(right => {
+                right.style.display = "block";
+            });
+            foundList.innerHTML = "";
+            scoreDisplay.textContent = "0";
+            completionMessage.style.display = "none";
+        }
+
+        document.querySelector('.close-modal').addEventListener('click', () => {
+            modal.style.display = "none";
+        });
+
+        nextRightBtn.addEventListener('click', () => {
+            modal.style.display = "none";
+        });
+    </script>
+</body>
+</html>

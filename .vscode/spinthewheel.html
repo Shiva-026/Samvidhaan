@@ -1,0 +1,726 @@
+<!-- i have added all the things u suggested so the code look like this -->
+<!-- see ur are wasting my time, i will now give u my soin wheel code all u need to do is dont change the ui and add a feature of at most 5 spind and give questions for evrey topic 3 ques and tell me where should i have to add them -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constitution Spin Wheel</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #2d3748;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            margin: 0 auto 30px;
+        }
+
+        #wheelCanvas {
+            width: 100%;
+            height: 100%;
+            border: 8px solid #4a5568;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            background: white;
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #e53e3e;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.3));
+            z-index: 10;
+        }
+
+        #spinButton {
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background-color: #4a5568;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        #spinButton:hover {
+            background-color: #2d3748;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        #spinButton:disabled {
+            background-color: #a0aec0;
+            cursor: not-allowed;
+        }
+
+        #resultContainer {
+            width: 100%;
+            max-width: 600px;
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+            margin-top: 20px;
+        }
+
+        .question {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .option:hover {
+            background-color: #edf2f7;
+            border-color: #cbd5e0;
+        }
+
+        .option.selected {
+            background-color: #4299e1;
+            color: white;
+            border-color: #3182ce;
+        }
+
+        .option.correct {
+            background-color: #48bb78;
+            color: white;
+            border-color: #38a169;
+        }
+
+        .option.incorrect {
+            background-color: #f56565;
+            color: white;
+            border-color: #e53e3e;
+        }
+
+        .explanation {
+            padding: 15px;
+            background-color: #ebf8ff;
+            border-left: 4px solid #4299e1;
+            border-radius: 4px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .explanation h3 {
+            margin-top: 0;
+            color: #2b6cb0;
+        }
+
+        .next-btn {
+            padding: 10px 20px;
+            background-color: #4a5568;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .score-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4a5568;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Constitution Spin Wheel Challenge</h1>
+    <div class="score-display" id="scoreDisplay">Score: 0</div>
+    
+    <div class="wheel-container">
+        <canvas id="wheelCanvas" width="500" height="500"></canvas>
+        <div class="wheel-pointer"></div>
+    </div>
+    
+    <button id="spinButton">Spin the Wheel!</button>
+    
+    <div id="resultContainer">
+        <div class="question" id="questionText"></div>
+        <div class="options" id="optionsContainer"></div>
+        <div class="explanation" id="explanationContainer">
+            <h3>Constitutional Explanation</h3>
+            <p id="explanationText"></p>
+        </div>
+        <button class="next-btn" id="nextButton">Next Question</button>
+    </div>
+
+    <script>
+        // Canvas and Context
+        const wheelCanvas = document.getElementById('wheelCanvas');
+        const wheelContext = wheelCanvas.getContext('2d');
+        
+        // Game Elements
+        const spinButton = document.getElementById('spinButton');
+        const resultContainer = document.getElementById('resultContainer');
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const explanationContainer = document.getElementById('explanationContainer');
+        const explanationText = document.getElementById('explanationText');
+        const nextButton = document.getElementById('nextButton');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+
+        // Game State
+        let spinsRemaining = 5;  // Track remaining spins
+let isSpinning = false;   // Prevent multiple simultaneous spins
+        let score = 0;
+        let currentTopic = '';
+        let currentQuestion = {};
+        let selectedOption = null;
+        let questionsAnswered = 0;
+
+        // Constitution Topics
+        const wheelSegments = [
+            'Preamble',
+            'Fundamental Rights',
+            'Directive Principles',
+            'Fundamental Duties',
+            'Articles 1-10',
+            'Articles 11-20',
+            'Articles 21-30',
+            'Articles 31-40',
+            'Important Amendments',
+            'Schedules'
+        ];
+
+
+        // Complete Question Database (3 questions per topic)
+const questionsDatabase = {
+    'Preamble': [
+        {
+            question: "Which word was added to the Preamble by the 42nd Amendment?",
+            options: ["Socialist", "Democratic", "Republic", "Justice"],
+            answer: 0,
+            explanation: "The words 'Socialist' and 'Secular' were added by the 42nd Amendment in 1976."
+        },
+        {
+            question: "The Preamble begins with which phrase?",
+            options: ["We the People of India", "In the name of God", "India is a Republic", "Justice for All"],
+            answer: 0,
+            explanation: "The Preamble begins with 'We the People of India', establishing popular sovereignty."
+        },
+        {
+            question: "Which concept is NOT mentioned in the Preamble?",
+            options: ["Liberty", "Equality", "Federalism", "Fraternity"],
+            answer: 2,
+            explanation: "Federalism is not mentioned in the Preamble, though it's a basic feature of the Constitution."
+        }
+    ],
+    'Fundamental Rights': [
+        {
+            question: "Which article is known as the 'Heart and Soul of the Constitution'?",
+            options: ["Article 14", "Article 19", "Article 21", "Article 32"],
+            answer: 3,
+            explanation: "Article 32 (Right to Constitutional Remedies) was called the 'heart and soul' by Dr. Ambedkar."
+        },
+        {
+            question: "Which Fundamental Right cannot be suspended during emergency?",
+            options: ["Right to Equality", "Right to Freedom", "Right to Life", "Right to Religion"],
+            answer: 2,
+            explanation: "Article 21 (Right to Life) cannot be suspended even during emergency."
+        },
+        {
+            question: "Which article prohibits untouchability?",
+            options: ["Article 15", "Article 16", "Article 17", "Article 18"],
+            answer: 2,
+            explanation: "Article 17 abolishes untouchability and its practice in any form."
+        }
+    ],
+    'Directive Principles': [
+        {
+            question: "Which part of the Constitution contains Directive Principles?",
+            options: ["Part III", "Part IV", "Part V", "Part VI"],
+            answer: 1,
+            explanation: "Directive Principles are in Part IV (Articles 36-51) of the Constitution."
+        },
+        {
+            question: "Which Directive Principle relates to uniform civil code?",
+            options: ["Article 40", "Article 44", "Article 48", "Article 51"],
+            answer: 1,
+            explanation: "Article 44 directs the state to secure a uniform civil code for citizens."
+        },
+        {
+            question: "The Directive Principles are inspired by which country?",
+            options: ["USA", "UK", "Ireland", "Canada"],
+            answer: 2,
+            explanation: "Directive Principles are inspired by the Irish Constitution."
+        }
+    ],
+    'Fundamental Duties': [
+        {
+            question: "Fundamental Duties were added by which amendment?",
+            options: ["42nd", "44th", "73rd", "86th"],
+            answer: 0,
+            explanation: "The 42nd Amendment in 1976 added Fundamental Duties."
+        },
+        {
+            question: "How many Fundamental Duties are there?",
+            options: ["8", "10", "11", "12"],
+            answer: 2,
+            explanation: "There are currently 11 Fundamental Duties in Article 51A."
+        },
+        {
+            question: "Which duty was added by the 86th Amendment?",
+            options: ["Protect environment", "Develop scientific temper", "Provide education to children", "Respect national flag"],
+            answer: 2,
+            explanation: "The 86th Amendment added the duty for parents to educate children 6-14 years."
+        }
+    ],
+    'Articles 1-10': [
+    {
+        question: "What does Article 1 of the Indian Constitution declare India as?",
+        options: ["Union of States", "Federation of States", "Republic of India", "Sovereign Nation"],
+        answer: 0,
+        explanation: "Article 1 declares India as a 'Union of States'."
+    },
+    {
+        question: "Which Article deals with the admission or establishment of new states?",
+        options: ["Article 2", "Article 3", "Article 4", "Article 5"],
+        answer: 0,
+        explanation: "Article 2 deals with the admission or establishment of new states."
+    },
+    {
+        question: "Which Article defines the territories of India?",
+        options: ["Article 1", "Article 2", "Article 3", "Article 4"],
+        answer: 0,
+        explanation: "Article 1 defines the territories of India."
+    }
+],
+
+'Articles 11-20': [
+    {
+        question: "Which Article gives Parliament the power to regulate the right of citizenship?",
+        options: ["Article 10", "Article 11", "Article 12", "Article 9"],
+        answer: 1,
+        explanation: "Article 11 empowers the Parliament to regulate the right of citizenship by law."
+    },
+    {
+        question: "Which Article provides protection against double jeopardy and self-incrimination?",
+        options: ["Article 20", "Article 19", "Article 18", "Article 17"],
+        answer: 0,
+        explanation: "Article 20 provides protection in respect of conviction for offenses, including double jeopardy and self-incrimination."
+    },
+    {
+        question: "Which Article abolishes untouchability?",
+        options: ["Article 17", "Article 18", "Article 16", "Article 19"],
+        answer: 0,
+        explanation: "Article 17 abolishes untouchability and forbids its practice in any form."
+    }
+],
+
+'Articles 21-30': [
+    {
+        question: "Which Article guarantees the protection of life and personal liberty?",
+        options: ["Article 21", "Article 20", "Article 22", "Article 23"],
+        answer: 0,
+        explanation: "Article 21 guarantees the protection of life and personal liberty."
+    },
+    {
+        question: "Which Article provides protection against arrest and detention in certain cases?",
+        options: ["Article 22", "Article 20", "Article 23", "Article 24"],
+        answer: 0,
+        explanation: "Article 22 provides protection against arrest and detention in certain cases."
+    },
+    {
+        question: "Which Article ensures minorities the right to establish and administer educational institutions?",
+        options: ["Article 29", "Article 30", "Article 28", "Article 27"],
+        answer: 1,
+        explanation: "Article 30 ensures minorities the right to establish and administer educational institutions."
+    }
+],
+
+'Articles 31-40': [
+    {
+        question: "Which Article was removed by the 44th Amendment Act, 1978?",
+        options: ["Article 31", "Article 33", "Article 35", "Article 34"],
+        answer: 0,
+        explanation: "Article 31, which dealt with the right to property, was removed by the 44th Amendment."
+    },
+    {
+        question: "Which Article promotes equal pay for equal work for both men and women?",
+        options: ["Article 39(d)", "Article 38", "Article 36", "Article 40"],
+        answer: 0,
+        explanation: "Article 39(d) directs the state to ensure equal pay for equal work for both men and women."
+    },
+    {
+        question: "Which Article promotes the organization of village panchayats?",
+        options: ["Article 40", "Article 38", "Article 39", "Article 37"],
+        answer: 0,
+        explanation: "Article 40 directs the state to organize village panchayats."
+    }
+],
+
+
+
+    // Continue this pattern for all other topics...
+    'Important Amendments': [
+        {
+            question: "Which amendment introduced the Anti-Defection Law?",
+            options: ["42nd", "52nd", "61st", "73rd"],
+            answer: 1,
+            explanation: "The 52nd Amendment (1985) added the 10th Schedule (Anti-Defection Law)."
+        },
+        {
+            question: "Which amendment reduced voting age from 21 to 18?",
+            options: ["42nd", "44th", "61st", "73rd"],
+            answer: 2,
+            explanation: "The 61st Amendment (1988) reduced voting age to 18 years."
+        },
+        {
+            question: "Which amendment is called 'Mini-Constitution'?",
+            options: ["42nd", "44th", "73rd", "86th"],
+            answer: 0,
+            explanation: "The 42nd Amendment (1976) made widespread constitutional changes."
+        }
+    ],
+    'Schedules': [
+    {
+        question: "Which Schedule contains the list of official languages of India?",
+        options: ["Eighth Schedule", "First Schedule", "Tenth Schedule", "Fifth Schedule"],
+        answer: 0,
+        explanation: "The Eighth Schedule lists the official languages of India."
+    },
+    {
+        question: "Which Schedule deals with the division of powers between the Union and the States?",
+        options: ["Seventh Schedule", "Sixth Schedule", "Third Schedule", "Fourth Schedule"],
+        answer: 0,
+        explanation: "The Seventh Schedule deals with the distribution of powers between Union and State governments."
+    },
+    {
+        question: "Which Schedule contains provisions regarding disqualification of MPs and MLAs on the ground of defection?",
+        options: ["Tenth Schedule", "Eleventh Schedule", "Twelfth Schedule", "Fourth Schedule"],
+        answer: 0,
+        explanation: "The Tenth Schedule, also known as the Anti-Defection Law, deals with disqualification due to defection."
+    }
+]
+    // Add similar blocks for all other topics in your wheelSegments array
+};
+
+        // Wheel Properties
+        let startAngle = 0;
+        const arc = (2 * Math.PI) / wheelSegments.length;
+        let spinTimeout = null;
+        let spinAngleStart = 10;
+        let spinTime = 0;
+        let spinTimeTotal = 0;
+
+        // Draw the Wheel with Improved Text Handling
+        function drawWheel() {
+            wheelContext.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
+            
+            // Draw segments
+            for (let i = 0; i < wheelSegments.length; i++) {
+                const angle = startAngle + i * arc;
+                
+                // Segment color
+                wheelContext.fillStyle = getColor(i);
+                wheelContext.beginPath();
+                wheelContext.arc(250, 250, 200, angle, angle + arc, false);
+                wheelContext.lineTo(250, 250);
+                wheelContext.fill();
+                
+                // Segment text
+                wheelContext.save();
+                wheelContext.translate(250, 250);
+                wheelContext.rotate(angle + arc / 2);
+                wheelContext.textAlign = "center";
+                wheelContext.fillStyle = "white";
+                wheelContext.font = "bold 14px Arial";
+                
+                // Split long text into lines
+                const text = wheelSegments[i];
+                const words = text.split(/(?=[A-Z][a-z])/); // Split at capital letters
+                let lines = [];
+                let currentLine = words[0];
+                
+                for (let j = 1; j < words.length; j++) {
+                    if ((currentLine + words[j]).length < 10) {
+                        currentLine += words[j];
+                    } else {
+                        lines.push(currentLine);
+                        currentLine = words[j];
+                    }
+                }
+                lines.push(currentLine);
+                
+                // Draw text lines
+                lines.forEach((line, idx) => {
+                    wheelContext.fillText(
+                        line.trim(),
+                        120 * Math.cos(0),
+                        120 * Math.sin(0) + (idx * 20) - ((lines.length - 1) * 10)
+                    );
+                });
+                
+                wheelContext.restore();
+            }
+        }
+
+        // Get Segment Color
+        function getColor(index) {
+            const colors = ['#e63946', '#457b9d', '#1d3557', '#a8dadc', '#2a9d8f', 
+                            '#e9c46a', '#f4a261', '#e76f51', '#264653', '#2a9d8f'];
+            return colors[index % colors.length];
+        }
+
+        // Rotate Wheel Animation
+        function rotateWheel() {
+            spinTime += 30;
+            if (spinTime >= spinTimeTotal) {
+                stopRotateWheel();
+                return;
+            }
+            const spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
+            startAngle += (spinAngle * Math.PI / 180);
+            drawWheel();
+            spinTimeout = setTimeout(rotateWheel, 30);
+        }
+
+        // Stop Wheel and Show Question
+        function stopRotateWheel() {
+            clearTimeout(spinTimeout);
+            isSpinning = false;
+            
+            const degrees = startAngle * 180 / Math.PI + 90;
+            const arcd = arc * 180 / Math.PI;
+            const index = Math.floor((360 - degrees % 360) / arcd);
+            currentTopic = wheelSegments[index];
+            
+            spinsRemaining--;
+            spinButton.disabled = false;
+            spinButton.textContent = spinsRemaining > 0 ? `Spin (${spinsRemaining} left)` : "Game Over";
+            
+            // Get random question for the topic
+            const questions = questionsDatabase[currentTopic] || [];
+            currentQuestion = questions[Math.floor(Math.random() * questions.length)];
+            
+            // Display question
+            questionText.textContent = currentQuestion.question;
+            optionsContainer.innerHTML = '';
+            
+            currentQuestion.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => selectOption(index));
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            resultContainer.style.display = 'block';
+            explanationContainer.style.display = 'none';
+            nextButton.style.display = 'none';
+            selectedOption = null;
+        }
+
+        // Show Question
+        function showQuestionForTopic(topic) {
+            const questions = questionsDatabase[topic] || [];
+            let availableQuestions = [];
+            
+            // Find questions that haven't been used yet
+            questions.forEach((q, index) => {
+                if (!usedQuestions[topic].includes(index)) {
+                    availableQuestions.push(index);
+                }
+            });
+            
+            // If all questions have been used, reset for this topic
+            if (availableQuestions.length === 0) {
+                usedQuestions[topic] = [];
+                availableQuestions = questions.map((_, index) => index);
+            }
+            
+            // Select a random question from available ones
+            const randomIndex = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
+            currentQuestion = questions[randomIndex];
+            usedQuestions[topic].push(randomIndex);
+            
+            // Display question
+            questionText.textContent = currentQuestion.question;
+            optionsContainer.innerHTML = '';
+            
+            currentQuestion.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+                optionElement.textContent = option;
+                optionElement.addEventListener('click', () => selectOption(index));
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            resultContainer.style.display = 'block';
+            explanationContainer.style.display = 'none';
+            nextButton.style.display = 'none';
+            selectedOption = null;
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Handle Option Selection
+        function selectOption(optionIndex) {
+            if (selectedOption !== null) return;
+            
+            selectedOption = optionIndex;
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach((opt, idx) => {
+                if (idx === currentQuestion.answer) {
+                    opt.classList.add('correct');
+                }
+                if (idx === optionIndex && idx !== currentQuestion.answer) {
+                    opt.classList.add('incorrect');
+                }
+                if (idx === optionIndex) {
+                    opt.classList.add('selected');
+                }
+            });
+            
+            if (optionIndex === currentQuestion.answer) {
+                score += 10;
+                scoreDisplay.textContent = `Score: ${score}`;
+            }
+            
+            explanationText.textContent = currentQuestion.explanation;
+            explanationContainer.style.display = 'block';
+            nextButton.style.display = 'inline-block';
+        }
+            
+
+        // Next Question
+        function nextQuestion() {
+            resultContainer.style.display = 'none';
+            
+            if (spinsRemaining <= 0) {
+                showFinalScore();
+            }
+        }
+        // Easing Function
+        function easeOut(t, b, c, d) {
+            const ts = (t /= d) * t;
+            const tc = ts * t;
+            return b + c * (tc + -3 * ts + 3 * t);
+        }
+
+        // Event Listeners
+       
+        function showFinalScore() {
+    const resultMessage = `Game Complete!\n\nFinal Score: ${score}\n` +
+                         `Correct Answers: ${score/10} out of 5`;
+    
+    // Create a modal to display results
+    const modal = document.createElement('div');
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100%';
+    modal.style.height = '100%';
+    modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
+    modal.style.display = 'flex';
+    modal.style.justifyContent = 'center';
+    modal.style.alignItems = 'center';
+    modal.style.zIndex = '1000';
+    
+    const modalContent = document.createElement('div');
+    modalContent.style.backgroundColor = 'white';
+    modalContent.style.padding = '30px';
+    modalContent.style.borderRadius = '10px';
+    modalContent.style.maxWidth = '500px';
+    modalContent.style.textAlign = 'center';
+    
+    const message = document.createElement('h2');
+    message.textContent = resultMessage;
+    message.style.marginBottom = '20px';
+    
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'Play Again';
+    closeButton.style.padding = '10px 20px';
+    closeButton.style.backgroundColor = '#4a5568';
+    closeButton.style.color = 'white';
+    closeButton.style.border = 'none';
+    closeButton.style.borderRadius = '5px';
+    closeButton.style.cursor = 'pointer';
+    
+    closeButton.addEventListener('click', () => {
+        document.body.removeChild(modal);
+        resetGame();
+    });
+    
+    modalContent.appendChild(message);
+    modalContent.appendChild(closeButton);
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+}
+
+function resetGame() {
+    score = 0;
+    spinsRemaining = 5;
+    questionsAnswered = 0;
+    scoreDisplay.textContent = `Score: ${score}`;
+    spinButton.textContent = `Spin (${spinsRemaining} left)`;
+    spinButton.disabled = false;
+    resultContainer.style.display = 'none';
+}
+  // Event Listeners
+  spinButton.addEventListener('click', function() {
+            if (isSpinning || spinsRemaining <= 0) return;
+            
+            isSpinning = true;
+            spinButton.disabled = true;
+            spinAngleStart = Math.random() * 10 + 10;
+            spinTime = 0;
+            spinTimeTotal = Math.random() * 3 + 4 * 1000;
+            rotateWheel();
+        });
+
+        nextButton.addEventListener('click', nextQuestion);
+
+        // Initialize
+        drawWheel();
+    </script>
+</body>
+</html>
+<!-- and the problem is when i click on the next question it is not updating and the selection of ans from 2nd spin is not working -->

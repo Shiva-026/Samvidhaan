@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+    <link rel="icon" href="logo.webp" type="image/x-icon">
+    <link rel="stylesheet" href="style1.css">
+    <title>Samvidhan-Games</title>
+    <style>
+        /* Add carousel styles */
+        .carousel-container {
+            position: relative;
+            max-width: 100%;
+            overflow: hidden;
+            margin: 20px auto;
+        }
+
+        .carousel-slide {
+            display: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        .carousel-slide.active {
+            display: block;
+        }
+
+        .carousel-slide img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -22px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 100;
+        }
+
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        .prev:hover, .next:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo" style="display: flex; align-items: center; gap: 10px;">
+            <a href="#"><img src="./images/login_logo.png" alt="SAMVIDHAN" style="height: 85px;"></a>
+            <div class="app-name" style="font-size: 24px; font-weight: bold;">SAMVIDHAN </div>
+        </div>
+        
+        <ul>
+            <li><a href="index.html">Home</a></li>
+        </ul>
+    </nav>
+
+    <!--hero section--> 
+    <div class="card">
+        <div class="text-section">
+            <h2 style="font-size: 75px;">Welcome to Samvidhan..! Constitutional Learning</h2>
+            <p id="typing-text" style="margin-top: -20px;"></p>
+        </div>
+        <div class="carousel-section">
+            <div class="carousel-container">
+                <div class="carousel-slide active">
+                    <img src="./images/samlogo.jpg" alt="SAMVIDHAN Logo">
+                </div>
+                <div class="carousel-slide">
+                    <img src="./images/indianconstitution.webp" alt="Indian Constitution">
+                </div>
+            </div>
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+        </div>
+    </div> 
+
+    <!-- Rest of your HTML remains exactly the same -->
+    <!--Card Section-->
+    <h1 style="text-align: center; margin-top: 50px; font-size: 50px;">Featured Games</h1>
+    <div class="card-section1">
+        <!-- Card 1 --> 
+        <div class="custom-card">
+            <a href="startGame.html" >
+                <img src="./images/vicecity.webp" alt="Image 1" class="custom-card-image">
+                <video class="custom-card-video" src="./images/intro.mp4" muted autoplay loop></video>
+            </a>
+        </div>
+        
+        <!-- Card 2 -->
+        <div class="custom-card"> 
+            <a href="startnavigator.html" >
+                <img src="./images/civicnavigator.webp" alt="Image 2" class="custom-card-image">
+                <video class="custom-card-video" src="./images/navigator.mp4" muted autoplay loop></video>
+            </a>
+        </div>
+        <!-- Card 3 -->
+        <div class="custom-card">
+            <a href="spinthewheel.html" >
+                <img src="./images/spinthewheel.webp" alt="Image 3" class="custom-card-image">
+                <video class="custom-card-video" src="./images/spingame.mp4" muted autoplay loop></video>
+            </a>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section">
+        <h1 style="text-align: center; font-size: 50px;">Our Key Features</h1> 
+        <div class="card-section1">
+            <div class="feature-card">
+                <img src="./images/interactivequiz.jpeg" alt="Interactive Quiz" />
+                <div class="feature-overlay">
+                    <h3>Interactive Quiz</h3>
+                </div>
+            </div>
+            <div class="feature-card">
+                <img src="./images/educationalgame.jpeg" alt="Educational Game" />
+                <div class="feature-overlay">
+                    <h3>Educational Games</h3>
+                </div>
+            </div>
+            <div class="feature-card">
+                <img src="./images/game.jpeg" alt="Game" />
+                <div class="feature-overlay">
+                    <h3>Fun Games</h3>
+                </div>
+            </div>
+            <div class="feature-card">
+                <img src="./images/rewards.png" alt="Rewards" />
+                <div class="feature-overlay">
+                    <h3>Rewards</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="how-it-works">
+        <h2 class="how-it-works-heading">How It Works</h2>
+        <div class="steps-container">
+            <div class="step-card">
+                <div class="step-icon">🎥</div>
+                <h3 class="step-title">Watch the Video</h3>
+                <p class="step-description">Start by watching an introductory video that explains the basics of the Indian Constitution.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon">📚</div>
+                <h3 class="step-title">Learn the Concepts</h3>
+                <p class="step-description">Explore interactive content and resources to deepen your understanding of the Constitution.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon">🎮</div>
+                <h3 class="step-title">Play the Games</h3>
+                <p class="step-description">Engage with quizzes and games to test your knowledge and earn rewards.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Carousel functionality
+        let slideIndex = 1;
+        showSlides(slideIndex);
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("carousel-slide");
+            
+            if (n > slides.length) {slideIndex = 1}
+            if (n < 1) {slideIndex = slides.length}
+            
+            for (i = 0; i < slides.length; i++) {
+                slides[i].classList.remove("active");
+            }
+            
+            slides[slideIndex-1].classList.add("active");
+        }
+
+        // Auto-advance slides every 5 seconds
+        setInterval(() => {
+            plusSlides(1);
+        }, 5000);
+    </script>
+    
+    <script src="script.js"></script>
+    <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+</body>
+</html>

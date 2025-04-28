@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samvidhan - Connect</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(
+                rgba(255, 143, 0, 0.4),  /* Saffron */
+                rgba(255, 255, 255, 0.2), /* White */
+                rgba(19, 136, 8, 0.4)  /* Green */
+            );
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Transparent Header */
+        .page-header {
+            width: 100%;
+            background-color: transparent;
+            padding: 15px 10px 5px 20px; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-title img {
+            height: 40px;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+
+        .close-btn {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #2c3e50;
+            font-size: 16px;
+            transition: all 0.3s;
+            margin-right:60px;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.5);
+            transform: scale(1.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: rgba(255,255,255,0.9);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .logo-container img {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+
+        /* Button styles */
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #4B0082;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2E0854;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        p {
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        a {
+            color: #4B0082;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Transparent Header -->
+    <header class="page-header">
+        <div class="logo-title">
+            <img src="./images/login_logo.png" alt="Samvidhan Logo">
+            <div class="page-title" id="pageTitle">Samvidhan Connect</div>
+        </div>
+        <button class="close-btn" onclick="window.location.href='index.html'">✕</button>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div id="index" class="container">
+            <div class="logo-container">
+                <img src="./images/login_logo.png" alt="Samvidhan Logo">
+            </div>
+            <h3>Transform your legal knowledge into actionable insights</h3>
+            <div class="buttons">
+                <button onclick="showPage('login')">Login</button>
+                <button onclick="showPage('signup')">Signup</button>
+            </div>
+        </div>
+
+        <div id="login" class="container" style="display: none;">
+            <div class="logo-container">
+                <img src="./images/login_logo.png" alt="Samvidhan Logo">
+            </div>
+            <h1>Login</h1>
+            <form id="loginForm">
+                <input type="text" id="loginUsername" placeholder="Username" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <p>Don't have an account? <a href="#" onclick="showPage('signup')">Signup</a></p>
+        </div>
+
+        <div id="signup" class="container" style="display: none;">
+            <div class="logo-container">
+                <img src="./images/login_logo.png" alt="Samvidhan Logo">
+            </div>
+            <h1>Signup</h1>
+            <form id="signupForm">
+                <input type="text" id="signupUsername" placeholder="Username" required>
+                <input type="email" id="signupEmail" placeholder="Email" required>
+                <input type="password" id="signupPassword" placeholder="Password" required>
+                <button type="submit">Register</button>
+            </form>
+            <p>Already have an account? <a href="#" onclick="showPage('login')">Login</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Update page title when switching between login/signup
+        function showPage(pageId) {
+            document.getElementById('index').style.display = 'none';
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('signup').style.display = 'none';
+            document.getElementById(pageId).style.display = 'block';
+            
+            // Update header title
+            const pageTitle = document.getElementById('pageTitle');
+            if (pageId === 'login') {
+                pageTitle.textContent = 'Samvidhan Login';
+            } else if (pageId === 'signup') {
+                pageTitle.textContent = 'Samvidhan Signup';
+            } else {
+                pageTitle.textContent = 'Samvidhan Connect';
+            }
+        }
+
+        // Handle Signup Form
+        document.addEventListener("DOMContentLoaded", function () {
+            const signupForm = document.getElementById("signupForm");
+            if (signupForm) {
+                signupForm.addEventListener("submit", async function (event) {
+                    event.preventDefault();
+
+                    let username = document.getElementById("signupUsername").value;
+                    let email = document.getElementById("signupEmail").value;
+                    let password = document.getElementById("signupPassword").value;
+
+                    try {
+                        const response = await fetch("http://localhost:5000/signup", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ username, email, password })
+                        });
+
+                        const data = await response.json();
+                        if (response.ok) {
+                            alert(data.message);
+                            showPage("login");
+                        } else {
+                            alert(data.error);
+                        }
+                    } catch (error) {
+                        console.error("Error:", error);
+                        alert("Something went wrong. Check the console.");
+                    }
+                });
+            }
+        });
+
+        // Handle Login Form
+document.getElementById("loginForm")?.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    let username = document.getElementById("loginUsername").value;
+    let password = document.getElementById("loginPassword").value;
+
+    try {
+        const response = await fetch("http://localhost:5000/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            // Save token and user data
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('userId', data.userId);
+            localStorage.setItem('username', data.username);
+            
+            // Redirect to index.html
+            window.location.href = "index.html"; 
+        } else {
+            alert(data.error);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Something went wrong. Check the console.");
+    }
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,881 @@
+/* General Styles */
+body {
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    background: linear-gradient(to bottom, 
+        rgba(255, 153, 51, 0.4) 11%, 
+        rgba(255, 255, 255, 0.3) 33%, 
+        rgba(19, 136, 8, 0.2) 56%);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* Header Styles */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo-container img {
+    height: 50px;
+    margin-right: 15px;
+}
+
+.app-name {
+    font-size: 28px;
+    font-weight: bold;
+    color: #000000; /* Changed from blue to black */
+}
+
+/* Navigation */
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #0b0a0a;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    background-color: #bebbbb62;
+}
+
+nav ul li a:hover {
+    background-color: #000000; /* Changed from blue to black */
+    color: white; /* Text changes to white on hover */
+    transform: scale(1.05);
+}
+
+/* Constitution Introduction Section */
+/* Constitution Carousel Section */
+.constitution-intro {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    height: 500px;
+    margin: 30px auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.constitution-carousel {
+    display: flex;
+    height: 100%;
+    transition: transform 0.5s ease;
+}
+
+.constitution-slide {
+    min-width: 100%;
+    display: flex;
+}
+
+.constitution-image {
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.constitution-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.constitution-info {
+    width: 50%;
+    padding: 40px;
+    background-color: #f8f8f8; /* Light background */
+    color: #000; /* Black text */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.constitution-info h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #000; /* Black text */
+}
+
+.constitution-info p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: #333; /* Dark gray text */
+}
+
+/* Navigation controls */
+.carousel-nav {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.carousel-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.carousel-dot.active {
+    background-color: #000; /* Black active dot */
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #000; /* Black arrow */
+    border: none;
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.carousel-arrow:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.carousel-arrow.prev {
+    left: 20px;
+}
+
+.carousel-arrow.next {
+    right: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .constitution-intro {
+        height: auto;
+    }
+    
+    .constitution-slide {
+        flex-direction: column;
+    }
+    
+    .constitution-image,
+    .constitution-info {
+        width: 100%;
+    }
+    
+    .constitution-image {
+        height: 250px;
+    }
+}
+
+
+/* Explore Section */
+.explore-section {
+    padding: 60px 20px;
+    background: linear-gradient(to bottom, 
+        rgba(255, 153, 51, 0.4) 9%, 
+        rgba(255, 255, 255, 0.3) 33%, 
+        rgba(19, 136, 8, 0.2) 56%);
+    margin-top: 30px;
+}
+
+.explore-section h1 {
+    text-align: center;
+    font-size: 50px;
+    margin-bottom: 40px;
+    color: #000000; /* Changed from blue to black */
+    text-transform: uppercase;
+}
+
+.explore-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.explore-card {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.explore-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+}
+
+.explore-card-img {
+    height:250px;
+    overflow: hidden;
+}
+
+.explore-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.explore-card:hover .explore-card-img img {
+    transform: scale(1.05);
+}
+
+.explore-card-content {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.explore-card-content h3 {
+    color: #000000; /* Changed from blue to black */
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+.explore-card-content p {
+    color: #555;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    flex: 1;
+}
+
+.know-more {
+    background-color: #000000; /* Changed from blue to black */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.know-more:hover {
+    background-color: #333333; /* Dark grey on hover */
+}
+
+/* News Section */
+.news-section {
+    padding: 60px 20px;
+    background-color: #59595a;
+    margin-top: 30px;
+}
+
+.news-section h1 {
+    text-align: center;
+    font-size: 50px;
+    margin-bottom: 40px;
+    color: #000000; /* Changed from blue to black */
+    text-transform: uppercase;
+}
+
+.news-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 0 20px;
+}
+
+.news-card {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+}
+
+.news-image {
+    height: 250px;
+    overflow: hidden;
+}
+
+.news-image img {
+    width: 90%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.news-card:hover .news-image img {
+    transform: scale(1.05);
+}
+
+.news-content {
+    padding: 20px;
+}
+
+.news-content h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #000000; /* Changed from blue to black */
+}
+
+.news-content p {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.read-more {
+    color: #000000; /* Changed from blue to black */
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+.read-more:hover {
+    color: #333333; /* Dark grey on hover */
+    text-decoration: underline;
+}
+
+.news-error {
+    text-align: center;
+    color: #000000; /* Changed from red to black */
+    font-size: 16px;
+}
+
+/* Constitution Info Cards */
+.constitution-cards {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin: 50px auto;
+    max-width: 1200px;
+    padding: 0 20px;
+}
+
+.info-card {
+    width: 300px;
+    height: 250px;
+    background: #f4f4f4;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.info-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.info-card h3 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000; /* Changed from blue to black */
+    margin-bottom: 15px;
+}
+
+.info-card p {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 700px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #333;
+}
+
+#modal-body h2 {
+    color: #000000; /* Changed from blue to black */
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+#modal-body p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+#modal-body ul {
+    margin-left: 20px;
+}
+
+#modal-body li {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+/* Important Articles Section */
+.articles-section {
+    padding: 60px 20px;
+    background-color: #f8f9fa;
+    margin-top: 30px;
+}
+
+.articles-section h1 {
+    text-align: center;
+    font-size: 50px;
+    margin-bottom: 40px;
+    color: #000000; /* Changed from blue to black */
+    text-transform: uppercase;
+}
+
+.articles-carousel {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.article-card {
+    width: 280px;
+    margin: 0 15px;
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.article-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+}
+
+.article-image {
+    height: 180px;
+    overflow: hidden;
+}
+
+.article-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.article-card:hover .article-image img {
+    transform: scale(1.05);
+}
+
+.article-content {
+    padding: 20px;
+}
+
+.article-content h3 {
+    color: #000000; /* Changed from blue to black */
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.article-content p {
+    color: #555;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.article-content .read-more {
+    display: inline-block;
+    background-color: #000000; /* Changed from blue to black */
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.article-content .read-more:hover {
+    background-color: #333333; /* Dark grey on hover */
+}
+
+/* Flickity carousel styles */
+.flickity-viewport {
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+}
+
+.flickity-slider {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+/* Footer Styles */
+footer {
+    background: linear-gradient(135deg, #000000, #333333); /* Changed from blue to black/grey */
+    color: white;
+    padding: 60px 0 20px;
+    font-family: 'Times New Roman', Times, serif;
+    margin-top: 60px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    flex-wrap: wrap;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 300px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.footer-section h3 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.footer-section h3::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50px;
+    height: 3px;
+    background-color: #fff;
+}
+
+.footer-section p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.contact-section .contact-info {
+    margin-top: 20px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.contact-item i {
+    font-size: 18px;
+    margin-right: 15px;
+    color: #fff;
+}
+
+.contact-item span {
+    font-size: 16px;
+}
+
+.contact-item a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.contact-item a:hover {
+    color: #cccccc; /* Light grey on hover */
+    text-decoration: underline;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer-bottom p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .constitution-intro {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .constitution-image, .constitution-info {
+        flex: none;
+        width: 100%;
+    }
+    
+    .constitution-image img {
+        width: 60%;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        padding: 15px 20px;
+    }
+    
+    .logo-container {
+        margin-bottom: 15px;
+    }
+    
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .explore-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+    }
+    
+    .footer-section {
+        min-width: 100%;
+        padding: 20px 0;
+    }
+    
+    .footer-section h3 {
+        font-size: 20px;
+    }
+    
+    .footer-section p {
+        font-size: 15px;
+    }
+    
+    .contact-item i {
+        font-size: 16px;
+    }
+    
+    .contact-item span {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .constitution-intro {
+        padding: 20px;
+    }
+    
+    .constitution-info h2 {
+        font-size: 26px;
+    }
+    
+    .constitution-info p {
+        font-size: 16px;
+    }
+    
+    .explore-section h1, 
+    .news-section h1 {
+        font-size: 36px;
+    }
+    
+    .footer-section h3 {
+        font-size: 18px;
+    }
+    
+    .footer-section p,
+    .contact-item span {
+        font-size: 14px;
+    }
+    
+    .footer-bottom p {
+        font-size: 13px;
+    }
+    
+    .profile-header {
+        padding: 12px 16px;
+        background-color: #333;
+        color: white;
+        font-weight: bold;
+    }
+
+    .profile-footer {
+        padding: 12px 16px;
+        border-top: 1px solid #ddd;
+    }
+
+    .profile-info {
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .profile-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #4B0082;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+    }
+
+    .profile-name {
+        font-weight: bold;
+    }
+
+    .profile-score {
+        font-size: 0.8rem;
+        color: #666;
+    }
+
+    .logout-btn {
+        color: #e74c3c;
+        font-weight: bold;
+    }
+    /* Badges styling */
+.badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.badge:hover {
+    transform: translateY(-5px);
+}
+
+.badge.locked {
+    opacity: 0.5;
+    filter: grayscale(100%);
+}
+
+.badge-icon {
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+/* Profile modal styling */
+.profile-modal-content {
+    padding: 20px;
+}
+
+.profile-info {
+    margin-bottom: 20px;
+}
+
+.profile-avatar {
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logout-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 20px;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #c0392b;
+}
+}

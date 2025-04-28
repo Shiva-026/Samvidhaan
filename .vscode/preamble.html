@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+    <title>Preamble Quiz</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-color: black;
+            font-family: "Fjalla One", system-ui;
+            color: white;
+            position: relative;
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 50px;
+            margin-bottom: 20px;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            width: 300px;
+            height: 200px;
+            perspective: 1000px;
+            margin: 10px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-radius: 10px;
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .flip-card-front {
+            background-color: #FF9933; /* Saffron background */
+        }
+
+        .flip-card-back {
+            background-color: #333; /* Dark background */
+            transform: rotateY(180deg);
+        }
+
+        .quiz-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .quiz-container h2 {
+            margin-bottom: 20px;
+        }
+
+        .quiz-option {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            background-color: #0056b3;
+        }
+
+        .quiz-results {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .start-quiz-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .start-quiz-btn:hover {
+            background-color: #0056b3;
+        }
+
+        #google_translate_element {
+            margin: 20px;
+        }
+
+        .score-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .correct-answer {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .wrong-answer {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'hi,ta,te,ml,kn,gu,pa', // Include Indian languages
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<body>
+    <div id="google_translate_element"></div>
+    <div class="score-display" id="score-display">
+        Score: <span id="score">0</span>
+    </div>
+    
+    <div class="card-container">
+        <div class="flip-card">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <h3>Preamble Overview</h3>
+                </div>
+                <div class="flip-card-back">
+                    <p>The Preamble is an introductory statement that outlines the fundamental principles and values of the Constitution.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <h3>Core Values</h3>
+                </div>
+                <div class="flip-card-back">
+                    <ul>
+                        <li>Sovereign</li>
+                        <li>Socialist</li>
+                        <li>Secular</li>
+                        <li>Democratic</li>
+                        <li>Republic</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <h3>Justice Values</h3>
+                </div>
+                <div class="flip-card-back">
+                    <ul>
+                        <li>Social</li>
+                        <li>Economic</li>
+                        <li>Political</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <h3>Legal Status</h3>
+                </div>
+                <div class="flip-card-back">
+                    <p>The Preamble is not enforceable by law but is crucial in interpreting the Constitution.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <h3>Historical Context</h3>
+                </div>
+                <div class="flip-card-back">
+                    <p>The Preamble was adopted on January 26, 1950, marking India's transition to a Republic.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="start-quiz-btn" onclick="startQuiz()">Start a Quiz</button>
+
+    <div class="quiz-container" id="quiz-container">
+        <h2 id="quiz-question">Question will appear here</h2>
+        <button class="quiz-option" onclick="answer('A')">Option A</button>
+        <button class="quiz-option" onclick="answer('B')">Option B</button>
+        <button class="quiz-option" onclick="answer('C')">Option C</button>
+        <button class="quiz-option" onclick="answer('D')">Option D</button>
+        <div class="quiz-results" id="quiz-results"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "What does the Preamble of the Indian Constitution represent?",
+                options: {
+                    A: "The Constitution's chapters",
+                    B: "The core values and goals of the country",
+                    C: "The list of fundamental rights",
+                    D: "The historical background of the Constitution"
+                },
+                answer: 'B'
+            },
+            {
+                question: "Which of these is NOT a core value mentioned in the Preamble?",
+                options: {
+                    A: "Secular",
+                    B: "Democratic",
+                    C: "Monarchial",
+                    D: "Socialist"
+                },
+                answer: 'C'
+            },
+            {
+                question: "What are the types of justice mentioned in the Preamble?",
+                options: {
+                    A: "Social, Economic, Political",
+                    B: "Legal, Economic, Social",
+                    C: "Political, Legal, Social",
+                    D: "Economic, Political, Legal"
+                },
+                answer: 'A'
+            },
+            {
+                question: "Is the Preamble enforceable by law?",
+                options: {
+                    A: "Yes",
+                    B: "No",
+                    C: "Only partially",
+                    D: "Only in certain cases"
+                },
+                answer: 'B'
+            },
+            {
+                question: "On what date was the Preamble of the Indian Constitution adopted?",
+                options: {
+                    A: "August 15, 1947",
+                    B: "January 26, 1950",
+                    C: "November 26, 1949",
+                    D: "January 1, 1950"
+                },
+                answer: 'B'
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Load saved score from localStorage when page loads
+        window.onload = function() {
+            const savedScore = localStorage.getItem('preambleQuizScore');
+            if (savedScore) {
+                score = parseInt(savedScore);
+                document.getElementById('score').textContent = score;
+            }
+        };
+
+        function startQuiz() {
+            document.querySelector('.card-container').style.display = 'none';
+            document.querySelector('.start-quiz-btn').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'flex';
+            currentQuestionIndex = 0;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById('quiz-question').textContent = question.question;
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach((option, index) => {
+                const key = String.fromCharCode(65 + index);
+                option.textContent = question.options[key];
+                option.dataset.answer = key;
+            });
+            document.getElementById('quiz-results').textContent = '';
+        }
+
+        function answer(selectedOption) {
+            const question = questions[currentQuestionIndex];
+            const result = document.getElementById('quiz-results');
+            
+            if (selectedOption === question.answer) {
+                result.innerHTML = '<span class="correct-answer">Correct! +100 points</span>';
+                score += 100;
+                document.getElementById('score').textContent = score;
+                // Save the updated score to localStorage with the specific key for starnavigator.html
+                localStorage.setItem('preambleQuizScore', score.toString());
+            } else {
+                result.innerHTML = `<span class="wrong-answer">Incorrect! The correct answer was ${question.answer}: ${question.options[question.answer]}</span>`;
+            }
+            
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                setTimeout(showQuestion, 2000);
+            } else {
+                setTimeout(showResults, 2000);
+            }
+        }
+
+        function showResults() {
+            const percentage = Math.round((score / (questions.length * 100)) * 100);
+            let message = `Quiz completed! Final Score: ${score} points (${percentage}%)`;
+            
+            if (percentage === 100) {
+                message += "<br>Perfect! You're a Preamble expert!";
+            } else if (percentage >= 80) {
+                message += "<br>Great job! You know the Preamble well!";
+            } else if (percentage >= 60) {
+                message += "<br>Good effort! Keep learning!";
+            } else {
+                message += "<br>Keep studying the Preamble!";
+            }
+            
+            document.getElementById('quiz-results').innerHTML = message;
+            document.getElementById('quiz-container').style.display = 'none';
+            document.querySelector('.card-container').style.display = 'flex';
+            document.querySelector('.start-quiz-btn').style.display = 'block';
+            document.querySelector('.start-quiz-btn').textContent = 'Play Again';
+            // Reset the onclick handler to reset the quiz
+            document.querySelector('.start-quiz-btn').onclick = resetQuiz;
+        }
+
+        function resetQuiz() {
+            // Reset score and clear it from localStorage
+            score = 0;
+            localStorage.removeItem('preambleQuizScore');
+            document.getElementById('score').textContent = score;
+            // Reset the button to start a new quiz
+            document.querySelector('.start-quiz-btn').textContent = 'Start a Quiz';
+            document.querySelector('.start-quiz-btn').onclick = startQuiz;
+            // Show the initial state
+            document.getElementById('quiz-results').textContent = '';
+        }
+    </script>
+</body>
+</html>

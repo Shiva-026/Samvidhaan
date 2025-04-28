@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constitution Quest - Learn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style3.css">
+   
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>Constitution Quest</h1>
+            <p>Master India's Constitution through interactive challenges</p>
+            <div class="nav-buttons">
+                <button class="home-btn" onclick="goToHome()">
+                    <i class="fas fa-home"></i> Home
+                </button>
+                <button class="profile-btn" onclick="toggleProfile()">
+                    <i class="fas fa-user-circle"></i> Profile
+                </button>
+            </div>
+            <div class="profile-container">
+                <div class="profile-modal" id="profileModal">
+                    <div class="profile-content">
+                        <div class="profile-header">
+                            <h2>User Profile</h2>
+                        </div>
+                        <div class="profile-body">
+                            <div class="profile-info">
+                                <div class="profile-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="profile-details">
+                                    <h3 id="profileUsername">Guest User</h3>
+                                    <!-- <p id="profileEmail">guest@example.com</p> -->
+                                </div>
+                            </div>
+                            <div class="profile-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value" id="profileLevel">1</div>
+                                    <div class="stat-label">Level</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" id="profileScore">0</div>
+                                    <div class="stat-label">Score</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" id="profileBadges">0</div>
+                                    <div class="stat-label">Badges</div>
+                                </div>
+                            </div>
+                            <div class="profile-badges">
+                                <h3>Your Badges</h3>
+                                <div class="badges-container" id="profileBadgesContainer">
+                                    <!-- Badges will be displayed here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- Progress Section -->
+        <section class="progress-section">
+            <h2>Your Learning Journey</h2>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <span id="progressText">0% Complete</span>
+                <span id="levelStatus">Level 1/5</span>
+            </div>
+        </section>
+        
+        <!-- Levels Section -->
+        <section class="levels-container">
+            <h2>Constitution Challenges</h2>
+            
+            <!-- Level 1 -->
+            <div class="level-card level-1" id="level1">
+                <div class="level-icon">1</div>
+                <div class="level-content">
+                    <h3>Constitution Basics</h3>
+                    <p>Learn about the framing, adoption, and key features of India's Constitution</p>
+                    <button class="btn" onclick="startQuiz(1)">Start Challenge</button>
+                    <span style="color: #3498db; margin-left: 1rem;"><i class="fas fa-check"></i> Available</span>
+                </div>
+            </div>
+            
+            <!-- Level 2 -->
+            <div class="level-card level-2 locked" id="level2">
+                <div class="level-icon">2</div>
+                <div class="level-content">
+                    <h3>Preamble & Fundamental Rights</h3>
+                    <p>Understand the guiding principles and rights guaranteed to citizens</p>
+                    <button class="btn" id="level2Btn" disabled>Start Challenge</button>
+                    <span style="color: #f39c12; margin-left: 1rem;">Complete 75% of Level 1 to unlock</span>
+                </div>
+                <div class="lock-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+            </div>
+            
+            <!-- Level 3 -->
+            <div class="level-card level-3 locked" id="level3">
+                <div class="level-icon">3</div>
+                <div class="level-content">
+                    <h3>Directive Principles & Duties</h3>
+                    <p>Explore the state's goals and citizens' responsibilities</p>
+                    <button class="btn" id="level3Btn" disabled>Start Challenge</button>
+                    <span style="color: #2ecc71; margin-left: 1rem;">Complete 75% of Level 2 to unlock</span>
+                </div>
+                <div class="lock-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+            </div>
+            
+            <!-- Level 4 -->
+            <div class="level-card level-4 locked" id="level4">
+                <div class="level-icon">4</div>
+                <div class="level-content">
+                    <h3>Government Structure</h3>
+                    <p>Learn about the executive, legislature, and judiciary systems</p>
+                    <button class="btn" id="level4Btn" disabled>Start Challenge</button>
+                    <span style="color: #9b59b6; margin-left: 1rem;">Complete 75% of Level 3 to unlock</span>
+                </div>
+                <div class="lock-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+            </div>
+            
+            <!-- Level 5 -->
+            <div class="level-card level-5 locked" id="level5">
+                <div class="level-icon">5</div>
+                <div class="level-content">
+                    <h3>Amendments & Special Features</h3>
+                    <p>Discover how the constitution evolves and its unique aspects</p>
+                    <button class="btn" id="level5Btn" disabled>Start Challenge</button>
+                    <span style="color: #e74c3c; margin-left: 1rem;">Complete 75% of Level 4 to unlock</span>
+                </div>
+                <div class="lock-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Badges Section -->
+        <section class="badges-section">
+            <h2>Your Achievements</h2>
+            <p>Earn badges by completing challenges and mastering concepts</p>
+            
+            <div class="badges-container">
+                <div class="badge locked" id="badge1">
+                    <i class="fas fa-book badge-icon"></i>
+                </div>
+                <div class="badge locked" id="badge2">
+                    <i class="fas fa-balance-scale badge-icon"></i>
+                </div>
+                <div class="badge locked" id="badge3">
+                    <i class="fas fa-gavel badge-icon"></i>
+                </div>
+                <div class="badge locked" id="badge4">
+                    <i class="fas fa-landmark badge-icon"></i>
+                </div>
+                <div class="badge locked" id="badge5">
+                    <i class="fas fa-star badge-icon"></i>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Constitution Quest | An Interactive Learning Experience</p>
+        </div>
+    </footer>
+    
+    <!-- Quiz Modal -->
+    <div class="modal" id="quizModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="modal-header">
+                <h2 id="modalLevelTitle">Level 1 Challenge</h2>
+                <p id="modalLevelDescription">Test your knowledge about Constitution Basics</p>
+            </div>
+            <div class="modal-body" id="quizQuestionsContainer">
+                <!-- Quiz questions will be inserted here by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Return</button>
+                <button class="btn" id="submitQuizBtn">Submit</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Certificate Modal -->
+    <div class="modal" id="certificateModal">
+        <div class="modal-content certificate-modal">
+            <span class="close-modal" onclick="closeCertificateModal()">&times;</span>
+            <div class="certificate" id="certificateContent">
+                <div class="certificate-logo">
+                    <img src="./images/login_logo.png" alt="Constitution Quest Logo">
+                </div>
+                <div class="certificate-header">
+                    <h1>CERTIFICATE OF COMPLETION</h1>
+                    <p>This is to certify that</p>
+                    <h2 id="certificateName">Guest User</h2>
+                    <p>has successfully completed all levels of</p>
+                    <h3>Constitution Quest</h3>
+                </div>
+                <div class="certificate-body">
+                    <p>Demonstrating mastery of India's Constitution including:</p>
+                    <ul>
+                        <li>Constitution Basics</li>
+                        <li>Preamble & Fundamental Rights</li>
+                        <li>Directive Principles & Duties</li>
+                        <li>Government Structure</li>
+                        <li>Amendments & Special Features</li>
+                    </ul>
+                    <div class="certificate-badges">
+                        <h4>Badges Earned:</h4>
+                        <div class="badges-container" id="certificateBadgesContainer">
+                            <!-- Badges will be displayed here -->
+                        </div>
+                    </div>
+                    <div class="signatures">
+                        <div class="signature">
+                            <div class="signature-line"></div>
+                            <p>Date: <span id="certificateDate"></span></p>
+                        </div>
+                        <div class="signature">
+                            <div class="signature-line"></div>
+                            <p>Constitution Quest Team</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="certificate-footer">
+                    <p>Certificate ID: <span id="certificateId"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Game State
+        const gameState = {
+            currentLevel: 1,
+            completedLevels: 0,
+            totalLevels: 5,
+            badgesEarned: 0,
+            progress: 0,
+            score: 0,
+            user: {
+                name: "Guest User",
+                email: "guest@example.com"
+            },
+            levelProgress: {
+                1: 0,
+                2: 0,
+                3: 0,
+                4: 0,
+                5: 0
+            },
+            currentQuizQuestions: [] // Store current quiz questions
+        };
+        
+        // Question Templates for each level
+        const questionTemplates = {
+            1: [
+                {
+                    template: "When was the Constitution of India adopted by the Constituent Assembly?",
+                    options: ["15 August 1947", "26 January 1950", "26 November 1949", "2 October 1948"],
+                    answer: 2,
+                    explanation: "The Constitution was adopted on 26 November 1949 and came into effect on 26 January 1950."
+                },
+                {
+                    template: "Who is regarded as the chief architect of the Indian Constitution?",
+                    options: ["Mahatma Gandhi", "Jawaharlal Nehru", "B.R. Ambedkar", "Sardar Patel"],
+                    answer: 2,
+                    explanation: "Dr. B.R. Ambedkar is widely regarded as the chief architect of the Indian Constitution."
+                },
+                {
+                    template: "How many articles does the Indian Constitution originally have?",
+                    options: ["395", "448", "250", "500"],
+                    answer: 0,
+                    explanation: "The original Constitution had 395 articles in 22 parts and 8 schedules."
+                },
+                {
+                    template: "The Indian Constitution was drafted by the Constituent Assembly which was set up under:",
+                    options: ["Government of India Act 1935", "Indian Independence Act 1947", "Cabinet Mission Plan 1946", "Mountbatten Plan"],
+                    answer: 2,
+                    explanation: "The Constituent Assembly was set up under the Cabinet Mission Plan of 1946."
+                },
+                {
+                    template: "The Constitution of India was enacted by the Constituent Assembly on:",
+                    options: ["26 January 1950", "26 November 1949", "15 August 1947", "26 December 1949"],
+                    answer: 1,
+                    explanation: "The Constitution was enacted on 26 November 1949 and came into force on 26 January 1950."
+                }
+            ],
+            2: [
+                {
+                    template: "Which part of the Indian Constitution contains the Fundamental Rights?",
+                    options: ["Part I", "Part II", "Part III", "Part IV"],
+                    answer: 2,
+                    explanation: "Part III (Articles 12-35) contains the Fundamental Rights."
+                },
+                {
+                    template: "Which Fundamental Right is called the 'Heart and Soul' of the Constitution by Dr. Ambedkar?",
+                    options: ["Right to Equality", "Right to Freedom", "Right to Constitutional Remedies", "Right Against Exploitation"],
+                    answer: 2,
+                    explanation: "Article 32 (Right to Constitutional Remedies) was called the heart and soul of the Constitution."
+                },
+                {
+                    template: "Which article guarantees the Right to Equality?",
+                    options: ["Article 14", "Article 19", "Article 21", "Article 25"],
+                    answer: 0,
+                    explanation: "Article 14 guarantees equality before law and equal protection of laws."
+                },
+                {
+                    template: "The Preamble of the Indian Constitution was inspired by:",
+                    options: ["US Constitution", "French Constitution", "Irish Constitution", "All of the above"],
+                    answer: 3,
+                    explanation: "The Preamble draws inspiration from multiple sources including the US, French and Irish constitutions."
+                },
+                {
+                    template: "Which Fundamental Right cannot be suspended during emergency?",
+                    options: ["Right to Equality", "Right to Freedom", "Right to Life and Personal Liberty", "Right to Constitutional Remedies"],
+                    answer: 2,
+                    explanation: "Article 21 (Right to Life) cannot be suspended even during emergency."
+                }
+            ],
+            3: [
+                {
+                    template: "Which article contains the Directive Principles of State Policy?",
+                    options: ["Article 36-51", "Article 14-35", "Article 52-78", "Article 79-124"],
+                    answer: 0,
+                    explanation: "Directive Principles of State Policy are contained in Part IV (Articles 36-51)."
+                },
+                {
+                    template: "The Fundamental Duties were added to the Constitution by which amendment?",
+                    options: ["42nd Amendment", "44th Amendment", "73rd Amendment", "86th Amendment"],
+                    answer: 0,
+                    explanation: "The Fundamental Duties were added by the 42nd Amendment in 1976."
+                },
+                {
+                    template: "How many Fundamental Duties are there in the Indian Constitution?",
+                    options: ["10", "11", "12", "9"],
+                    answer: 1,
+                    explanation: "There are currently 11 Fundamental Duties in Article 51A."
+                },
+                {
+                    template: "Which Directive Principle was made a Fundamental Right by the 86th Amendment?",
+                    options: ["Right to Education", "Right to Work", "Right to Health", "Right to Housing"],
+                    answer: 0,
+                    explanation: "Right to Education was elevated from DPSP to Fundamental Right by the 86th Amendment."
+                },
+                {
+                    template: "The concept of Directive Principles of State Policy was borrowed from:",
+                    options: ["US Constitution", "Irish Constitution", "British Constitution", "Canadian Constitution"],
+                    answer: 1,
+                    explanation: "The DPSP concept was borrowed from the Irish Constitution."
+                }
+            ],
+            4: [
+                {
+                    template: "Which article deals with the composition of the Parliament?",
+                    options: ["Article 79", "Article 52", "Article 124", "Article 148"],
+                    answer: 0,
+                    explanation: "Article 79 deals with the composition of the Parliament."
+                },
+                {
+                    template: "The President of India is elected by:",
+                    options: ["Direct election by people", "Members of Parliament", "Members of State Legislatures", "Electoral College consisting of MPs and MLAs"],
+                    answer: 3,
+                    explanation: "The President is elected by an Electoral College consisting of elected members of Parliament and State Legislatures."
+                },
+                {
+                    template: "Which article deals with the appointment of the Prime Minister?",
+                    options: ["Article 74", "Article 75", "Article 76", "Article 77"],
+                    answer: 1,
+                    explanation: "Article 75 deals with the appointment of the Prime Minister by the President."
+                },
+                {
+                    template: "The Supreme Court of India was established under which article?",
+                    options: ["Article 124", "Article 32", "Article 226", "Article 143"],
+                    answer: 0,
+                    explanation: "Article 124 establishes the Supreme Court of India."
+                },
+                {
+                    template: "The concept of Judicial Review is borrowed from:",
+                    options: ["British Constitution", "US Constitution", "French Constitution", "Canadian Constitution"],
+                    answer: 1,
+                    explanation: "The concept of Judicial Review was borrowed from the US Constitution."
+                }
+            ],
+            5: [
+                {
+                    template: "Which article deals with the amendment of the Constitution?",
+                    options: ["Article 368", "Article 352", "Article 370", "Article 356"],
+                    answer: 0,
+                    explanation: "Article 368 deals with the amendment procedure of the Constitution."
+                },
+                {
+                    template: "The first amendment to the Indian Constitution was made in:",
+                    options: ["1950", "1951", "1952", "1953"],
+                    answer: 1,
+                    explanation: "The first amendment was made in 1951 to add restrictions on freedom of speech."
+                },
+                {
+                    template: "Which amendment introduced the Anti-Defection Law?",
+                    options: ["42nd Amendment", "44th Amendment", "52nd Amendment", "73rd Amendment"],
+                    answer: 2,
+                    explanation: "The 52nd Amendment in 1985 introduced the Anti-Defection Law."
+                },
+                {
+                    template: "The concept of Basic Structure of the Constitution was established in which case?",
+                    options: ["Golaknath Case", "Kesavananda Bharati Case", "Minerva Mills Case", "S.R. Bommai Case"],
+                    answer: 1,
+                    explanation: "The Basic Structure doctrine was established in the Kesavananda Bharati case (1973)."
+                },
+                {
+                    template: "Which amendment introduced the National Judicial Appointments Commission?",
+                    options: ["99th Amendment", "100th Amendment", "101st Amendment", "102nd Amendment"],
+                    answer: 0,
+                    explanation: "The 99th Amendment introduced NJAC which was later struck down by the Supreme Court."
+                }
+            ]
+        };
+        
+        // Initialize the page
+        function init() {
+            updateProgress();
+            updateProfile();
+            
+            // Try to load user data from localStorage
+            const savedUser = localStorage.getItem('constitutionQuestUser');
+            if (savedUser) {
+                const userData = JSON.parse(savedUser);
+                gameState.user.name = userData.name || gameState.user.name;
+                gameState.user.email = userData.email || gameState.user.email;
+                gameState.currentLevel = userData.currentLevel || gameState.currentLevel;
+                gameState.completedLevels = userData.completedLevels || gameState.completedLevels;
+                gameState.badgesEarned = userData.badgesEarned || gameState.badgesEarned;
+                gameState.score = userData.score || gameState.score;
+                gameState.levelProgress = userData.levelProgress || gameState.levelProgress;
+                
+                // Update UI based on saved state
+                updateProgress();
+                updateProfile();
+                
+                // Unlock completed levels
+                for (let i = 1; i <= gameState.totalLevels; i++) {
+                    if (i <= gameState.completedLevels + 1 && i > 1) {
+                        // Check if previous level has 75% completion
+                        if (gameState.levelProgress[i-1] >= 75) {
+                            const currentLevel = document.getElementById(`level${i}`);
+                            if (currentLevel) {
+                                currentLevel.classList.remove('locked');
+                                currentLevel.querySelector('.btn').disabled = false;
+                                currentLevel.querySelector('.lock-icon').style.display = "none";
+                                currentLevel.querySelector('span').innerHTML = '<i class="fas fa-check"></i> Available';
+                                currentLevel.querySelector('span').style.color = getLevelColor(i);
+                            }
+                        }
+                    }
+                    
+                    // Show earned badges
+                    if (i <= gameState.completedLevels) {
+                        const badge = document.getElementById(`badge${i}`);
+                        if (badge) {
+                            badge.classList.remove('locked');
+                        }
+                    }
+                }
+                
+                // Check if all levels are completed
+                if (gameState.completedLevels === gameState.totalLevels) {
+                    setTimeout(() => {
+                        showCertificate();
+                    }, 1000);
+                }
+            }
+            
+            // Set up event listeners for level buttons
+            document.getElementById('level2Btn').addEventListener('click', () => startQuiz(2));
+            document.getElementById('level3Btn').addEventListener('click', () => startQuiz(3));
+            document.getElementById('level4Btn').addEventListener('click', () => startQuiz(4));
+            document.getElementById('level5Btn').addEventListener('click', () => startQuiz(5));
+            
+            // Set up submit quiz button
+            document.getElementById('submitQuizBtn').addEventListener('click', () => submitQuiz(gameState.currentQuizLevel));
+            
+            // Fetch user data from database if logged in
+            fetchUserData();
+        }
+        
+        // Fetch user data from database
+        function fetchUserData() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            fetch('http://localhost:5000/user/profile', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    gameState.user.name = data.user.name || gameState.user.name;
+                    gameState.user.email = data.user.email || gameState.user.email;
+                    updateProfile();
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching user data:', error);
+            });
+        }
+        
+        // Go to home page
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+        
+        // Generate random questions for a level
+        function generateQuestions(level) {
+            const templates = questionTemplates[level];
+            if (!templates) return [];
+            
+            // For now, we'll use all 5 questions, but you could randomize selection here
+            return templates.map(q => ({...q}));
+        }
+        
+        // Update progress bar and status
+        function updateProgress() {
+            // Calculate overall progress based on level completion and question progress
+            let totalProgress = 0;
+            let maxPossible = gameState.totalLevels * 100;
+            let achieved = 0;
+            
+            for (let i = 1; i <= gameState.totalLevels; i++) {
+                if (i <= gameState.completedLevels) {
+                    achieved += 100; // Full points for completed levels
+                } else if (i === gameState.completedLevels + 1) {
+                    achieved += gameState.levelProgress[i] || 0;
+                }
+            }
+            
+            gameState.progress = (achieved / maxPossible) * 100;
+            document.getElementById('progressBar').style.width = `${gameState.progress}%`;
+            document.getElementById('progressText').textContent = `${Math.round(gameState.progress)}% Complete`;
+            document.getElementById('levelStatus').textContent = `Level ${gameState.currentLevel}/${gameState.totalLevels}`;
+            
+            // Save to localStorage
+            saveGameState();
+        }
+        
+        /// Update profile information
+        function updateProfile() {
+            // Get user data from localStorage
+            const username = localStorage.getItem('username') || 'Guest User';
+            const email = localStorage.getItem('email') || 'guest@example.com';
+            
+            // Update profile info
+            document.getElementById('profileUsername').textContent = username;
+            // document.getElementById('profileEmail').textContent = email ;
+            
+            // Try to load game state from localStorage
+            const savedUser = localStorage.getItem('constitutionQuestUser');
+            if (savedUser) {
+                const userData = JSON.parse(savedUser);
+                document.getElementById('profileLevel').textContent = userData.currentLevel || 1;
+                document.getElementById('profileScore').textContent = userData.score || 0;
+                document.getElementById('profileBadges').textContent = userData.badgesEarned || 0;
+                
+                // Update badges in profile
+                const profileBadgesContainer = document.getElementById('profileBadgesContainer');
+                profileBadgesContainer.innerHTML = '';
+                
+                for (let i = 1; i <= 5; i++) {
+                    const badgeDiv = document.createElement('div');
+                    badgeDiv.className = `badge ${i <= userData.badgesEarned ? '' : 'locked'}`;
+                    
+                    const badgeIcon = document.createElement('i');
+                    badgeIcon.className = `fas ${getBadgeIcon(i)} badge-icon`;
+                    
+                    badgeDiv.appendChild(badgeIcon);
+                    profileBadgesContainer.appendChild(badgeDiv);
+                }
+            }
+        }
+        
+        // Get icon for a badge
+        function getBadgeIcon(badgeNumber) {
+            const icons = [
+                'fa-book',
+                'fa-balance-scale',
+                'fa-gavel',
+                'fa-landmark',
+                'fa-star'
+            ];
+            return icons[badgeNumber - 1] || 'fa-certificate';
+        }
+
+        
+        // Toggle profile visibility
+        function toggleProfile() {
+            const profileModal = document.getElementById('profileModal');
+            profileModal.style.display = profileModal.style.display === 'block' ? 'none' : 'block';
+            if (profileModal.style.display === 'block') {
+                updateProfile();
+            }
+        }
+        
+        // Start a quiz for a specific level
+        function startQuiz(level) {
+            gameState.currentQuizLevel = level;
+            gameState.currentQuizQuestions = generateQuestions(level);
+            if (!gameState.currentQuizQuestions || gameState.currentQuizQuestions.length === 0) {
+                alert("Quiz questions for this level are not available yet!");
+                return;
+            }
+            
+            document.getElementById('modalLevelTitle').textContent = `Level ${level} Challenge`;
+            document.getElementById('modalLevelDescription').textContent = `Test your knowledge about ${getLevelTopic(level)}`;
+            
+            let quizHTML = '';
+            gameState.currentQuizQuestions.forEach((q, qIndex) => {
+                quizHTML += `
+                    <div class="quiz-question" id="question${qIndex}">
+                        <h3>Question ${qIndex + 1}: ${q.template}</h3>
+                        <div class="quiz-options">
+                `;
+                
+                q.options.forEach((option, oIndex) => {
+                    quizHTML += `
+                        <div class="quiz-option" onclick="selectOption(${qIndex}, ${oIndex})">
+                            ${option}
+                        </div>
+                    `;
+                });
+                
+                quizHTML += `
+                        </div>
+                        <div class="quiz-feedback" id="feedback${qIndex}"></div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('quizQuestionsContainer').innerHTML = quizHTML;
+            document.getElementById('quizModal').style.display = "flex";
+            document.getElementById('quizQuestionsContainer').scrollTop = 0;
+        }
+        
+        // Get topic for a level
+        function getLevelTopic(level) {
+            const topics = [
+                "Constitution Basics",
+                "Preamble & Fundamental Rights",
+                "Directive Principles & Duties",
+                "Government Structure",
+                "Amendments & Special Features"
+            ];
+            return topics[level - 1] || "the Constitution";
+        }
+        
+        // Select an option in the quiz
+        function selectOption(qIndex, oIndex) {
+            const questionDiv = document.getElementById(`question${qIndex}`);
+            const options = questionDiv.querySelectorAll('.quiz-option');
+            
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[oIndex].classList.add('selected');
+            
+            // Store the selected answer
+            if (gameState.currentQuizQuestions && gameState.currentQuizQuestions[qIndex]) {
+                gameState.currentQuizQuestions[qIndex].selected = oIndex;
+            }
+        }
+        
+        // Submit the quiz
+        function submitQuiz(level) {
+            const questions = gameState.currentQuizQuestions;
+            let allAnswered = true;
+            let score = 0;
+            
+            questions.forEach((q, qIndex) => {
+                const feedbackDiv = document.getElementById(`feedback${qIndex}`);
+                
+                if (q.selected === undefined) {
+                    allAnswered = false;
+                    feedbackDiv.textContent = "Please select an answer!";
+                    feedbackDiv.className = "quiz-feedback incorrect";
+                    feedbackDiv.style.display = "block";
+                    return;
+                }
+                
+                if (q.selected === q.answer) {
+                    score++;
+                    feedbackDiv.innerHTML = `<i class="fas fa-check"></i> Correct! ${q.explanation}`;
+                    feedbackDiv.className = "quiz-feedback correct";
+                } else {
+                    feedbackDiv.innerHTML = `<i class="fas fa-times"></i> Incorrect. The correct answer is: ${q.options[q.answer]}. ${q.explanation}`;
+                    feedbackDiv.className = "quiz-feedback incorrect";
+                }
+                feedbackDiv.style.display = "block";
+            });
+            
+            if (!allAnswered) return;
+            
+            // Calculate percentage score
+            const percentageScore = (score / questions.length) * 100;
+            
+            // Update level progress (store the highest percentage achieved)
+            if (percentageScore > (gameState.levelProgress[level] || 0)) {
+                gameState.levelProgress[level] = percentageScore;
+            }
+            
+            // Check if this level can be marked as completed (at least 75% score)
+            if (percentageScore >= 75 && level === gameState.currentLevel) {
+                gameState.completedLevels++;
+                gameState.currentLevel = Math.min(gameState.currentLevel + 1, gameState.totalLevels);
+                gameState.score += score * 10; // Add to total score
+                
+                // Earn badge
+                const badge = document.getElementById(`badge${level}`);
+                if (badge) {
+                    badge.classList.remove('locked');
+                    gameState.badgesEarned++;
+                }
+                
+                // Unlock next level if applicable
+                if (level < gameState.totalLevels) {
+                    const nextLevel = document.getElementById(`level${level + 1}`);
+                    if (nextLevel) {
+                        nextLevel.classList.remove('locked');
+                        nextLevel.querySelector('.btn').disabled = false;
+                        nextLevel.querySelector('.lock-icon').style.display = "none";
+                        nextLevel.querySelector('span').innerHTML = '<i class="fas fa-check"></i> Available';
+                        nextLevel.querySelector('span').style.color = getLevelColor(level + 1);
+                    }
+                }
+                
+                // Check if all levels are completed
+                if (gameState.completedLevels === gameState.totalLevels) {
+                    setTimeout(() => {
+                        showCertificate();
+                    }, 1000);
+                }
+            }
+            
+            // Show result
+            setTimeout(() => {
+                if (percentageScore >= 75) {
+                    alert(`Congratulations! You scored ${score}/${questions.length} (${Math.round(percentageScore)}%) in Level ${level}!`);
+                } else {
+                    alert(`You scored ${score}/${questions.length} (${Math.round(percentageScore)}%). You need at least 75% to complete this level. Try again!`);
+                }
+                closeModal();
+                updateProgress();
+                updateProfile();
+            }, 1000);
+        }
+        
+        // Get color for a level
+        function getLevelColor(level) {
+            const colors = [
+                "#3498db", // Level 1
+                "#f39c12", // Level 2
+                "#2ecc71", // Level 3
+                "#9b59b6", // Level 4
+                "#e74c3c"  // Level 5
+            ];
+            return colors[level - 1] || "#3498db";
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('quizModal').style.display = "none";
+            // Clear any selected answers when closing
+            if (gameState.currentQuizQuestions) {
+                gameState.currentQuizQuestions.forEach(q => {
+                    delete q.selected;
+                });
+            }
+        }
+        
+        // Show certificate
+        function showCertificate() {
+            // Set username from game state
+            const username = localStorage.getItem('username') || 'Guest User';
+document.getElementById('certificateName').textContent = username;
+            
+            // Set current date
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            document.getElementById('certificateDate').textContent = dateStr;
+            
+            // Generate a simple certificate ID
+            const certId = 'CQ-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+            document.getElementById('certificateId').textContent = certId;
+            
+            // Display earned badges
+            const certificateBadgesContainer = document.getElementById('certificateBadgesContainer');
+            certificateBadgesContainer.innerHTML = '';
+            
+            for (let i = 1; i <= gameState.badgesEarned; i++) {
+                const badgeDiv = document.createElement('div');
+                badgeDiv.className = 'badge';
+                
+                const badgeIcon = document.createElement('i');
+                badgeIcon.className = `fas ${getBadgeIcon(i)} badge-icon`;
+                
+                badgeDiv.appendChild(badgeIcon);
+                certificateBadgesContainer.appendChild(badgeDiv);
+            }
+            
+            document.getElementById('certificateModal').style.display = "flex";
+        }
+        
+        // Close certificate modal
+        function closeCertificateModal() {
+            document.getElementById('certificateModal').style.display = "none";
+        }
+        
+        // Save game state to localStorage
+        function saveGameState() {
+            const userData = {
+                name: gameState.user.name,
+                email: gameState.user.email,
+                currentLevel: gameState.currentLevel,
+                completedLevels: gameState.completedLevels,
+                badgesEarned: gameState.badgesEarned,
+                score: gameState.score,
+                levelProgress: gameState.levelProgress
+            };
+            localStorage.setItem('constitutionQuestUser', JSON.stringify(userData));
+        }
+        
+        // Initialize the page when loaded
+        window.onload = init;
+        
+        // When a section is completed
+        function updateLearningProgress(section, progress) {
+            const userId = localStorage.getItem('userId');
+            const token = localStorage.getItem('token');
+            
+            if (!userId || !token) return;
+            
+            fetch('http://localhost:5000/progress', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    userId,
+                    section,
+                    progress
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Progress saved:', data);
+            })
+            .catch(error => {
+                console.error('Error saving progress:', error);
+            });
+        }
+        
+        // Close profile when clicking outside
+        document.addEventListener('click', function(event) {
+            const profileModal = document.getElementById('profileModal');
+            const profileBtn = document.querySelector('.profile-btn');
+            
+            if (!profileModal.contains(event.target) && 
+                !profileBtn.contains(event.target) && 
+                profileModal.style.display === 'block') {
+                profileModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

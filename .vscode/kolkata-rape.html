@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <title>Kolkata Rape Case Quiz</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #121212;
+            font-family: "Montserrat", sans-serif;
+            color: white;
+        }
+
+        .quiz-container {
+            text-align: center;
+            max-width: 800px;
+            width: 90%;
+            padding: 20px;
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            margin: 30px 0;
+            position: relative;
+        }
+
+        #quiz-video {
+            width: 100%;
+            max-width: 720px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            margin-bottom: 25px;
+        }
+
+        .question-container {
+            margin-bottom: 25px;
+            padding: 0 15px;
+        }
+
+        #question-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #f8f8f8;
+            line-height: 1.5;
+        }
+
+        .answer-btn {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            padding: 12px;
+            margin: 10px auto;
+            background-color: #4a148c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .answer-btn:hover {
+            background-color: #7b1fa2;
+            transform: translateY(-2px);
+        }
+
+        #next-question-btn {
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #e91e63;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #next-question-btn:hover {
+            background-color: #c2185b;
+            transform: translateY(-2px);
+        }
+
+        .header {
+            text-align: center;
+            margin-top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .header h1 {
+            color: #e91e63;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 400px;
+            height: 8px;
+            background-color: #333;
+            border-radius: 4px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #e91e63;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .score-display {
+            font-size: 1.2rem;
+            margin: 15px 0;
+            color: #4caf50;
+            font-weight: bold;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .language-selector-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        .feedback {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .correct {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .incorrect {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'hi,ta,te,ml,kn,gu,pa', // Include Indian languages
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<body>
+    <div class="header">
+        <div class="language-selector-container">
+            <div id="google_translate_element"></div>
+        </div>
+        <h1>Kolkata Rape Case Quiz</h1>
+        <div class="score-display" id="score-display">Score: 0</div>
+    </div>
+
+    <div class="quiz-container">
+        <video id="quiz-video" controls>
+            <source src="./images/kolkata.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress-bar"></div>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <div class="question-container">
+            <p id="question-text">When did the Kolkata rape case that shocked the nation occur?</p>
+            <button class="answer-btn" onclick="submitAnswer('A')">2010</button>
+            <button class="answer-btn" onclick="submitAnswer('B')">2012</button>
+            <button class="answer-btn" onclick="submitAnswer('C')">2015</button>
+            <button class="answer-btn" onclick="submitAnswer('D')">2019</button>
+        </div>
+        
+        <button id="next-question-btn" onclick="loadNextQuestion()">Next Question</button>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let score = 0;
+        const questions = [
+            {
+                question: 'When did the Kolkata rape case that shocked the nation occur?',
+                options: [
+                    '2010',
+                    '2012',
+                    '2015',
+                    '2019'
+                ],
+                correctAnswer: 'B'
+            },
+            {
+                question: 'What was particularly shocking about the Kolkata rape case?',
+                options: [
+                    'The victim was a foreign tourist',
+                    'It happened in a moving car in public view',
+                    'The perpetrators were police officers',
+                    'The victim was a minor'
+                ],
+                correctAnswer: 'B'
+            },
+            {
+                question: 'Where exactly in Kolkata did the incident occur?',
+                options: [
+                    'Park Street',
+                    'Howrah Bridge',
+                    'Victoria Memorial',
+                    'New Market'
+                ],
+                correctAnswer: 'A'
+            },
+            {
+                question: 'What was the occupation of the main accused in the Kolkata rape case?',
+                options: [
+                    'Businessman',
+                    'Politician',
+                    'Police officer',
+                    'Taxi driver'
+                ],
+                correctAnswer: 'A'
+            },
+            {
+                question: 'What significant legal change followed public outrage over the Kolkata case?',
+                options: [
+                    'Introduction of faster trials for sexual assault cases',
+                    'Stricter bail conditions for rape accused',
+                    'Better protection for witnesses',
+                    'All of the above'
+                ],
+                correctAnswer: 'D'
+            }
+        ];
+
+        function updateProgressBar() {
+            const progressPercent = (currentQuestion / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('score-display').textContent = `Score: ${score}`;
+        }
+
+        function showFeedback(message, isCorrect) {
+            const feedbackElement = document.getElementById('feedback');
+            feedbackElement.textContent = message;
+            feedbackElement.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+            feedbackElement.style.display = 'block';
+        }
+
+        function submitAnswer(answer) {
+            const correctAnswer = questions[currentQuestion].correctAnswer;
+            const feedbackElement = document.getElementById('feedback');
+            
+            if (answer === correctAnswer) {
+                score++;
+                updateScoreDisplay();
+                showFeedback('Correct! Well done!', true);
+            } else {
+                const correctOption = questions[currentQuestion].options[correctAnswer.charCodeAt(0) - 65];
+                showFeedback(`Incorrect. The correct answer was: ${correctOption}`, false);
+            }
+            
+            // Disable all answer buttons after submission
+            const buttons = document.querySelectorAll('.answer-btn');
+            buttons.forEach(button => {
+                button.disabled = true;
+                button.style.opacity = '0.7';
+            });
+            
+            // Enable next question button
+            document.getElementById('next-question-btn').disabled = false;
+        }
+
+        function loadNextQuestion() {
+            // Hide feedback
+            document.getElementById('feedback').style.display = 'none';
+            
+            currentQuestion++;
+            updateProgressBar();
+            
+            if (currentQuestion < questions.length) {
+                const questionData = questions[currentQuestion];
+                document.getElementById('question-text').innerText = questionData.question;
+                
+                const buttons = document.querySelectorAll('.answer-btn');
+                buttons.forEach((button, index) => {
+                    button.innerText = questionData.options[index];
+                    button.disabled = false;
+                    button.style.opacity = '1';
+                });
+                
+                // Disable next question button until answer is selected
+                document.getElementById('next-question-btn').disabled = true;
+            } else {
+                // Quiz completed
+                const percentage = Math.round((score / questions.length) * 100);
+                let message;
+                
+                if (percentage >= 80) {
+                    message = `Excellent! You scored ${score}/${questions.length} (${percentage}%)`;
+                } else if (percentage >= 60) {
+                    message = `Good job! You scored ${score}/${questions.length} (${percentage}%)`;
+                } else {
+                    message = `You scored ${score}/${questions.length} (${percentage}%). Keep learning!`;
+                }
+                
+                alert(message);
+                
+                // Reset quiz
+                currentQuestion = 0;
+                score = 0;
+                updateProgressBar();
+                updateScoreDisplay();
+                const questionData = questions[currentQuestion];
+                document.getElementById('question-text').innerText = questionData.question;
+                
+                const buttons = document.querySelectorAll('.answer-btn');
+                buttons.forEach((button, index) => {
+                    button.innerText = questionData.options[index];
+                    button.disabled = false;
+                    button.style.opacity = '1';
+                });
+                
+                // Disable next question button until answer is selected
+                document.getElementById('next-question-btn').disabled = true;
+            }
+        }
+
+        // Initialize
+        updateProgressBar();
+        updateScoreDisplay();
+        // Disable next question button until answer is selected
+        document.getElementById('next-question-btn').disabled = true;
+    </script>
+</body>
+</html>

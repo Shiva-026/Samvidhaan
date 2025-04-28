@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+    <title>CivicNavigator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: black;
+            font-family: 'Fjalla One', Courier, monospace;
+        }
+
+        .card {
+            width: 100vw;
+            max-width: 1350px; /* Optional: to limit the maximum width of the card */
+            padding: 35px 0;
+        }
+
+        .image-pack {
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping for responsive layout */
+            gap: 19px; /* Space between images */
+            justify-content: center; /* Center images horizontally */
+        }
+
+        .image-container {
+            position: relative;
+            width: calc(33.33% - 19px); /* Adjust width considering gap */
+            height: 300px; /* Fixed height for all image containers */
+            overflow: hidden; /* Hide overflow to prevent images from spilling out */
+            cursor: pointer;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures images cover the container without being cut off */
+            border-radius: 5px;
+            transition: filter 0.3s ease; /* Smooth transition for the blur effect */
+        }
+
+        .image-container:hover .card-image {
+            filter: blur(5px); /* Blur the image on hover */
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Dark overlay with opacity */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 30px;
+            font-weight: bold;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease; /* Smooth transition for the text appearance */
+            border-radius: 5px; /* Match the border radius of the image */
+        }
+
+        .image-container:hover .overlay {
+            opacity: 1; /* Show the overlay text on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="shift">
+        <div class="card">
+            <div class="image-pack">
+                <div class="image-container"> 
+                    <a href="preamble.html" >
+                        <img src="./images/preamble.webp" alt="Preamble" class="card-image"> 
+                        <div class="overlay">Preamble</div>
+                    </a>
+                </div>
+                
+                <div class="image-container">
+                <a href="girlgame.html" >
+                    <img src="./images/girlsSafety.png" alt="Girls Safety" class="card-image">
+                    <div class="overlay">Girls Safety</div>
+                </a>
+                </div>
+                <div class="image-container">
+                    <a href="history.html">
+                    <img src="https://iasvision.com/wp-content/uploads/2024/01/EVOLUTION-OF-INDIAN-CONSTITUTION.png" alt="History" class="card-image">
+                    <div class="overlay">History</div>
+                </a>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="image-pack">                
+                <div class="image-container">
+                <a href="amendment.html">               
+                    <img src="https://blog.ipleaders.in/wp-content/uploads/2021/02/yourstory-indian-constitution-history.jpg" alt="Amendment" class="card-image">
+                    <div class="overlay">Amendment</div>
+                </a>
+                </div>
+              
+                <div class="image-container">
+                    <a href="fundamentalrights.html">
+                    <img src="./images/fundamentalRight.png" alt="Fundamental Rights" class="card-image">
+                    <div class="overlay">Fundamental Rights</div>
+                </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

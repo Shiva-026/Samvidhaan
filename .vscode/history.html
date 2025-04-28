@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+    <title>Samvidhan: Constitution Timeline</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #040c19;
+            font-family: "Fjalla One", system-ui;
+            color: white;
+        }
+
+        .header {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .header h1 {
+            color: #FF9933; /* Saffron */
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #ccc;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline-container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 30px auto;
+            position: relative;
+        }
+
+        .timeline-line {
+            position: absolute;
+            width: 4px;
+            background: #FF9933;
+            top: 0;
+            bottom: 0;
+            left: 50px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .timeline-content {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #138808; /* Green */
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            color: #FF9933;
+            margin-bottom: 10px;
+        }
+
+        .timeline-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .timeline-desc {
+            color: #ccc;
+            display: none;
+        }
+
+        .timeline-item.active .timeline-desc {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 38px;
+            top: 20px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #FF9933;
+            border: 4px solid #0a192f;
+        }
+
+        .quiz-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .quiz-content {
+            background: #1a2a4a;
+            padding: 30px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close-quiz {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #FF9933;
+        }
+
+        .quiz-question {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: #0a192f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .quiz-option:hover {
+            background: #FF9933;
+            color: #0a192f;
+        }
+
+        .quiz-feedback {
+            margin-top: 20px;
+            font-weight: bold;
+            min-height: 24px;
+        }
+
+        #google_translate_element {
+            margin: 20px;
+            align-self: flex-end;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .timeline-line {
+                left: 20px;
+            }
+            
+            .timeline-dot {
+                left: 8px;
+            }
+            
+            .timeline-item {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="google_translate_element"></div>
+    
+    <div class="header">
+        <h1>Samvidhan: Constitution Timeline</h1>
+        <p>Explore the fascinating journey of how India's Constitution came into existence through this interactive timeline</p>
+    </div>
+
+    <div class="timeline-container">
+        <div class="timeline-line"></div>
+        
+        <div class="timeline-item" onclick="toggleTimelineItem(this)">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-date">1858-1947</div>
+                <div class="timeline-title">British Rule & Early Demands</div>
+                <div class="timeline-desc">
+                    <p>The seeds of constitutional development were sown during British rule with acts like the Government of India Act 1858, Indian Councils Act 1909, Government of India Act 1919 and 1935.</p>
+                    <p>Key milestones:</p>
+                    <ul>
+                        <li>1885: Formation of Indian National Congress</li>
+                        <li>1928: Nehru Report demanding Dominion Status</li>
+                        <li>1934: M.N. Roy first proposed Constituent Assembly</li>
+                    </ul>
+                    <button class="quiz-option" onclick="showQuiz(0, event)">Test Your Knowledge</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timeline-item" onclick="toggleTimelineItem(this)">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-date">Dec 9, 1946</div>
+                <div class="timeline-title">First Meeting of Constituent Assembly</div>
+                <div class="timeline-desc">
+                    <p>The Constituent Assembly met for the first time in the Constitution Hall (now Parliament's Central Hall).</p>
+                    <p>Key facts:</p>
+                    <ul>
+                        <li>Total members: 389 (reduced to 299 after Partition)</li>
+                        <li>Sachchidananda Sinha was the first temporary chairman</li>
+                        <li>Dr. Rajendra Prasad was elected permanent Chairman</li>
+                        <li>Objective Resolution moved by Jawaharlal Nehru on Dec 13, 1946</li>
+                    </ul>
+                    <button class="quiz-option" onclick="showQuiz(1, event)">Test Your Knowledge</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timeline-item" onclick="toggleTimelineItem(this)">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-date">1947-1949</div>
+                <div class="timeline-title">Drafting the Constitution</div>
+                <div class="timeline-desc">
+                    <p>The actual drafting work was done by the Drafting Committee chaired by Dr. B.R. Ambedkar.</p>
+                    <p>Key aspects:</p>
+                    <ul>
+                        <li>Drafting Committee formed on Aug 29, 1947</li>
+                        <li>Took 2 years, 11 months and 18 days to complete</li>
+                        <li>Total expenditure: ₹6.4 million</li>
+                        <li>Influences came from multiple countries' constitutions</li>
+                    </ul>
+                    <button class="quiz-option" onclick="showQuiz(2, event)">Test Your Knowledge</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timeline-item" onclick="toggleTimelineItem(this)">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-date">Nov 26, 1949</div>
+                <div class="timeline-title">Constitution Adopted</div>
+                <div class="timeline-desc">
+                    <p>The Constitution was adopted on this day (celebrated as Constitution Day since 2015).</p>
+                    <p>Interesting facts:</p>
+                    <ul>
+                        <li>284 members signed the document</li>
+                        <li>Original copies were handwritten in English and Hindi</li>
+                        <li>Prem Behari Narain Raizada did the calligraphy</li>
+                        <li>Artwork by Nandalal Bose and his students</li>
+                    </ul>
+                    <button class="quiz-option" onclick="showQuiz(3, event)">Test Your Knowledge</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timeline-item" onclick="toggleTimelineItem(this)">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-date">Jan 26, 1950</div>
+                <div class="timeline-title">Constitution Came Into Force</div>
+                <div class="timeline-desc">
+                    <p>India became a Republic with Dr. Rajendra Prasad as first President.</p>
+                    <p>Why January 26?</p>
+                    <ul>
+                        <li>Commemorates the 1930 "Purna Swaraj" declaration</li>
+                        <li>Original Constitution had 395 Articles and 8 Schedules</li>
+                        <li>Currently has 470 Articles and 12 Schedules</li>
+                        <li>Has been amended 105 times (as of 2023)</li>
+                    </ul>
+                    <button class="quiz-option" onclick="showQuiz(4, event)">Test Your Knowledge</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="quiz-modal" id="quizModal">
+        <div class="quiz-content">
+            <span class="close-quiz" onclick="closeQuiz()">&times;</span>
+            <div class="quiz-question" id="quizQuestion"></div>
+            <button class="quiz-option" onclick="checkAnswer('A')" id="optionA"></button>
+            <button class="quiz-option" onclick="checkAnswer('B')" id="optionB"></button>
+            <button class="quiz-option" onclick="checkAnswer('C')" id="optionC"></button>
+            <button class="quiz-option" onclick="checkAnswer('D')" id="optionD"></button>
+            <div class="quiz-feedback" id="quizFeedback"></div>
+        </div>
+    </div>
+
+    <script>
+        // Timeline interaction
+        function toggleTimelineItem(item) {
+            item.classList.toggle('active');
+        }
+
+        // Quiz data
+        const quizzes = [
+            {
+                question: "Which was the first official document that proposed a Constituent Assembly for India?",
+                options: {
+                    A: "Government of India Act 1935",
+                    B: "Nehru Report 1928",
+                    C: "M.N. Roy's proposal in 1934",
+                    D: "Cabinet Mission Plan 1946"
+                },
+                answer: "C",
+                feedback: "Correct! M.N. Roy, a pioneer of the communist movement in India, was the first to propose the idea of a Constituent Assembly in 1934."
+            },
+            {
+                question: "Who was elected as the permanent Chairman (President) of the Constituent Assembly?",
+                options: {
+                    A: "Jawaharlal Nehru",
+                    B: "Dr. Rajendra Prasad",
+                    C: "Dr. B.R. Ambedkar",
+                    D: "Sardar Vallabhbhai Patel"
+                },
+                answer: "B",
+                feedback: "Correct! Dr. Rajendra Prasad was elected as the permanent President of the Constituent Assembly on December 11, 1946."
+            },
+            {
+                question: "How many members were in the Drafting Committee of the Constitution?",
+                options: {
+                    A: "5",
+                    B: "7",
+                    C: "9",
+                    D: "11"
+                },
+                answer: "B",
+                feedback: "Correct! The Drafting Committee had 7 members: Dr. B.R. Ambedkar (Chairman), N. Gopalaswami Ayyangar, Alladi Krishnaswami Ayyar, K.M. Munshi, Syed Mohammad Saadulla, B.L. Mitter (replaced by N. Madhava Rao), and D.P. Khaitan (replaced by T.T. Krishnamachari)."
+            },
+            {
+                question: "Who did the calligraphy for the original Constitution of India?",
+                options: {
+                    A: "Nandalal Bose",
+                    B: "Prem Behari Narain Raizada",
+                    C: "Beohar Rammanohar Sinha",
+                    D: "Abanindranath Tagore"
+                },
+                answer: "B",
+                feedback: "Correct! Prem Behari Narain Raizada (Saxena) did the calligraphy in flowing italic style with a nib and ink."
+            },
+            {
+                question: "Why was January 26 chosen as the date for Constitution to come into force?",
+                options: {
+                    A: "It was the day India got independence",
+                    B: "It commemorates the 1930 Purna Swaraj declaration",
+                    C: "It was Dr. Ambedkar's birthday",
+                    D: "It was the day Constituent Assembly first met"
+                },
+                answer: "B",
+                feedback: "Correct! January 26 was chosen to honor the 1930 declaration of Purna Swaraj (complete independence) by the Indian National Congress."
+            }
+        ];
+
+        let currentQuizIndex = 0;
+
+        function showQuiz(index, event) {
+            event.stopPropagation();
+            currentQuizIndex = index;
+            const quiz = quizzes[index];
+            document.getElementById('quizQuestion').textContent = quiz.question;
+            document.getElementById('optionA').textContent = quiz.options.A;
+            document.getElementById('optionB').textContent = quiz.options.B;
+            document.getElementById('optionC').textContent = quiz.options.C;
+            document.getElementById('optionD').textContent = quiz.options.D;
+            document.getElementById('quizFeedback').textContent = '';
+            document.getElementById('quizModal').style.display = 'flex';
+        }
+
+        function closeQuiz() {
+            document.getElementById('quizModal').style.display = 'none';
+        }
+
+        function checkAnswer(answer) {
+            const quiz = quizzes[currentQuizIndex];
+            const feedback = document.getElementById('quizFeedback');
+            
+            if (answer === quiz.answer) {
+                feedback.textContent = "✓ Correct! " + quiz.feedback;
+                feedback.style.color = "#4CAF50";
+            } else {
+                feedback.textContent = "✗ Incorrect. The correct answer is: " + quiz.options[quiz.answer];
+                feedback.style.color = "#F44336";
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('quizModal')) {
+                closeQuiz();
+            }
+        }
+    </script>
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'hi,ta,te,ml,kn,gu,pa', // Include Indian languages
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

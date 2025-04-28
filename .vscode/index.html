@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+    <link rel="icon" href="logo.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Samvidhan</title>
+    <style>
+        /* Additional CSS for the articles section */
+        .articles-section {
+            padding: 50px 20px;
+            background: linear-gradient(to bottom, 
+        rgba(255, 153, 51, 0.4) 9%, 
+        rgba(255, 255, 255, 0.3) 33%, 
+        rgba(19, 136, 8, 0.2) 56%);
+        }
+        
+        .articles-section h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            color: #333;
+        }
+        
+        .articles-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 20px;
+            padding: 20px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .articles-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .articles-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .articles-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        .articles-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        .article-card {
+            flex: 0 0 300px;
+            scroll-snap-align: start;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .article-image {
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .article-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .article-card:hover .article-image img {
+            transform: scale(1.1);
+        }
+        
+        .article-content {
+            padding: 20px;
+        }
+        
+        .article-content h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .article-content p {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        
+        .read-more-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .article-card:hover .read-more-overlay {
+            opacity: 1;
+        }
+        
+        .read-more-btn {
+            padding: 10px 20px;
+            background: #686767;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+        
+        .read-more-btn:hover {
+            background: #ce7130;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 800px;
+            width: 80%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+        }
+        
+        .article-modal-content h2 {
+            color: #000000;
+            margin-top: 0;
+        }
+        
+        .article-modal-content p {
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .article-card {
+                flex: 0 0 250px;
+            }
+            
+            .modal-content {
+                width: 90%;
+                margin: 10% auto;
+            }
+        }
+
+        /* Chatbot styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+        }
+
+        .chatbot-toggle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #050505;
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-toggle:hover {
+            background-color: #635e5e;
+            transform: scale(1.1);
+        }
+
+        .chatbot-window {
+            display: none;
+            flex-direction: column;
+            width: 350px;
+            height: 500px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+        }
+
+        .chatbot-header {
+            background-color: #413f3f;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-header h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .close-chatbot {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #f5f5f5;
+        }
+
+        .bot-message, .user-message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            line-height: 1.4;
+            position: relative;
+        }
+
+        .bot-message {
+            background-color: white;
+            border-top-left-radius: 0;
+            margin-right: auto;
+        }
+
+        .user-message {
+            background-color: #393838;
+            color: white;
+            border-top-right-radius: 0;
+            margin-left: auto;
+        }
+
+        .chatbot-input {
+            display: flex;
+            padding: 10px;
+            background-color: white;
+            border-top: 1px solid #eee;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .chatbot-input button {
+            background: none;
+            border: none;
+            color: #000000;
+            font-size: 18px;
+            cursor: pointer;
+            margin-left: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chatbot-input button:hover {
+            background-color: #f5f5f5;
+        }
+
+        .sample-questions {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .sample-questions p {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .sample-question {
+            background-color: #3e3e3e;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 5px 10px;
+            margin: 3px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .sample-question:hover {
+            background-color: #3d3c3c;
+        }
+
+        @media (max-width: 480px) {
+            .chatbot-container {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .chatbot-window {
+                width: 300px;
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="./images/login_logo.png" alt="Samvidhan Logo">
+            <div class="app-name">SAMVIDHAN</div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="learn.html">Learn</a></li>
+                <li><a href="index1.html">Games</a></li>
+                <li><a href="samvidhan.html">Samvidhan</a></li>
+                <li><a href="#about-section">About</a></li>
+                <li id="loginNavItem"><a href="signup.html">Login</a></li>
+                <li id="profileNavItem" class="profile-dropdown" style="display: none;">
+                   
+                        <a href="#" onclick="showProfileModal()"><i class="fas fa-user"></i> View Profile</a>
+                        <a href="#" onclick="logout()" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+   <!-- Constitution Carousel Section -->
+<div class="constitution-intro">
+    <div class="constitution-carousel">
+        <!-- Slide 1 -->
+        <div class="constitution-slide">
+            <div class="constitution-image">
+                <img src="./images/login_logo.png" alt="Constitution of India">
+            </div>
+            <div class="constitution-info">
+                <h2>The Constitution of India</h2>
+                <p>The Constitution of India is the supreme law of India.
+                     It lays down the framework defining fundamental political principles,
+                      establishes the structure, procedures, powers,
+                       and duties of government institutions.The Constitution of 
+                       India is the supreme legal document of India, and the longest 
+                       written national constitution in the world.[2][3][4][5] The document lays down the framework that demarcates fundamental political code, structure, procedures, powers, and duties of government institutions and sets out fundamental
+                       rights, directive principles, and the duties of citizens.</p>
+            </div>
+        </div>
+        
+        <!-- Slide 2 -->
+        <div class="constitution-slide">
+            <div class="constitution-image">
+                <img src="./images/intro2.webp" alt="Constitution Pages">
+            </div>
+            <div class="constitution-info">
+                <h2>World's Longest Constitution</h2>
+                <p>It is the longest written constitution of any sovereign
+                     country in the world. Dr. B.R. Ambedkar is regarded as its chief architect.
+                     The constitution was drawn from a number of sources. 
+                     Mindful of India's needs and conditions, its framers borrowed 
+                     features of previous legislation such as the Government of India Act 1858, 
+                     the Indian Councils Acts of 1861, 1892 and 1909, the Government of India Acts 1919 and 1935, and the Indian Independence Act 1947. The latter, which led to the creation of Pakistan, divided the former Constituent Assembly in two. The Government act of 1935, significantly drafted by Samuel Hoare,[17]is also a very important step for making the constitution for two new born countries. Each new assembly had sovereign
+                      power to draft and enact a new constitution for the separate states.[</p>
+            </div>
+        </div>
+        
+        <!-- Slide 3 -->
+        <div class="constitution-slide">
+            <div class="constitution-image">
+                <img src="./images/intro4.jpg" alt="Constituent Assembly">
+            </div>
+            <div class="constitution-info">
+                <h2>Historical Adoption</h2>
+                <p>It was adopted by the Constituent Assembly of India on 26 November 1949 and 
+                    became effective on 26 January 1950. The constitution replaced the Government
+                     of India Act 1935 as the country's fundamental
+                     governing document, and the Dominion of India became the Republic of India.India celebrates its
+                      constitution on 26 January as Republic Day.The constitution was drafted by the Constituent Assembly, which was elected by
+                       elected members of the provincial assemblies.24 January 1950:
+                        Last meeting of Constituent Assembly. The Constitution was signed and accepted 
+                       (with 395 Articles, 8 Schedules, and 22 Parts).</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation Arrows -->
+    <button class="carousel-arrow prev">&#10094;</button>
+    <button class="carousel-arrow next">&#10095;</button>
+    
+    <!-- Navigation Dots -->
+    <div class="carousel-nav">
+        <div class="carousel-dot active"></div>
+        <div class="carousel-dot"></div>
+        <div class="carousel-dot"></div>
+    </div>
+</div>
+
+    <!-- Explore Section -->
+    <div class="explore-section">
+        <h1>Remarkable Events..!</h1>
+        <div class="explore-container">
+            <div class="explore-card">
+                <div class="explore-card-img">
+                    <img src="./images/exp1.webp" alt="Constituent Assembly">
+                </div>
+                <div class="explore-card-content">
+                    <h3>First Meeting of the Constituent Assembly</h3>
+                    <p>The Constituent Assembly convened for the first time on 9 December 1946, marking the beginning of the process to draft the Constitution of India.</p>
+                    <button class="know-more" onclick="window.open('https://www.youtube.com/watch?v=HKB6bKmoWLE', '_blank')">Watch <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            <div class="explore-card">
+                <div class="explore-card-img">
+                    <img src="./images/exp2.jpg" alt="Dr. Ambedkar">
+                </div>
+                <div class="explore-card-content">
+                    <h3>Adoption of the Objective Resolution</h3>
+                    <p>Proposed by Jawaharlal Nehru, the Objective Resolution outlined the guiding principles and philosophy of the Constitution. It was unanimously
+                         adopted by the Constituent Assembly on 22 January 1947</p>
+                    <button class="know-more" onclick="window.open('https://www.youtube.com/watch?v=sChtb-8g_cc', '_blank')">Watch <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            <div class="explore-card">
+                <div class="explore-card-img">
+                    <img src="./images/exp3.jpg" alt="Preamble">
+                </div>
+                <div class="explore-card-content">
+                    <h3>Appointment of the Drafting Committee </h3>
+                    <p>The Drafting Committee was appointed on 29 August 1947, with Dr. B.R. Ambedkar as its Chairman. 
+                        The committee was responsible for drafting the Constitution</p>
+                    <button class="know-more" onclick="window.open('https://www.youtube.com/watch?v=N3rbN-H2rNk', '_blank')">Watch<i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            <div class="explore-card">
+                <div class="explore-card-img">
+                    <img src="./images/exp4.jpg" alt="Fundamental Rights">
+                </div>
+                <div class="explore-card-content">
+                    <h3>Adoption of the National Flag – 22 July 1947</h3>
+                    <p>Before gaining independence, the Constituent Assembly adopted the national flag on 22 July 1947. The tricolor flag symbolized India's aspirations and unity.</p>
+                    <button class="know-more" onclick="window.open('https://www.youtube.com/watch?v=Pe0Ijo_FA7U', '_blank')">Watch <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            <div class="explore-card">
+                <div class="explore-card-img">
+                    <img src="./images/exp5.jpg" alt="Directive Principles">
+                </div>
+                <div class="explore-card-content">
+                    <h3> Adoption of the Constitution – 26 November 1949</h3>
+                    <p>After extensive debates and revisions, the Constituent Assembly adopted the Constitution of India on 26 November 1949. This date is now celebrated as Constitution Day or Samvidhan Divas.</p>
+                    <button class="know-more" onclick="window.open('https://www.youtube.com/watch?v=RHYk4QKY4Ds', '_blank')">Watch <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            <div class="explore-card">
+                <div class="explore-card-img">
+                    <img src="./images/exp6.png" alt="Republic Day">
+                </div>
+                <div class="explore-card-content">
+                    <h3>Enforcement of the Constitution – 26 January 1950</h3>
+                    <p>The Constitution came into effect on 26 January 1950, making India a sovereign, democratic republic. This day is celebrated annually as Republic Day.</p>
+                    <button class="know-more" onclick="window.open('https://www.youtube.com/watch?v=Und6p0eB5bA', '_blank')">Watch <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Important Articles Section -->
+    <div class="articles-section">
+        <h1>IMPORTANT ARTICLES OF THE CONSTITUTION</h1>
+        <div class="articles-container" id="articles-container">
+            <!-- Articles will be added here by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Article Modal -->
+    <div id="articleModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeArticleModal()">&times;</span>
+            <div class="article-modal-content" id="articleModalContent">
+                <!-- Article content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Container -->
+    <div class="chatbot-container">
+        <button class="chatbot-toggle" id="chatbotToggle">
+            <i class="fas fa-comment-dots"></i>
+        </button>
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <h3>Chatbot</h3>
+                <button class="close-chatbot" id="closeChatbot">&times;</button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="bot-message">
+                    <p>Hello! I'm your Constitution Assistant. Ask me anything about the Indian Constitution, its articles, preamble, or amendments.</p>
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="userInput" placeholder="Ask your question...">
+                <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
+                <button id="voiceButton"><i class="fas fa-microphone"></i></button>
+            </div>
+        </div>
+    </div>
+    <!-- Replace the profile modal section in index.html with this: -->
+<div id="profileModal" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+        <span class="close-btn" onclick="closeModal('profileModal')">&times;</span>
+        <div class="profile-modal-content">
+            <h2>User Profile</h2>
+            <div class="profile-info" style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
+                <div class="profile-avatar" style="width: 80px; height: 80px; background-color: #f0f0f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px;">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div>
+                    <h3 id="modalUsername" style="margin: 0; font-size: 1.5rem;">Username</h3>
+                    <p id="modalEmail" style="margin: 5px 0 0; color: #666;">user@example.com</p>
+                </div>
+            </div>
+            
+            <!-- <div class="profile-badges" style="margin-top: 30px;">
+                <h3 style="border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Your Achievements</h3>
+                <div id="badgesContainer" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px;">
+                    Badges will be loaded here
+                </div>
+            </div> -->
+            
+            <button class="logout-btn" onclick="logout()" style="margin-top: 30px; width: 100%; padding: 12px; background-color: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+</div>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="footer-content">
+            <div id="about-section" class="footer-section">
+                <h3>About Samvidhan</h3>
+                <p>Samvidhan is an innovative educational platform dedicated to making constitutional learning engaging and accessible through interactive games and activities.</p>
+                <p>Developed by a team of educators and legal experts, Samvidhan transforms complex constitutional concepts into enjoyable learning experiences.</p>
+            </div>
+            
+            <div class="footer-section contact-section">
+                <h3>Contact Us</h3>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span><a href="tel:+919876543210">+91 98765 43210</a></span>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span><a href="mailto:contact@samvidhan.com">contact@samvidhan.com</a></span>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Constitution House,<br>New Delhi - 110001</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 Samvidhan | Developed with ❤️ for India</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+    <script>
+        // Important Articles Data
+        const importantArticles = [
+            {
+                id: 1,
+                title: "Article 14",
+                subtitle: "Equality Before Law",
+                image: "./images/ar1.jpg",
+                summary: "Guarantees equality before law and equal protection of laws to all persons.",
+                fullContent: "<h2>Article 14: Equality Before Law</h2><p>Article 14 of the Indian Constitution states that 'The State shall not deny to any person equality before the law or the equal protection of the laws within the territory of India.'</p><p>This article guarantees two concepts: (1) Equality before law, and (2) Equal protection of laws. The first concept is a negative concept implying the absence of any special privilege in favor of any individual. The second concept is positive in nature, requiring the State to ensure equal treatment in equal circumstances.</p><p>The concept of equality does not mean absolute equality but recognizes reasonable classification based on intelligible differentia having a rational relation with the objective sought to be achieved.</p>"
+            },
+            {
+                id: 2,
+                title: "Article 19",
+                subtitle: "Protection of Certain Rights",
+                image: "./images/ar2.png",
+                summary: "Guarantees six fundamental freedoms to all citizens of India.",
+                fullContent: "<h2>Article 19: Protection of Certain Rights</h2><p>Article 19 guarantees six fundamental freedoms to all citizens:</p><ol><li>Freedom of speech and expression</li><li>Freedom to assemble peaceably and without arms</li><li>Freedom to form associations or unions</li><li>Freedom to move freely throughout India</li><li>Freedom to reside and settle in any part of India</li><li>Freedom to practice any profession, or to carry on any occupation, trade or business</li></ol><p>These rights are not absolute and are subject to reasonable restrictions in the interest of sovereignty and integrity of India, security of the State, friendly relations with foreign States, public order, decency or morality, or in relation to contempt of court, defamation or incitement to an offence.</p>"
+            },
+            {
+                id: 3,
+                title: "Article 21",
+                subtitle: "Protection of Life and Liberty",
+                image: "./images/ar3.png",
+                summary: "No person shall be deprived of his life or personal liberty except according to procedure established by law.",
+                fullContent: "<h2>Article 21: Protection of Life and Personal Liberty</h2><p>Article 21 states that 'No person shall be deprived of his life or personal liberty except according to procedure established by law.'</p><p>This article has been interpreted expansively by the Supreme Court to include various rights such as:</p><ul><li>Right to live with human dignity</li><li>Right to livelihood</li><li>Right to health</li><li>Right to education</li><li>Right to clean environment</li><li>Right to speedy trial</li><li>Right against torture</li><li>Right to privacy</li></ul><p>The Supreme Court has held that the 'procedure established by law' must be fair, just and reasonable.</p>"
+            },
+            {
+                id: 4,
+                title: "Article 32",
+                subtitle: "Right to Constitutional Remedies",
+                image: "./images/ar4.jpg",
+                summary: "Provides the right to move the Supreme Court for enforcement of fundamental rights.",
+                fullContent: "<h2>Article 32: Right to Constitutional Remedies</h2><p>Article 32 provides the right to move the Supreme Court for enforcement of fundamental rights. Dr. B.R. Ambedkar called this article 'the very soul of the Constitution and the very heart of it.'</p><p>The Supreme Court has the power to issue directions or orders or writs, including writs in the nature of habeas corpus, mandamus, prohibition, quo warranto and certiorari, whichever may be appropriate, for the enforcement of any of the fundamental rights.</p><p>This right is itself a fundamental right and cannot be suspended except as provided by the Constitution during an emergency.</p>"
+            },
+            {
+                id: 5,
+                title: "Article 44",
+                subtitle: "Uniform Civil Code",
+                image: "./images/ar5.png",
+                summary: "Directs the State to secure for citizens a uniform civil code throughout India.",
+                fullContent: "<h2>Article 44: Uniform Civil Code</h2><p>Article 44 is one of the Directive Principles of State Policy which states that 'The State shall endeavor to secure for the citizens a uniform civil code throughout the territory of India.'</p><p>A Uniform Civil Code would replace the personal laws based on the scriptures and customs of each major religious community in India with a common set of laws governing every citizen. These laws would cover marriage, divorce, inheritance, adoption and maintenance.</p><p>The implementation of a Uniform Civil Code has been a contentious issue in Indian politics due to the diversity of religions and their personal laws.</p>"
+            },
+            {
+                id: 6,
+                title: "Article 51A",
+                subtitle: "Fundamental Duties",
+                image: "./images/ar6.jpg",
+                summary: "Lists the fundamental duties of every citizen of India.",
+                fullContent: "<h2>Article 51A: Fundamental Duties</h2><p>Article 51A was added by the 42nd Amendment in 1976 and contains the Fundamental Duties of citizens. Originally there were 10 duties, one more was added by the 86th Amendment in 2002.</p><p>Some of the important duties include:</p><ul><li>To abide by the Constitution and respect its ideals and institutions</li><li>To cherish and follow the noble ideals which inspired our national struggle for freedom</li><li>To uphold and protect the sovereignty, unity and integrity of India</li><li>To defend the country and render national service when called upon to do so</li><li>To promote harmony and the spirit of common brotherhood amongst all people of India</li><li>To value and preserve the rich heritage of our composite culture</li><li>To protect and improve the natural environment</li><li>To develop scientific temper, humanism and the spirit of inquiry and reform</li><li>To provide opportunities for education to children between 6-14 years (added by 86th Amendment)</li></ul>"
+            },
+            {
+                id: 7,
+                title: "Article 356",
+                subtitle: "President's Rule",
+                image: "./images/ar7.jpg",
+                summary: "Provides for imposition of President's Rule in a state in case of failure of constitutional machinery.",
+                fullContent: "<h2>Article 356: President's Rule</h2><p>Article 356 empowers the President to issue a proclamation if he is satisfied that a situation has arisen in which the government of a state cannot be carried on in accordance with the provisions of the Constitution.</p><p>During President's Rule:</p><ul><li>The President can assume to himself all or any of the functions of the State Government</li><li>The powers of the Legislature of the State are exercised by Parliament</li><li>The President can declare that the powers of the Legislature shall be exercisable by or under the authority of Parliament</li></ul><p>This article has been controversial as it has been often used for political purposes. The Supreme Court in the S.R. Bommai case laid down guidelines to prevent its misuse.</p>"
+            },
+            {
+                id: 8,
+                title: "Article 370",
+                subtitle: "Special Status to J&K",
+                image: "./images/ar8.jpg",
+                summary: "Gave special status to the state of Jammu and Kashmir (now abrogated).",
+                fullContent: "<h2>Article 370: Special Status to Jammu and Kashmir</h2><p>Article 370 granted special autonomous status to Jammu and Kashmir. It allowed the state to have its own constitution, a separate flag, and independence over all matters except foreign affairs, defense and communications.</p><p>Key provisions included:</p><ul><li>Parliament needed the state government's concurrence for applying laws except in defense, foreign affairs, finance and communications</li><li>The state's residents lived under a separate set of laws regarding citizenship, ownership of property, and fundamental rights</li><li>Indian citizens from other states could not purchase land or property in J&K</li></ul><p>This article was abrogated in August 2019 through a Presidential Order, effectively revoking the special status of Jammu and Kashmir.</p>"
+            },
+            {
+                id: 9,
+                title: "Article 368",
+                subtitle: "Power to Amend Constitution",
+                image: "./images/ar9.jpg",
+                summary: "Deals with the power of Parliament to amend the Constitution and its procedure.",
+                fullContent: "<h2>Article 368: Power to Amend the Constitution</h2><p>Article 368 deals with the power of Parliament to amend the Constitution and the procedure for doing so.</p><p>Key points:</p><ul><li>Parliament may amend the Constitution by way of addition, variation or repeal of any provision</li><li>An amendment can be initiated only by the introduction of a Bill in either House of Parliament</li><li>The Bill must be passed in each House by a majority of the total membership and by a majority of not less than two-thirds of the members present and voting</li><li>Certain amendments which affect federal structure require ratification by the Legislatures of not less than one-half of the States</li><li>The Supreme Court in the Kesavananda Bharati case held that Parliament cannot amend the basic structure of the Constitution</li></ul>"
+            },
+            {
+                id: 10,
+                title: "Article 15",
+                subtitle: "Prohibition of Discrimination",
+                image: "./images/ar10.jpg",
+                summary: "Prohibits discrimination on grounds of religion, race, caste, sex or place of birth.",
+                fullContent: "<h2>Article 15: Prohibition of Discrimination</h2><p>Article 15 prohibits discrimination on grounds of religion, race, caste, sex or place of birth.</p><p>Key provisions:</p><ul><li>The State shall not discriminate against any citizen on these grounds</li><li>No citizen shall be subject to any disability, liability, restriction or condition on these grounds regarding access to shops, public restaurants, hotels and places of public entertainment</li><li>Nothing in this article shall prevent the State from making any special provision for women and children</li><li>Nothing shall prevent the State from making any special provision for the advancement of any socially and educationally backward classes or for Scheduled Castes and Scheduled Tribes</li></ul><p>This article has been instrumental in affirmative action policies in India.</p>"
+            }
+        ];
+
+        // Load articles on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const articlesContainer = document.getElementById('articles-container');
+            
+            importantArticles.forEach(article => {
+                const articleCard = document.createElement('div');
+                articleCard.className = 'article-card';
+                articleCard.innerHTML = `
+                    <div class="article-image">
+                        <img src="${article.image}" alt="${article.title}">
+                        <div class="read-more-overlay">
+                            <button class="read-more-btn" onclick="openArticleModal(${article.id})">Read More</button>
+                        </div>
+                    </div>
+                    <div class="article-content">
+                        <h3>${article.title}</h3>
+                        <p><strong>${article.subtitle}</strong></p>
+                        <p>${article.summary}</p>
+                    </div>
+                `;
+                articlesContainer.appendChild(articleCard);
+            });
+
+            // Initialize chatbot functionality
+            initChatbot();
+        });
+
+        // Article Modal functions
+        function openArticleModal(articleId) {
+            const article = importantArticles.find(a => a.id === articleId);
+            if (article) {
+                const modalContent = document.getElementById('articleModalContent');
+                modalContent.innerHTML = article.fullContent;
+                document.getElementById('articleModal').style.display = 'block';
+            }
+        }
+
+        function closeArticleModal() {
+            document.getElementById('articleModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('articleModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        
+        // Original modal functionality
+        function openModal(cardId) {
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modal-body');
+            
+            let content = '';
+            if (cardId === 'card1') {
+                content = `
+                    <h2>The Making of the Constitution</h2>
+                    <p>The Indian Constitution was drafted by the Constituent Assembly, which was elected by the provincial assemblies. The 389-member assembly (reduced to 299 after the partition of India) took almost three years (two years, eleven months, and seventeen days to be precise) to complete its historic task of drafting the Constitution for Independent India.</p>
+                    <p>Dr. B.R. Ambedkar was the Chairman of the Drafting Committee. The Constitution was adopted on 26th November 1949 and came into effect on 26th January 1950, marking the beginning of a new era in the history of India.</p>
+                `;
+            } else if (cardId === 'card2') {
+                content = `
+                    <h2>When It Came Into Existence</h2>
+                    <p>The Constitution of India came into effect on 26 January 1950, which is celebrated as Republic Day. This date was chosen because it was on this day in 1930 that the Indian National Congress had proclaimed Purna Swaraj (complete independence) as opposed to the Dominion status offered by the British.</p>
+                    <p>The Constitution replaced the Government of India Act 1935 as the country's fundamental governing document, and the Dominion of India became the Republic of India.</p>
+                `;
+            } else if (cardId === 'card3') {
+                content = `
+                    <h2>Key Amendments</h2>
+                    <p>Some important amendments to the Indian Constitution include:</p>
+                    <ul>
+                        <li><strong>1st Amendment (1951):</strong> Added Ninth Schedule to protect land reform laws</li>
+                        <li><strong>42nd Amendment (1976):</strong> Added words "Socialist", "Secular" to Preamble</li>
+                        <li><strong>44th Amendment (1978):</strong> Restored some powers of Supreme Court and High Courts</li>
+                        <li><strong>73rd Amendment (1992):</strong> Constitutional status to Panchayati Raj institutions</li>
+                        <li><strong>101st Amendment (2016):</strong> Introduced Goods and Services Tax (GST)</li>
+                    </ul>
+                `;
+            }
+            
+            modalBody.innerHTML = content;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+        // Chatbot functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatbotToggle = document.getElementById('chatbotToggle');
+        const chatbotWindow = document.getElementById('chatbotWindow');
+        const closeChatbot = document.getElementById('closeChatbot');
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
+        const voiceButton = document.getElementById('voiceButton');
+
+        // Toggle chatbot window
+        chatbotToggle.addEventListener('click', function() {
+            chatbotWindow.style.display = chatbotWindow.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        closeChatbot.addEventListener('click', function() {
+            chatbotWindow.style.display = 'none';
+        });
+
+        // Knowledge base for the chatbot
+        const knowledgeBase = {
+            "preamble": {
+                answer: "The Preamble to the Indian Constitution outlines its fundamental purposes and guiding principles. It declares India to be a Sovereign, Socialist, Secular, Democratic Republic committed to Justice, Liberty, Equality, and Fraternity for all citizens.",
+                keywords: ["preamble", "introduction", "what is preamble"]
+            },
+            "article 14": {
+                answer: "Article 14 guarantees equality before the law and equal protection of laws to all persons within India. It prohibits discrimination and ensures that all individuals are treated equally under the law.",
+                keywords: ["article 14", "equality", "equal protection"]
+            },
+            "article 19": {
+                answer: "Article 19 provides six fundamental freedoms to all citizens: (1) Freedom of speech and expression, (2) Freedom to assemble peaceably, (3) Freedom to form associations, (4) Freedom to move freely, (5) Freedom to reside and settle, and (6) Freedom to practice any profession.",
+                keywords: ["article 19", "freedoms", "fundamental rights"]
+            },
+            "article 21": {
+                answer: "Article 21 states that no person shall be deprived of their life or personal liberty except according to procedure established by law. It has been interpreted to include rights to dignity, health, education, and clean environment.",
+                keywords: ["article 21", "life", "liberty", "right to life"]
+            },
+            "amendments": {
+                answer: "The Constitution can be amended under Article 368. Important amendments include: 1st (1951) - Land reforms; 42nd (1976) - Added 'Socialist', 'Secular'; 44th (1978) - Restored judicial powers; 73rd (1992) - Panchayati Raj; 101st (2016) - GST.",
+                keywords: ["amendments", "constitutional amendments", "article 368"]
+            },
+            "fundamental rights": {
+                answer: "Part III (Articles 12-35) contains Fundamental Rights: Right to Equality (14-18), Right to Freedom (19-22), Right against Exploitation (23-24), Right to Religion (25-28), Cultural/Educational Rights (29-30), Right to Constitutional Remedies (32).",
+                keywords: ["fundamental rights", "basic rights", "part iii"]
+            },
+            "directive principles": {
+                answer: "Directive Principles (Part IV, Articles 36-51) are guidelines for governance. They aim to establish social and economic democracy. Unlike Fundamental Rights, they are not enforceable but fundamental in governance.",
+                keywords: ["directive principles", "dpsp", "part iv"]
+            },
+            "fundamental duties": {
+                answer: "Added by 42nd Amendment (Article 51A), these are moral obligations of citizens. They include respecting Constitution, national flag & anthem, preserving heritage, protecting environment, and developing scientific temper.",
+                keywords: ["fundamental duties", "duties", "article 51a"]
+            },
+            "emergency provisions": {
+                answer: "The Constitution provides for three types of emergencies: National (Article 352), State/President's Rule (Article 356), and Financial (Article 360). During emergency, Fundamental Rights can be suspended except Articles 20-21.",
+                keywords: ["emergency", "article 352", "article 356", "president's rule"]
+            },
+            "basic structure": {
+                answer: "The Basic Structure doctrine (Kesavananda Bharati case, 1973) holds that Parliament cannot amend the Constitution's basic features like supremacy, secularism, federalism, separation of powers, fundamental rights, etc.",
+                keywords: ["basic structure", "kesavananda bharati", "constitutional amendments"]
+            }
+        };
+
+        // Default answer for unknown questions
+        const defaultAnswer = "I'm sorry, I don't have information about that specific question. I can help with information about the Preamble, Fundamental Rights, Directive Principles, important Articles (like 14, 19, 21, etc.), Amendments, and other constitutional concepts. Could you please rephrase your question?";
+
+        // Function to add message to chat
+        function addMessage(message, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = isUser ? 'user-message' : 'bot-message';
+            messageDiv.innerHTML = `<p>${message}</p>`;
+            chatbotMessages.appendChild(messageDiv);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        // Function to process user input
+        function processUserInput() {
+            const question = userInput.value.trim().toLowerCase();
+            if (!question) return;
+
+            addMessage(question, true);
+            userInput.value = '';
+
+            // Find the best matching answer
+            let answer = defaultAnswer;
+            for (const key in knowledgeBase) {
+                if (knowledgeBase[key].keywords.some(keyword => question.includes(keyword))) {
+                    answer = knowledgeBase[key].answer;
+                    break;
+                }
+            }
+
+            // Simulate typing effect
+            setTimeout(() => {
+                addMessage(answer, false);
+            }, 500);
+        }
+
+        // Voice recognition
+        function startVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window) {
+                const recognition = new webkitSpeechRecognition();
+                recognition.lang = 'en-IN';
+                recognition.start();
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    userInput.value = transcript;
+                    processUserInput();
+                };
+
+                recognition.onerror = function(event) {
+                    addMessage("Sorry, I couldn't understand your voice. Please try typing your question.", false);
+                };
+            } else {
+                addMessage("Your browser doesn't support voice recognition. Please type your question.", false);
+            }
+        }
+
+        // Event listeners
+        sendButton.addEventListener('click', processUserInput);
+        userInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') processUserInput();
+        });
+        voiceButton.addEventListener('click', startVoiceRecognition);
+
+        // Sample questions buttons (optional)
+        const sampleQuestions = [
+            "What is the Preamble?",
+            "Explain Article 14",
+            "What are Fundamental Rights?",
+            "Tell me about amendments",
+            "What is Article 21?"
+        ];
+
+        const sampleQuestionsDiv = document.createElement('div');
+        sampleQuestionsDiv.className = 'sample-questions';
+        sampleQuestionsDiv.innerHTML = '<p>Try asking:</p>' + 
+            sampleQuestions.map(q => `<button class="sample-question">${q}</button>`).join('');
+        chatbotMessages.appendChild(sampleQuestionsDiv);
+
+        // Add event listeners to sample questions
+        document.querySelectorAll('.sample-question').forEach(button => {
+            button.addEventListener('click', function() {
+                userInput.value = this.textContent;
+                processUserInput();
+            });
+        });
+    });
+    
+document.addEventListener('DOMContentLoaded', function() {
+    const carousel = document.querySelector('.constitution-carousel');
+    const slides = document.querySelectorAll('.constitution-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const prevBtn = document.querySelector('.prev');
+    const nextBtn = document.querySelector('.next');
+    let currentIndex = 0;
+    const slideCount = slides.length;
+
+    function updateCarousel() {
+        carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+        
+        // Update dots
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentIndex);
+        });
+    }
+
+    function nextSlide() {
+        currentIndex = (currentIndex + 1) % slideCount;
+        updateCarousel();
+    }
+
+    function prevSlide() {
+        currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+        updateCarousel();
+    }
+
+    // Button click events
+    nextBtn.addEventListener('click', nextSlide);
+    prevBtn.addEventListener('click', prevSlide);
+
+    // Dot click events
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentIndex = index;
+            updateCarousel();
+        });
+    });
+
+    // Auto-rotate (optional)
+    let interval = setInterval(nextSlide, 2000);
+
+    // Pause on hover
+    carousel.addEventListener('mouseenter', () => clearInterval(interval));
+    carousel.addEventListener('mouseleave', () => {
+        interval = setInterval(nextSlide, 5000);
+    });
+});
+function updateNavigation() {
+            const token = localStorage.getItem('token');
+            const username = localStorage.getItem('username');
+            const loginItem = document.getElementById('loginNavItem');
+            const profileItem = document.getElementById('profileNavItem');
+            
+            if (token && username) {
+                loginItem.style.display = 'none';
+                profileItem.style.display = 'block';
+                document.getElementById('navUsername').textContent = username;
+                document.getElementById('dropdownUsername').textContent = username;
+                
+                // Load user data for dropdown
+                loadUserData();
+            } else {
+                loginItem.style.display = 'block';
+                profileItem.style.display = 'none';
+            }
+        }
+        
+        // Load user data for profile
+        async function loadUserData() {
+            const userId = localStorage.getItem('userId');
+            const token = localStorage.getItem('token');
+            
+            if (!userId || !token) return;
+            
+            try {
+                // Fetch user profile data
+                const response = await fetch(`http://localhost:5000/profile/${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Update profile modal
+                    document.getElementById('modalUsername').textContent = data.username;
+                    document.getElementById('totalScoreStat').textContent = data.total_score || 0;
+                    document.getElementById('dropdownScore').textContent = data.total_score || 0;
+                    
+                    // Update game scores
+                    const gamesContainer = document.getElementById('gameScoresContainer');
+                    gamesContainer.innerHTML = '';
+                    
+                    if (data.game_scores && data.game_scores.length > 0) {
+                        data.game_scores.forEach(game => {
+                            const gameDiv = document.createElement('div');
+                            gameDiv.className = 'game-score-item';
+                            gameDiv.innerHTML = `
+                                <div class="game-name">${game.game_type.replace(/_/g, ' ')}</div>
+                                <div class="game-score">${game.score} points</div>
+                            `;
+                            gamesContainer.appendChild(gameDiv);
+                        });
+                    } else {
+                        gamesContainer.innerHTML = '<p>No game scores yet. Play some games to earn points!</p>';
+                    }
+                    
+                    // Calculate learning progress
+                    if (data.learning_progress && data.learning_progress.length > 0) {
+                        const totalSections = data.learning_progress.length;
+                        const completedSections = data.learning_progress.filter(p => p.progress >= 75).length;
+                        const progressPercentage = Math.round((completedSections / totalSections) * 100);
+                        document.getElementById('learningProgressStat').textContent = `${progressPercentage}%`;
+                    } else {
+                        document.getElementById('learningProgressStat').textContent = '0%';
+                    }
+                    
+                    // Calculate games played
+                    document.getElementById('gamesPlayedStat').textContent = data.game_scores ? data.game_scores.length : 0;
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+        
+        // Show profile modal
+        function showProfileModal() {
+            loadUserData();
+            document.getElementById('profileModal').style.display = 'block';
+        }
+        
+        // Close modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        // Authentication functions
+async function checkAuth() {
+  const token = localStorage.getItem('token');
+  if (!token) return false;
+
+  try {
+    const response = await fetch('http://localhost:5000/profile', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('Auth check failed:', error);
+    return false;
+  }
+}
+
+// Load user profile data
+async function loadProfileData() {
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('token');
+  
+  if (!userId || !token) return;
+
+  try {
+    const response = await fetch(`http://localhost:5000/profile/${userId}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      updateProfileUI(data);
+    }
+  } catch (error) {
+    console.error('Error loading profile:', error);
+  }
+}
+
+// Update profile UI
+function updateProfileUI(data) {
+  document.getElementById('modalUsername').textContent = data.username;
+  document.getElementById('modalEmail').textContent = data.email;
+  document.getElementById('totalScoreStat').textContent = data.total_score || 0;
+  
+  const gamesContainer = document.getElementById('gameScoresContainer');
+  gamesContainer.innerHTML = '';
+  
+  if (data.game_scores && data.game_scores.length > 0) {
+    data.game_scores.forEach(game => {
+      const gameDiv = document.createElement('div');
+      gameDiv.className = 'game-score-item';
+      gameDiv.innerHTML = `
+        <div class="game-name">${game.game_type.replace(/_/g, ' ')}</div>
+        <div class="game-score">${game.score} points</div>
+      `;
+      gamesContainer.appendChild(gameDiv);
+    });
+  }
+
+  // Calculate learning progress
+  const progress = data.learning_progress || [];
+  const completed = progress.filter(p => p.progress >= 75).length;
+  const totalSections = 5; // Assuming 5 learning sections
+  const progressPercent = Math.round((completed / totalSections) * 100);
+  
+  document.getElementById('learningProgressStat').textContent = `${progressPercent}%`;
+  document.getElementById('gamesPlayedStat').textContent = data.game_scores?.length || 0;
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+  if (checkAuth()) {
+    document.getElementById('loginNavItem').style.display = 'none';
+    document.getElementById('profileNavItem').style.display = 'block';
+    loadProfileData();
+  }
+});
+        
+        // Logout function
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            localStorage.removeItem('userId');
+            window.location.reload();
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateNavigation();
+            
+            // Close modal when clicking outside
+            window.onclick = function(event) {
+                const profileModal = document.getElementById('profileModal');
+                if (event.target == profileModal) {
+                    profileModal.style.display = "none";
+                }
+            };
+        });
+        
+    </script>
+</body>
+</html>

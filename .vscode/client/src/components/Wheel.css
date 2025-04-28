@@ -1,0 +1,59 @@
+.wheel-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .wheel {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    border: 5px solid #333;
+    overflow: hidden;
+    transform: rotate(0deg);
+    transition: transform 3s ease-out;
+  }
+  
+  .wheel.spin {
+    transform: rotate(1440deg); /* Adjust the value for the desired number of spins */
+  }
+  
+  .wheel-segment {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    transform-origin: 100% 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: lightblue;
+    border: 1px solid #333;
+  }
+  
+  .wheel-segment span {
+    transform: rotate(-45deg); /* Counter-rotate the text */
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .wheel-segment:nth-child(1) {
+    transform: rotate(0deg);
+  }
+  
+  .wheel-segment:nth-child(2) {
+    transform: rotate(90deg);
+  }
+  
+  .wheel-segment:nth-child(3) {
+    transform: rotate(180deg);
+  }
+  
+  .wheel-segment:nth-child(4) {
+    transform: rotate(270deg);
+  }
+  
+  /* Add more segments if needed, adjusting the rotation values accordingly */
+  

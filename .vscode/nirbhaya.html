@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+    <title>Video Quiz Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-color: black;
+            font-family: "Fjalla One", system-ui;
+            color: white;
+            position: relative;
+        }
+
+        .quiz-container {
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        #quiz-video {
+            width: 100%;
+            max-width: 640px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px; 
+            margin-top: 50px;
+        }
+
+        .question-container {
+            margin-bottom: 20px;
+        }
+
+        .answer-btn {
+            display: block;
+            width: 80%;
+            max-width: 400px;
+            padding: 12px;
+            margin: 8px auto;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+
+        .answer-btn:hover {
+            background-color: #0056b3;
+        }
+
+        #next-question-btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        #next-question-btn:hover {
+            background-color: #218838;
+        }
+
+        #next-question-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        #language-selector {
+            margin: 20px;
+        }
+
+        .score-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 18px;
+            min-height: 27px;
+        }
+
+        .correct {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .incorrect {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .quiz-progress {
+            margin-top: 15px;
+            font-size: 16px;
+            color: #6c757d;
+        }
+    </style>
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'hi,ta,te,ml,kn,gu,pa', // Include Indian languages
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<body>
+    <div id="google_translate_element"></div>
+    <div class="score-display">
+        Score: <span id="score">0</span>
+    </div>
+    
+    <div class="quiz-container">
+        <video id="quiz-video" controls>
+            <source src="./images/safety.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="question-container">
+            <p id="question-text">What was the main catalyst for the amendments in the laws related to sexual violence in India?</p>
+            <button class="answer-btn" onclick="submitAnswer('A')">The Nirbhaya case</button>
+            <button class="answer-btn" onclick="submitAnswer('B')">The Delhi Gang Rape case</button>
+            <button class="answer-btn" onclick="submitAnswer('C')">The Vishaka Guidelines</button>
+            <button class="answer-btn" onclick="submitAnswer('D')">The Rape Law Review</button>
+            <div class="feedback" id="feedback"></div>
+            <div class="quiz-progress" id="quiz-progress">Question 1 of 5</div>
+        </div>
+        <button id="next-question-btn" onclick="loadNextQuestion()" disabled>Next Question</button>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let score = 0;
+        let answerSubmitted = false;
+        
+        const questions = [
+            {
+                question: 'What was the main catalyst for the amendments in the laws related to sexual violence in India?',
+                options: [
+                    'The Nirbhaya case',
+                    'The Delhi Gang Rape case',
+                    'The Vishaka Guidelines',
+                    'The Rape Law Review'
+                ],
+                correctAnswer: 'A',
+                explanation: 'The Nirbhaya case (2012 Delhi gang rape) was the main catalyst that led to significant amendments in Indian laws regarding sexual violence.'
+            },
+            {
+                question: 'What significant legislation was enacted following the Nirbhaya case?',
+                options: [
+                    'The Protection of Human Rights Act',
+                    'The Criminal Law (Amendment) Act, 2013',
+                    'The Sexual Harassment of Women at Workplace Act',
+                    'The Juvenile Justice Act'
+                ],
+                correctAnswer: 'B',
+                explanation: 'The Criminal Law (Amendment) Act, 2013 was enacted as a direct response to the Nirbhaya case, introducing stricter punishments for sexual offenses.'
+            },
+            {
+                question: 'Which new offenses were included in the Criminal Law (Amendment) Act, 2013?',
+                options: [
+                    'Stalking and Acid Attacks',
+                    'Child Marriage and Domestic Violence',
+                    'Human Trafficking and Cyber Crime',
+                    'All of the Above'
+                ],
+                correctAnswer: 'A',
+                explanation: 'The 2013 amendment specifically added stalking, voyeurism, and acid attacks as punishable offenses.'
+            },
+            {
+                question: 'How did the amendments affect the legal treatment of juveniles involved in serious crimes?',
+                options: [
+                    'Reduced the minimum age for trial as an adult',
+                    'Allowed harsher penalties for juveniles',
+                    'Increased the age of juvenile offenders to 21',
+                    'Reformed the juvenile justice system to handle serious crimes differently'
+                ],
+                correctAnswer: 'D',
+                explanation: 'The Juvenile Justice Act was amended in 2015 to allow juveniles aged 16-18 accused of heinous crimes to be tried as adults.'
+            },
+            {
+                question: 'What was a key feature of the new laws concerning womens safety after the Nirbhaya case?',
+                options: [
+                    'Enhanced penalties for sexual offenses',
+                    'Introduction of Fast Track Courts for rape cases',
+                    'Establishment of a National Crime Records Bureau',
+                    'All of the Above'
+                ],
+                correctAnswer: 'D',
+                explanation: 'All these measures were implemented as part of the comprehensive reforms following the Nirbhaya case.'
+            }
+        ];
+
+        function submitAnswer(answer) {
+            if (answerSubmitted) return;
+            
+            answerSubmitted = true;
+            const correctAnswer = questions[currentQuestion].correctAnswer;
+            const feedbackElement = document.getElementById('feedback');
+            const nextButton = document.getElementById('next-question-btn');
+            
+            // Enable the next button
+            nextButton.disabled = false;
+            
+            // Disable all answer buttons
+            const answerButtons = document.querySelectorAll('.answer-btn');
+            answerButtons.forEach(button => {
+                button.style.opacity = '0.7';
+                button.style.cursor = 'not-allowed';
+                button.onclick = null;
+            });
+            
+            // Highlight the correct answer
+            const correctButton = document.querySelector(`.answer-btn:nth-child(${correctAnswer.charCodeAt(0) - 64})`);
+            correctButton.style.backgroundColor = '#28a745';
+            
+            if (answer === correctAnswer) {
+                score += 100;
+                document.getElementById('score').textContent = score;
+                feedbackElement.innerHTML = `<span class="correct">Correct! +100 points</span><br>${questions[currentQuestion].explanation}`;
+            } else {
+                // Highlight the incorrect answer
+                const selectedButton = document.querySelector(`.answer-btn:nth-child(${answer.charCodeAt(0) - 64})`);
+                selectedButton.style.backgroundColor = '#dc3545';
+                
+                feedbackElement.innerHTML = `<span class="incorrect">Incorrect. The correct answer is ${correctAnswer}: ${questions[currentQuestion].options[correctAnswer.charCodeAt(0) - 65]}</span><br>${questions[currentQuestion].explanation}`;
+            }
+        }
+
+        function loadNextQuestion() {
+            answerSubmitted = false;
+            currentQuestion++;
+            
+            // Update progress indicator
+            document.getElementById('quiz-progress').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            
+            if (currentQuestion < questions.length) {
+                const questionData = questions[currentQuestion];
+                document.getElementById('question-text').textContent = questionData.question;
+                
+                const buttons = document.querySelectorAll('.answer-btn');
+                buttons.forEach((button, index) => {
+                    button.textContent = questionData.options[index];
+                    button.style.opacity = '1';
+                    button.style.cursor = 'pointer';
+                    button.style.backgroundColor = '#007bff';
+                    button.onclick = function() { submitAnswer(String.fromCharCode(65 + index)); };
+                });
+                
+                // Reset feedback and disable next button
+                document.getElementById('feedback').textContent = '';
+                document.getElementById('next-question-btn').disabled = true;
+            } else {
+                // Quiz completed
+                const percentage = Math.round((score / (questions.length * 100)) * 100);
+                let message = `Quiz completed! Final Score: ${score} points (${percentage}%)`;
+                
+                if (percentage === 100) {
+                    message += "<br>Perfect! You're a legal expert!";
+                } else if (percentage >= 80) {
+                    message += "<br>Excellent! You know the laws well!";
+                } else if (percentage >= 60) {
+                    message += "<br>Good job! Keep learning!";
+                } else {
+                    message += "<br>Keep studying these important laws!";
+                }
+                
+                document.getElementById('question-text').innerHTML = message;
+                document.querySelector('.question-container').style.display = 'none';
+                document.getElementById('next-question-btn').style.display = 'none';
+            }
+        }
+        
+    </script>
+</body>
+</html>

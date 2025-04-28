@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to the Constitution Quiz</title>
+    <link rel="stylesheet" href="city.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Video Container -->
+    <div class="video-overlay">
+        <div class="video-container">
+            <video id="introVideo" autoplay muted>
+                <source src="./images/intro.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <!-- Skip Button -->
+            <button id="skipButton" onclick="skipVideo()">Skip>></button>
+        </div>
+    </div>
+
+    <!-- Hidden Content to Navigate to Start Game -->
+    <div id="startGameContainer" class="hidden">
+        <h2>Ready to Test Your Knowledge?</h2>
+        <button onclick="startGame()">Start Game</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('introVideo');
+            const startGameContainer = document.getElementById('startGameContainer');
+    
+            // Set the delay time in seconds (90 seconds = 1.5 minutes)
+            const delayTime = 90;
+    
+            // Show the start game container after the delay time
+            setTimeout(function() {
+                showStartGame();
+            }, delayTime * 1000);
+    
+            // Event listener for when the video ends
+            video.addEventListener('ended', function() {
+                showStartGame();
+            });
+        });
+    
+        // Function to show the start game container
+        function showStartGame() {
+            const videoOverlay = document.querySelector('.video-overlay');
+            const startGameContainer = document.getElementById('startGameContainer');
+    
+            // Hide the video overlay
+            videoOverlay.style.display = 'none';
+    
+            // Show the start game container
+            startGameContainer.style.display = 'block';
+        }
+    
+        // Function to skip the video
+        function skipVideo() {
+            showStartGame(); // Directly show the start game prompt
+        }
+    
+        // Function to start the game
+        function startGame() {
+            window.location.href = 'game.html'; // Redirect to the start game page
+        }
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,14 @@
+.result {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .result.correct {
+    color: #00b300; /* Green color for correct answers */
+  }
+  
+  .result.incorrect {
+    color: #ff0000; /* Red color for incorrect answers */
+  }
+  

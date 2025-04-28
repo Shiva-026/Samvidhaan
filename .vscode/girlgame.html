@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+    <title>CivicNavigator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #040c19;
+            font-family: "Fjalla One", system-ui;
+        }
+
+        .card-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 50px;
+            flex-wrap: wrap;
+            
+        }
+
+        .card {
+            background-color: #a4a997;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            height: 300px; /* Increased height to accommodate image */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            padding-bottom: 12px;;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="card-container"> 
+        <a href="nirbhaya.html" class="card">
+            <img src="images/nirbhaya.png" alt="Nirbhaya Case">
+            <div class="card-title">Nirbhaya Case</div>
+        </a>
+        
+        <a href="kolkata-rape.html" class="card">
+            <img src="./images/kolkata.webp" alt="Kolkata Rape Case">
+            <div class="card-title">Kolkata Rape Case</div>
+        </a>
+    </div>
+</body>
+</html>

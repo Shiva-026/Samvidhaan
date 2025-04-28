@@ -1,0 +1,291 @@
+
+        /* Samvidhan Page Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('./images/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.85);
+            z-index: -1;
+        }
+
+        header {
+            background-color: #000000;
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .logo-container img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .app-name {
+            font-family: 'Fjalla One', sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #ffc107;
+        }
+
+        .samvidhan-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .samvidhan-container h1 {
+            font-size: 2.5rem;
+            color: #000000;
+            margin-bottom: 40px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+
+        .search-container input {
+            width: 60%;
+            padding: 15px 20px;
+            border: 2px solid #070707;
+            border-radius: 30px 0 0 30px;
+            font-size: 16px;
+            outline: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-container button {
+            background-color: #060606;
+            color: white;
+            border: none;
+            padding: 0 25px;
+            border-radius: 0 30px 30px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-container button:hover {
+            background-color: #000000;
+        }
+
+        .language-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .language-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px 20px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 150px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .language-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+            border-color: #040404;
+        }
+
+        .language-card h3 {
+            color: #000000;
+            font-size: 1.4rem;
+            margin: 0 0 15px 0;
+            font-weight: 600;
+        }
+
+        .view-pdf {
+            display: inline-flex;
+            align-items: center;
+            background-color: #000000;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .view-pdf:hover {
+            background-color: #c0c0c2;
+            transform: scale(1.05);
+        }
+
+        .view-pdf i {
+            margin-left: 8px;
+            font-size: 0.8rem;
+        }
+
+        footer {
+            background-color: #000000;
+            color: white;
+            padding: 30px 0 10px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-around;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 300px;
+            margin-bottom: 20px;
+            padding: 0 15px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #ffc107;
+        }
+
+        .footer-section p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .contact-item i {
+            margin-right: 10px;
+            color: #ffc107;
+        }
+
+        .contact-item a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .contact-item a:hover {
+            color: #ffc107;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .samvidhan-container h1 {
+                font-size: 2rem;
+                margin-bottom: 30px;
+            }
+            
+            .search-container input {
+                width: 70%;
+                padding: 12px 15px;
+            }
+            
+            .language-cards {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+            }
+            
+            nav ul li {
+                margin: 5px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .samvidhan-container h1 {
+                font-size: 1.8rem;
+            }
+            
+            .search-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .search-container input {
+                width: 90%;
+                border-radius: 30px;
+                margin-bottom: 10px;
+            }
+            
+            .search-container button {
+                width: 90%;
+                border-radius: 30px;
+                padding: 12px;
+            }
+            
+            .language-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    
