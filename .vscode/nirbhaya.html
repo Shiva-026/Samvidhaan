@@ -155,148 +155,111 @@
     </div>
 
     <script>
-        let currentQuestion = 0;
-        let score = 0;
-        let answerSubmitted = false;
-        
-        const questions = [
-            {
-                question: 'What was the main catalyst for the amendments in the laws related to sexual violence in India?',
-                options: [
-                    'The Nirbhaya case',
-                    'The Delhi Gang Rape case',
-                    'The Vishaka Guidelines',
-                    'The Rape Law Review'
-                ],
-                correctAnswer: 'A',
-                explanation: 'The Nirbhaya case (2012 Delhi gang rape) was the main catalyst that led to significant amendments in Indian laws regarding sexual violence.'
-            },
-            {
-                question: 'What significant legislation was enacted following the Nirbhaya case?',
-                options: [
-                    'The Protection of Human Rights Act',
-                    'The Criminal Law (Amendment) Act, 2013',
-                    'The Sexual Harassment of Women at Workplace Act',
-                    'The Juvenile Justice Act'
-                ],
-                correctAnswer: 'B',
-                explanation: 'The Criminal Law (Amendment) Act, 2013 was enacted as a direct response to the Nirbhaya case, introducing stricter punishments for sexual offenses.'
-            },
-            {
-                question: 'Which new offenses were included in the Criminal Law (Amendment) Act, 2013?',
-                options: [
-                    'Stalking and Acid Attacks',
-                    'Child Marriage and Domestic Violence',
-                    'Human Trafficking and Cyber Crime',
-                    'All of the Above'
-                ],
-                correctAnswer: 'A',
-                explanation: 'The 2013 amendment specifically added stalking, voyeurism, and acid attacks as punishable offenses.'
-            },
-            {
-                question: 'How did the amendments affect the legal treatment of juveniles involved in serious crimes?',
-                options: [
-                    'Reduced the minimum age for trial as an adult',
-                    'Allowed harsher penalties for juveniles',
-                    'Increased the age of juvenile offenders to 21',
-                    'Reformed the juvenile justice system to handle serious crimes differently'
-                ],
-                correctAnswer: 'D',
-                explanation: 'The Juvenile Justice Act was amended in 2015 to allow juveniles aged 16-18 accused of heinous crimes to be tried as adults.'
-            },
-            {
-                question: 'What was a key feature of the new laws concerning womens safety after the Nirbhaya case?',
-                options: [
-                    'Enhanced penalties for sexual offenses',
-                    'Introduction of Fast Track Courts for rape cases',
-                    'Establishment of a National Crime Records Bureau',
-                    'All of the Above'
-                ],
-                correctAnswer: 'D',
-                explanation: 'All these measures were implemented as part of the comprehensive reforms following the Nirbhaya case.'
-            }
-        ];
+let currentQuestionIndex = 0;
+let score = 0;
+let questions = [];
+const scoreElement = document.getElementById("score");
+const questionText = document.getElementById("question-text");
+const feedbackElement = document.getElementById("feedback");
+const nextButton = document.getElementById("next-question-btn");
+const quizProgress = document.getElementById("quiz-progress");
 
-        function submitAnswer(answer) {
-            if (answerSubmitted) return;
-            
-            answerSubmitted = true;
-            const correctAnswer = questions[currentQuestion].correctAnswer;
-            const feedbackElement = document.getElementById('feedback');
-            const nextButton = document.getElementById('next-question-btn');
-            
-            // Enable the next button
-            nextButton.disabled = false;
-            
-            // Disable all answer buttons
-            const answerButtons = document.querySelectorAll('.answer-btn');
-            answerButtons.forEach(button => {
-                button.style.opacity = '0.7';
-                button.style.cursor = 'not-allowed';
-                button.onclick = null;
-            });
-            
-            // Highlight the correct answer
-            const correctButton = document.querySelector(`.answer-btn:nth-child(${correctAnswer.charCodeAt(0) - 64})`);
-            correctButton.style.backgroundColor = '#28a745';
-            
-            if (answer === correctAnswer) {
-                score += 100;
-                document.getElementById('score').textContent = score;
-                feedbackElement.innerHTML = `<span class="correct">Correct! +100 points</span><br>${questions[currentQuestion].explanation}`;
-            } else {
-                // Highlight the incorrect answer
-                const selectedButton = document.querySelector(`.answer-btn:nth-child(${answer.charCodeAt(0) - 64})`);
-                selectedButton.style.backgroundColor = '#dc3545';
-                
-                feedbackElement.innerHTML = `<span class="incorrect">Incorrect. The correct answer is ${correctAnswer}: ${questions[currentQuestion].options[correctAnswer.charCodeAt(0) - 65]}</span><br>${questions[currentQuestion].explanation}`;
-            }
-        }
+async function loadQuestions() {
+  try {
+    const response = await fetch("http://localhost:5000/nirbhaya/questions");
+    questions = await response.json();
+    displayQuestion();
+  } catch (error) {
+    console.error("Error loading questions:", error);
+    questionText.textContent = "Failed to load questions. Please try again later.";
+  }
+}
 
-        function loadNextQuestion() {
-            answerSubmitted = false;
-            currentQuestion++;
-            
-            // Update progress indicator
-            document.getElementById('quiz-progress').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
-            
-            if (currentQuestion < questions.length) {
-                const questionData = questions[currentQuestion];
-                document.getElementById('question-text').textContent = questionData.question;
-                
-                const buttons = document.querySelectorAll('.answer-btn');
-                buttons.forEach((button, index) => {
-                    button.textContent = questionData.options[index];
-                    button.style.opacity = '1';
-                    button.style.cursor = 'pointer';
-                    button.style.backgroundColor = '#007bff';
-                    button.onclick = function() { submitAnswer(String.fromCharCode(65 + index)); };
-                });
-                
-                // Reset feedback and disable next button
-                document.getElementById('feedback').textContent = '';
-                document.getElementById('next-question-btn').disabled = true;
-            } else {
-                // Quiz completed
-                const percentage = Math.round((score / (questions.length * 100)) * 100);
-                let message = `Quiz completed! Final Score: ${score} points (${percentage}%)`;
-                
-                if (percentage === 100) {
-                    message += "<br>Perfect! You're a legal expert!";
-                } else if (percentage >= 80) {
-                    message += "<br>Excellent! You know the laws well!";
-                } else if (percentage >= 60) {
-                    message += "<br>Good job! Keep learning!";
-                } else {
-                    message += "<br>Keep studying these important laws!";
-                }
-                
-                document.getElementById('question-text').innerHTML = message;
-                document.querySelector('.question-container').style.display = 'none';
-                document.getElementById('next-question-btn').style.display = 'none';
-            }
-        }
-        
-    </script>
+function displayQuestion() {
+  if (currentQuestionIndex >= questions.length) {
+    showResult();
+    return;
+  }
+
+  const current = questions[currentQuestionIndex];
+  questionText.textContent = current.question_text;
+
+  const answerButtons = document.querySelectorAll(".answer-btn");
+  ["A", "B", "C", "D"].forEach((option, idx) => {
+    const btn = answerButtons[idx];
+    btn.textContent = current[`option_${option.toLowerCase()}`];
+    btn.disabled = false;
+    btn.style.backgroundColor = "#007bff";
+    btn.onclick = () => submitAnswer(current.id, option, btn);
+  });
+
+  feedbackElement.textContent = "";
+  nextButton.disabled = true;
+  quizProgress.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+}
+
+async function submitAnswer(questionId, selectedOption, selectedBtn) {
+  try {
+    const response = await fetch("http://localhost:5000/nirbhaya/check-answer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: questionId, selectedOption }),
+    });
+
+    const data = await response.json();
+    const answerButtons = document.querySelectorAll(".answer-btn");
+    answerButtons.forEach((btn) => (btn.disabled = true));
+
+    if (data.correct) {
+      score += 100;
+      scoreElement.textContent = score;
+      feedbackElement.innerHTML = `<span class="correct">✅ Correct! +100 points</span>`;
+      selectedBtn.style.backgroundColor = "#28a745";
+    } else {
+      feedbackElement.innerHTML = `<span class="incorrect">❌ Incorrect.<br>Correct answer: ${data.correctAnswerText}</span>`;
+      selectedBtn.style.backgroundColor = "#dc3545";
+      // Highlight correct one
+      const current = questions[currentQuestionIndex];
+      const correctOption = current.correct_answer || data.correctAnswerText; // fallback
+      const correctBtn = [...answerButtons].find(
+        (b) => b.textContent.trim() === data.correctAnswerText
+      );
+      if (correctBtn) correctBtn.style.backgroundColor = "#28a745";
+    }
+
+    // ✅ Add this part below both messages
+    if (data.explanation) {
+      feedbackElement.innerHTML += `<br><small><b>Explanation:</b> ${data.explanation}</small>`;
+    }
+    
+    nextButton.disabled = false;
+  } catch (error) {
+    console.error("Error submitting answer:", error);
+  }
+}
+
+function loadNextQuestion() {
+  currentQuestionIndex++;
+  displayQuestion();
+}
+
+function showResult() {
+  const percentage = Math.round((score / (questions.length * 100)) * 100);
+  let message = `Quiz completed! Final Score: ${score} points (${percentage}%)`;
+
+  if (percentage === 100) message += "<br>Perfect! You're a legal expert!";
+  else if (percentage >= 80) message += "<br>Excellent! You know the laws well!";
+  else if (percentage >= 60) message += "<br>Good job! Keep learning!";
+  else message += "<br>Keep studying these important laws!";
+
+  questionText.innerHTML = message;
+  document.querySelector(".question-container").style.display = "none";
+  nextButton.style.display = "none";
+}
+
+loadQuestions();
+</script>
+
+
 </body>
 </html>

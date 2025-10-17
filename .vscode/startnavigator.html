@@ -1,161 +1,161 @@
-<!DOCTYPE html>
-<html lang="en">
+    <!DOCTYPE html>
+    <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CivicNavigator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
-            height: 100%;
-            align-items: center;
-            background-image: url('./images/brambedkar.webp');
-            background-size: cover;
-            background-position: 45% 15%;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CivicNavigator</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+        <style>
+            body {
+                margin: 0;
+                font-family: 'Roboto', sans-serif;
+                height: 100%;
+                align-items: center;
+                background-image: url('./images/brambedkar.webp');
+                background-size: cover;
+                background-position: 45% 15%;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }
 
-        .content-wrapper {
-            color: #FF9933; /* Saffron background */
-            padding: 12vh;
-            text-align: center;
-            max-width: 713px;
-            width: 100%;
-            box-sizing: border-box;
-            height: 100%;
-        }
+            .content-wrapper {
+                color: #FF9933; /* Saffron background */
+                padding: 12vh;
+                text-align: center;
+                max-width: 713px;
+                width: 100%;
+                box-sizing: border-box;
+                height: 100%;
+            }
 
-        .btn {
-            display: inline-block;
-            border: 2px solid white;
-            padding: 26px 50px;
-            margin-top: 20px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-weight: 500;
-            border-radius: 2px;
-        }
+            .btn {
+                display: inline-block;
+                border: 2px solid white;
+                padding: 26px 50px;
+                margin-top: 20px;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: background 0.3s;
+                font-weight: 500;
+                border-radius: 2px;
+            }
 
-        .btn:hover {
-            background: white;
-            color: black;
-        }
+            .btn:hover {
+                background: white;
+                color: black;
+            }
 
-        .red {
-            padding: 72px 0 0 0;
-        }
+            .red {
+                padding: 72px 0 0 0;
+            }
 
-        .score-display {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 1.2rem;
-            z-index: 100;
-        }
-    </style>
-</head>
+            .score-display {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: rgba(0, 0, 0, 0.7);
+                color: white;
+                padding: 10px 20px;
+                border-radius: 5px;
+                font-size: 1.2rem;
+                z-index: 100;
+            }
+        </style>
+    </head>
 
-<body>
-    <div class="score-display" id="totalScore">
-        Total Score: Loading...
-    </div>
-
-    <div class="content-wrapper">
-        <div class="flex space-x-10" style="padding: 0 40px;">
-            <!-- Your existing content -->
+    <body>
+        <div class="score-display" id="totalScore">
+            Total Score: Loading...
         </div>
-        <div class="red">
-            <h1 style="padding: 0 240px 0px 0; font-size: 50px;">CivicNavigator</h1>
-        </div>
-        <div class="flex justify-center space-x-4 mt-8" style="padding: 0 280px 0 0;"> 
-            <a href="civicnavigator.html">
-                <div class="btn">Play Now</div>
-            </a>
-        </div>
-    </div>
 
-    <script>
-        // Replace the existing script with this improved version
-        function updateTotalScore() {
-            // Check if we have a pre-calculated total score
-            const totalScore = localStorage.getItem('totalCivicScore');
-            
-            if (totalScore) {
-                // Use the pre-calculated total if available
-                document.getElementById('totalScore').textContent = `Total Score: ${totalScore}`;
-            } else {
-                // Calculate fresh if not available (fallback)
-                let total = 0;
-                const quizzes = ['preamble', 'amendment', 'fundamentalrights'];
+        <div class="content-wrapper">
+            <div class="flex space-x-10" style="padding: 0 40px;">
+                <!-- Your existing content -->
+            </div>
+            <div class="red">
+                <h1 style="padding: 0 240px 0px 0; font-size: 50px;">CivicNavigator</h1>
+            </div>
+            <div class="flex justify-center space-x-4 mt-8" style="padding: 0 280px 0 0;"> 
+                <a href="civicnavigator.html">
+                    <div class="btn">Play Now</div>
+                </a>
+            </div>
+        </div>
+
+        <script>
+            // Replace the existing script with this improved version
+            function updateTotalScore() {
+                // Check if we have a pre-calculated total score
+                const totalScore = localStorage.getItem('totalCivicScore');
                 
-                quizzes.forEach(quiz => {
-                    const score = localStorage.getItem(`${quiz}Score`);
-                    if (score) {
-                        total += parseInt(score);
+                if (totalScore) {
+                    // Use the pre-calculated total if available
+                    document.getElementById('totalScore').textContent = `Total Score: ${totalScore}`;
+                } else {
+                    // Calculate fresh if not available (fallback)
+                    let total = 0;
+                    const quizzes = ['preamble', 'amendment', 'fundamentalrights'];
+                    
+                    quizzes.forEach(quiz => {
+                        const score = localStorage.getItem(`${quiz}Score`);
+                        if (score) {
+                            total += parseInt(score);
+                        }
+                    });
+                    
+                    document.getElementById('totalScore').textContent = `Total Score: ${total}`;
+                    localStorage.setItem('totalCivicScore', total.toString());
+                }
+            }
+            
+            // Update immediately and then every second
+            document.addEventListener('DOMContentLoaded', function() {
+                updateTotalScore();
+                setInterval(updateTotalScore, 1000);
+                
+                // Also update when the page becomes visible again
+                document.addEventListener('visibilitychange', function() {
+                    if (!document.hidden) {
+                        updateTotalScore();
                     }
                 });
-                
-                document.getElementById('totalScore').textContent = `Total Score: ${total}`;
-                localStorage.setItem('totalCivicScore', total.toString());
-            }
-        }
-        
-        // Update immediately and then every second
-        document.addEventListener('DOMContentLoaded', function() {
-            updateTotalScore();
-            setInterval(updateTotalScore, 1000);
-            
-            // Also update when the page becomes visible again
-            document.addEventListener('visibilitychange', function() {
-                if (!document.hidden) {
-                    updateTotalScore();
-                }
             });
-        });
-        // After game completes
-function saveScore(gameType, score) {
-    const userId = localStorage.getItem('userId');
-    const token = localStorage.getItem('token');
-    
-    if (!userId || !token) return;
-    
-    fetch('http://localhost:5000/score', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-            userId,
-            gameType,
-            score
+            // After game completes
+    function saveScore(gameType, score) {
+        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem('token');
+        
+        if (!userId || !token) return;
+        
+        fetch('http://localhost:5000/score', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                userId,
+                gameType,
+                score
+            })
         })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Score saved:', data);
-        // Update the total score display
-        if (window.parent.updateTotalScore) {
-            window.parent.updateTotalScore();
-        }
-    })
-    .catch(error => {
-        console.error('Error saving score:', error);
-    });
-}
+        .then(response => response.json())
+        .then(data => {
+            console.log('Score saved:', data);
+            // Update the total score display
+            if (window.parent.updateTotalScore) {
+                window.parent.updateTotalScore();
+            }
+        })
+        .catch(error => {
+            console.error('Error saving score:', error);
+        });
+    }
 
-// Example usage when game ends:
-// saveScore('stargame', finalScore);
-    </script>
-</body>
-</html>
+    // Example usage when game ends:
+    // saveScore('stargame', finalScore);
+        </script>
+    </body>
+    </html>

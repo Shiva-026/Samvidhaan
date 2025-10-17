@@ -248,236 +248,295 @@
         </div>
     </div>
     
+    
     <script>
-        // Game State
-        const gameState = {
-            currentLevel: 1,
-            completedLevels: 0,
-            totalLevels: 5,
-            badgesEarned: 0,
-            progress: 0,
-            score: 0,
-            user: {
-                name: "Guest User",
-                email: "guest@example.com"
-            },
-            levelProgress: {
-                1: 0,
-                2: 0,
-                3: 0,
-                4: 0,
-                5: 0
-            },
-            currentQuizQuestions: [] // Store current quiz questions
-        };
+    // Game State
+    const gameState = {
+        currentLevel: 1,
+        completedLevels: 0,
+        totalLevels: 5,
+        badgesEarned: 0,
+        progress: 0,
+        score: 0,
+        user: {
+            name: "Guest User",
+            email: "guest@example.com"
+        },
+        levelProgress: {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0
+        },
+        currentQuizQuestions: [] // Store current quiz questions from API
+    };
+    
+    // Initialize the page
+    async function init() {
+        updateProgress();
+        updateProfile();
         
-        // Question Templates for each level
-        const questionTemplates = {
-            1: [
-                {
-                    template: "When was the Constitution of India adopted by the Constituent Assembly?",
-                    options: ["15 August 1947", "26 January 1950", "26 November 1949", "2 October 1948"],
-                    answer: 2,
-                    explanation: "The Constitution was adopted on 26 November 1949 and came into effect on 26 January 1950."
-                },
-                {
-                    template: "Who is regarded as the chief architect of the Indian Constitution?",
-                    options: ["Mahatma Gandhi", "Jawaharlal Nehru", "B.R. Ambedkar", "Sardar Patel"],
-                    answer: 2,
-                    explanation: "Dr. B.R. Ambedkar is widely regarded as the chief architect of the Indian Constitution."
-                },
-                {
-                    template: "How many articles does the Indian Constitution originally have?",
-                    options: ["395", "448", "250", "500"],
-                    answer: 0,
-                    explanation: "The original Constitution had 395 articles in 22 parts and 8 schedules."
-                },
-                {
-                    template: "The Indian Constitution was drafted by the Constituent Assembly which was set up under:",
-                    options: ["Government of India Act 1935", "Indian Independence Act 1947", "Cabinet Mission Plan 1946", "Mountbatten Plan"],
-                    answer: 2,
-                    explanation: "The Constituent Assembly was set up under the Cabinet Mission Plan of 1946."
-                },
-                {
-                    template: "The Constitution of India was enacted by the Constituent Assembly on:",
-                    options: ["26 January 1950", "26 November 1949", "15 August 1947", "26 December 1949"],
-                    answer: 1,
-                    explanation: "The Constitution was enacted on 26 November 1949 and came into force on 26 January 1950."
-                }
-            ],
-            2: [
-                {
-                    template: "Which part of the Indian Constitution contains the Fundamental Rights?",
-                    options: ["Part I", "Part II", "Part III", "Part IV"],
-                    answer: 2,
-                    explanation: "Part III (Articles 12-35) contains the Fundamental Rights."
-                },
-                {
-                    template: "Which Fundamental Right is called the 'Heart and Soul' of the Constitution by Dr. Ambedkar?",
-                    options: ["Right to Equality", "Right to Freedom", "Right to Constitutional Remedies", "Right Against Exploitation"],
-                    answer: 2,
-                    explanation: "Article 32 (Right to Constitutional Remedies) was called the heart and soul of the Constitution."
-                },
-                {
-                    template: "Which article guarantees the Right to Equality?",
-                    options: ["Article 14", "Article 19", "Article 21", "Article 25"],
-                    answer: 0,
-                    explanation: "Article 14 guarantees equality before law and equal protection of laws."
-                },
-                {
-                    template: "The Preamble of the Indian Constitution was inspired by:",
-                    options: ["US Constitution", "French Constitution", "Irish Constitution", "All of the above"],
-                    answer: 3,
-                    explanation: "The Preamble draws inspiration from multiple sources including the US, French and Irish constitutions."
-                },
-                {
-                    template: "Which Fundamental Right cannot be suspended during emergency?",
-                    options: ["Right to Equality", "Right to Freedom", "Right to Life and Personal Liberty", "Right to Constitutional Remedies"],
-                    answer: 2,
-                    explanation: "Article 21 (Right to Life) cannot be suspended even during emergency."
-                }
-            ],
-            3: [
-                {
-                    template: "Which article contains the Directive Principles of State Policy?",
-                    options: ["Article 36-51", "Article 14-35", "Article 52-78", "Article 79-124"],
-                    answer: 0,
-                    explanation: "Directive Principles of State Policy are contained in Part IV (Articles 36-51)."
-                },
-                {
-                    template: "The Fundamental Duties were added to the Constitution by which amendment?",
-                    options: ["42nd Amendment", "44th Amendment", "73rd Amendment", "86th Amendment"],
-                    answer: 0,
-                    explanation: "The Fundamental Duties were added by the 42nd Amendment in 1976."
-                },
-                {
-                    template: "How many Fundamental Duties are there in the Indian Constitution?",
-                    options: ["10", "11", "12", "9"],
-                    answer: 1,
-                    explanation: "There are currently 11 Fundamental Duties in Article 51A."
-                },
-                {
-                    template: "Which Directive Principle was made a Fundamental Right by the 86th Amendment?",
-                    options: ["Right to Education", "Right to Work", "Right to Health", "Right to Housing"],
-                    answer: 0,
-                    explanation: "Right to Education was elevated from DPSP to Fundamental Right by the 86th Amendment."
-                },
-                {
-                    template: "The concept of Directive Principles of State Policy was borrowed from:",
-                    options: ["US Constitution", "Irish Constitution", "British Constitution", "Canadian Constitution"],
-                    answer: 1,
-                    explanation: "The DPSP concept was borrowed from the Irish Constitution."
-                }
-            ],
-            4: [
-                {
-                    template: "Which article deals with the composition of the Parliament?",
-                    options: ["Article 79", "Article 52", "Article 124", "Article 148"],
-                    answer: 0,
-                    explanation: "Article 79 deals with the composition of the Parliament."
-                },
-                {
-                    template: "The President of India is elected by:",
-                    options: ["Direct election by people", "Members of Parliament", "Members of State Legislatures", "Electoral College consisting of MPs and MLAs"],
-                    answer: 3,
-                    explanation: "The President is elected by an Electoral College consisting of elected members of Parliament and State Legislatures."
-                },
-                {
-                    template: "Which article deals with the appointment of the Prime Minister?",
-                    options: ["Article 74", "Article 75", "Article 76", "Article 77"],
-                    answer: 1,
-                    explanation: "Article 75 deals with the appointment of the Prime Minister by the President."
-                },
-                {
-                    template: "The Supreme Court of India was established under which article?",
-                    options: ["Article 124", "Article 32", "Article 226", "Article 143"],
-                    answer: 0,
-                    explanation: "Article 124 establishes the Supreme Court of India."
-                },
-                {
-                    template: "The concept of Judicial Review is borrowed from:",
-                    options: ["British Constitution", "US Constitution", "French Constitution", "Canadian Constitution"],
-                    answer: 1,
-                    explanation: "The concept of Judicial Review was borrowed from the US Constitution."
-                }
-            ],
-            5: [
-                {
-                    template: "Which article deals with the amendment of the Constitution?",
-                    options: ["Article 368", "Article 352", "Article 370", "Article 356"],
-                    answer: 0,
-                    explanation: "Article 368 deals with the amendment procedure of the Constitution."
-                },
-                {
-                    template: "The first amendment to the Indian Constitution was made in:",
-                    options: ["1950", "1951", "1952", "1953"],
-                    answer: 1,
-                    explanation: "The first amendment was made in 1951 to add restrictions on freedom of speech."
-                },
-                {
-                    template: "Which amendment introduced the Anti-Defection Law?",
-                    options: ["42nd Amendment", "44th Amendment", "52nd Amendment", "73rd Amendment"],
-                    answer: 2,
-                    explanation: "The 52nd Amendment in 1985 introduced the Anti-Defection Law."
-                },
-                {
-                    template: "The concept of Basic Structure of the Constitution was established in which case?",
-                    options: ["Golaknath Case", "Kesavananda Bharati Case", "Minerva Mills Case", "S.R. Bommai Case"],
-                    answer: 1,
-                    explanation: "The Basic Structure doctrine was established in the Kesavananda Bharati case (1973)."
-                },
-                {
-                    template: "Which amendment introduced the National Judicial Appointments Commission?",
-                    options: ["99th Amendment", "100th Amendment", "101st Amendment", "102nd Amendment"],
-                    answer: 0,
-                    explanation: "The 99th Amendment introduced NJAC which was later struck down by the Supreme Court."
-                }
-            ]
-        };
-        
-        // Initialize the page
-        function init() {
+        // Try to load user data from localStorage
+        const savedUser = localStorage.getItem('constitutionQuestUser');
+        if (savedUser) {
+            const userData = JSON.parse(savedUser);
+            gameState.user.name = userData.name || gameState.user.name;
+            gameState.user.email = userData.email || gameState.user.email;
+            gameState.currentLevel = userData.currentLevel || gameState.currentLevel;
+            gameState.completedLevels = userData.completedLevels || gameState.completedLevels;
+            gameState.badgesEarned = userData.badgesEarned || gameState.badgesEarned;
+            gameState.score = userData.score || gameState.score;
+            gameState.levelProgress = userData.levelProgress || gameState.levelProgress;
+            
+            // Update UI based on saved state
             updateProgress();
             updateProfile();
             
-            // Try to load user data from localStorage
-            const savedUser = localStorage.getItem('constitutionQuestUser');
-            if (savedUser) {
-                const userData = JSON.parse(savedUser);
-                gameState.user.name = userData.name || gameState.user.name;
-                gameState.user.email = userData.email || gameState.user.email;
-                gameState.currentLevel = userData.currentLevel || gameState.currentLevel;
-                gameState.completedLevels = userData.completedLevels || gameState.completedLevels;
-                gameState.badgesEarned = userData.badgesEarned || gameState.badgesEarned;
-                gameState.score = userData.score || gameState.score;
-                gameState.levelProgress = userData.levelProgress || gameState.levelProgress;
-                
-                // Update UI based on saved state
-                updateProgress();
-                updateProfile();
-                
-                // Unlock completed levels
-                for (let i = 1; i <= gameState.totalLevels; i++) {
-                    if (i <= gameState.completedLevels + 1 && i > 1) {
-                        // Check if previous level has 75% completion
-                        if (gameState.levelProgress[i-1] >= 75) {
-                            const currentLevel = document.getElementById(`level${i}`);
-                            if (currentLevel) {
-                                currentLevel.classList.remove('locked');
-                                currentLevel.querySelector('.btn').disabled = false;
-                                currentLevel.querySelector('.lock-icon').style.display = "none";
-                                currentLevel.querySelector('span').innerHTML = '<i class="fas fa-check"></i> Available';
-                                currentLevel.querySelector('span').style.color = getLevelColor(i);
-                            }
+            // Unlock completed levels
+            for (let i = 1; i <= gameState.totalLevels; i++) {
+                if (i <= gameState.completedLevels + 1 && i > 1) {
+                    // Check if previous level has 75% completion
+                    if (gameState.levelProgress[i-1] >= 75) {
+                        const currentLevel = document.getElementById(`level${i}`);
+                        if (currentLevel) {
+                            currentLevel.classList.remove('locked');
+                            currentLevel.querySelector('.btn').disabled = false;
+                            currentLevel.querySelector('.lock-icon').style.display = "none";
+                            currentLevel.querySelector('span').innerHTML = '<i class="fas fa-check"></i> Available';
+                            currentLevel.querySelector('span').style.color = getLevelColor(i);
                         }
                     }
-                    
-                    // Show earned badges
-                    if (i <= gameState.completedLevels) {
-                        const badge = document.getElementById(`badge${i}`);
-                        if (badge) {
-                            badge.classList.remove('locked');
-                        }
+                }
+                
+                // Show earned badges
+                if (i <= gameState.completedLevels) {
+                    const badge = document.getElementById(`badge${i}`);
+                    if (badge) {
+                        badge.classList.remove('locked');
+                    }
+                }
+            }
+            
+            // Check if all levels are completed
+            if (gameState.completedLevels === gameState.totalLevels) {
+                setTimeout(() => {
+                    showCertificate();
+                }, 1000);
+            }
+        }
+        
+        // Set up event listeners for level buttons
+        document.getElementById('level2Btn').addEventListener('click', () => startQuiz(2));
+        document.getElementById('level3Btn').addEventListener('click', () => startQuiz(3));
+        document.getElementById('level4Btn').addEventListener('click', () => startQuiz(4));
+        document.getElementById('level5Btn').addEventListener('click', () => startQuiz(5));
+        
+        // Set up submit quiz button
+        document.getElementById('submitQuizBtn').addEventListener('click', () => submitQuiz(gameState.currentQuizLevel));
+        
+        // Fetch user data from database if logged in
+        fetchUserData();
+    }
+    
+    // Fetch user data from database
+    function fetchUserData() {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        
+        fetch('http://localhost:5000/user/profile', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                gameState.user.name = data.user.name || gameState.user.name;
+                gameState.user.email = data.user.email || gameState.user.email;
+                updateProfile();
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
+    }
+    
+    // Start a quiz for a specific level - UPDATED FOR DYNAMIC DATA
+    async function startQuiz(level) {
+        if (gameState.levelProgress[level] >= 100) {
+            alert("You've already mastered this level!");
+            return;
+        }
+
+        try {
+            gameState.currentQuizLevel = level;
+            
+            // Show loading state
+            // Show loading state
+document.getElementById('quizQuestionsContainer').innerHTML = `
+    <div class="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        Loading questions for Level ${level}...
+    </div>
+`;
+            document.getElementById('quizModal').style.display = "flex";
+            
+            // Fetch questions from backend
+            const response = await fetch(`http://localhost:5000/learn/questions/${level}`);
+            const data = await response.json();
+            
+            if (!data.success) {
+                alert('Error loading questions: ' + data.message);
+                closeModal();
+                return;
+            }
+            
+            gameState.currentQuizQuestions = data.questions;
+            
+            // Update modal title
+            document.getElementById('modalLevelTitle').textContent = `Level ${level} Challenge`;
+            document.getElementById('modalLevelDescription').textContent = `Test your knowledge about ${getLevelTopic(level)}`;
+            
+            // Render questions
+            let quizHTML = '';
+            gameState.currentQuizQuestions.forEach((q, qIndex) => {
+                quizHTML += `
+                    <div class="quiz-question" id="question${qIndex}" data-question-id="${q.id}">
+                        <h3>Question ${qIndex + 1}: ${q.question_text}</h3>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(${qIndex}, 'a')">${q.option_a}</div>
+                            <div class="quiz-option" onclick="selectOption(${qIndex}, 'b')">${q.option_b}</div>
+                            <div class="quiz-option" onclick="selectOption(${qIndex}, 'c')">${q.option_c}</div>
+                            <div class="quiz-option" onclick="selectOption(${qIndex}, 'd')">${q.option_d}</div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback${qIndex}"></div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('quizQuestionsContainer').innerHTML = quizHTML;
+            document.getElementById('quizQuestionsContainer').scrollTop = 0;
+            
+        } catch (error) {
+            console.error('Error starting quiz:', error);
+            alert('Error loading questions. Please try again.');
+            closeModal();
+        }
+    }
+    
+    // Select an option in the quiz - UPDATED
+    function selectOption(qIndex, option) {
+    if (!gameState.currentQuizQuestions || !gameState.currentQuizQuestions[qIndex]) {
+        console.error('Question not found at index:', qIndex);
+        return;
+    }
+    
+    const questionDiv = document.getElementById(`question${qIndex}`);
+    if (!questionDiv) return;
+    
+    const options = questionDiv.querySelectorAll('.quiz-option');
+    options.forEach(opt => opt.classList.remove('selected'));
+    
+    // Find and select the clicked option
+    options.forEach(opt => {
+        if (opt.textContent === gameState.currentQuizQuestions[qIndex][`option_${option}`]) {
+            opt.classList.add('selected');
+        }
+    });
+    
+    // Store the selected answer
+    gameState.currentQuizQuestions[qIndex].selected = option;
+}    
+    
+    // Submit the quiz - UPDATED FOR BACKEND VALIDATION
+    async function submitQuiz(level) {
+        const questions = gameState.currentQuizQuestions;
+        let allAnswered = true;
+        
+        // Check if all questions are answered
+        questions.forEach((q, qIndex) => {
+            if (q.selected === undefined) {
+                allAnswered = false;
+                const feedbackDiv = document.getElementById(`feedback${qIndex}`);
+                feedbackDiv.textContent = "Please select an answer!";
+                feedbackDiv.className = "quiz-feedback incorrect";
+                feedbackDiv.style.display = "block";
+            }
+        });
+        
+        if (!allAnswered) return;
+        
+        try {
+            // Prepare answers for submission
+            const answers = questions.map(q => ({
+                questionId: q.id,
+                selectedOption: q.selected
+            }));
+            
+            // Submit to backend
+            const response = await fetch(`http://localhost:5000/learn/submit-quiz/${level}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ answers })
+            });
+            
+            const result = await response.json();
+            
+            if (!result.success) {
+                alert('Error submitting quiz: ' + result.message);
+                return;
+            }
+            
+            // Display results for each question
+            questions.forEach((q, qIndex) => {
+                const questionResult = result.results.find(r => r.questionId === q.id);
+                const feedbackDiv = document.getElementById(`feedback${qIndex}`);
+                
+                if (questionResult.correct) {
+                    feedbackDiv.innerHTML = `<i class="fas fa-check"></i> Correct! ${questionResult.explanation}`;
+                    feedbackDiv.className = "quiz-feedback correct";
+                } else {
+                    feedbackDiv.innerHTML = `<i class="fas fa-times"></i> Incorrect. The correct answer was: ${getCorrectAnswerText(q, questionResult.correctAnswer)}. ${questionResult.explanation}`;
+                    feedbackDiv.className = "quiz-feedback incorrect";
+                }
+                feedbackDiv.style.display = "block";
+            });
+            
+            // Update game state based on results
+            const percentageScore = result.percentage;
+            
+            // Update level progress (store the highest percentage achieved)
+            if (percentageScore > (gameState.levelProgress[level] || 0)) {
+                gameState.levelProgress[level] = percentageScore;
+            }
+            
+            // Check if this level can be marked as completed (at least 75% score)
+            if (percentageScore >= 75 && level === gameState.currentLevel) {
+                gameState.completedLevels++;
+                gameState.currentLevel = Math.min(gameState.currentLevel + 1, gameState.totalLevels);
+                gameState.score += result.score * 10; // Add to total score
+                
+                // Earn badge
+                const badge = document.getElementById(`badge${level}`);
+                if (badge) badge.classList.remove('locked');
+                gameState.badgesEarned = Math.min(gameState.badgesEarned + 1, 5);
+                updateProfile();
+                updateProgress();
+                saveGameState();
+
+                // Unlock next level if applicable
+                if (level < gameState.totalLevels) {
+                    const nextLevel = document.getElementById(`level${level + 1}`);
+                    if (nextLevel) {
+                        nextLevel.classList.remove('locked');
+                        nextLevel.querySelector('.btn').disabled = false;
+                        nextLevel.querySelector('.lock-icon').style.display = "none";
+                        nextLevel.querySelector('span').innerHTML = '<i class="fas fa-check"></i> Available';
+                        nextLevel.querySelector('span').style.color = getLevelColor(level + 1);
                     }
                 }
                 
@@ -489,57 +548,43 @@
                 }
             }
             
-            // Set up event listeners for level buttons
-            document.getElementById('level2Btn').addEventListener('click', () => startQuiz(2));
-            document.getElementById('level3Btn').addEventListener('click', () => startQuiz(3));
-            document.getElementById('level4Btn').addEventListener('click', () => startQuiz(4));
-            document.getElementById('level5Btn').addEventListener('click', () => startQuiz(5));
-            
-            // Set up submit quiz button
-            document.getElementById('submitQuizBtn').addEventListener('click', () => submitQuiz(gameState.currentQuizLevel));
-            
-            // Fetch user data from database if logged in
-            fetchUserData();
-        }
-        
-        // Fetch user data from database
-        function fetchUserData() {
-            const token = localStorage.getItem('token');
-            if (!token) return;
-            
-            fetch('http://localhost:5000/user/profile', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`
+            // Show result
+            setTimeout(() => {
+                if (percentageScore >= 75) {
+                    alert(`Congratulations! You scored ${result.score}/${result.total} (${Math.round(percentageScore)}%) in Level ${level}!`);
+                } else {
+                    alert(`You scored ${result.score}/${result.total} (${Math.round(percentageScore)}%). You need at least 75% to complete this level. Try again!`);
                 }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    gameState.user.name = data.user.name || gameState.user.name;
-                    gameState.user.email = data.user.email || gameState.user.email;
-                    updateProfile();
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching user data:', error);
-            });
+                closeModal();
+                updateProgress();
+                updateProfile();
+            }, 1000);
+            
+        } catch (error) {
+            console.error('Error submitting quiz:', error);
+            alert('Error submitting quiz. Please try again.');
         }
-        
+    }
+    
+    // Helper function to get correct answer text
+    function getCorrectAnswerText(question, correctAnswer) {
+        return question[`option_${correctAnswer.toLowerCase()}`];
+    }
+    
+    // Rest of your existing functions remain the same...
+    // (goToHome, updateProgress, updateProfile, toggleProfile, getLevelTopic, 
+    // getLevelColor, closeModal, showCertificate, closeCertificateModal, 
+    // saveGameState, getBadgeIcon, etc.)
+    
+    // Initialize the page when loaded
+    
+                
         // Go to home page
         function goToHome() {
             window.location.href = 'index.html';
         }
         
-        // Generate random questions for a level
-        function generateQuestions(level) {
-            const templates = questionTemplates[level];
-            if (!templates) return [];
-            
-            // For now, we'll use all 5 questions, but you could randomize selection here
-            return templates.map(q => ({...q}));
-        }
-        
+
         // Update progress bar and status
         function updateProgress() {
             // Calculate overall progress based on level completion and question progress
@@ -621,45 +666,7 @@
             }
         }
         
-        // Start a quiz for a specific level
-        function startQuiz(level) {
-            gameState.currentQuizLevel = level;
-            gameState.currentQuizQuestions = generateQuestions(level);
-            if (!gameState.currentQuizQuestions || gameState.currentQuizQuestions.length === 0) {
-                alert("Quiz questions for this level are not available yet!");
-                return;
-            }
-            
-            document.getElementById('modalLevelTitle').textContent = `Level ${level} Challenge`;
-            document.getElementById('modalLevelDescription').textContent = `Test your knowledge about ${getLevelTopic(level)}`;
-            
-            let quizHTML = '';
-            gameState.currentQuizQuestions.forEach((q, qIndex) => {
-                quizHTML += `
-                    <div class="quiz-question" id="question${qIndex}">
-                        <h3>Question ${qIndex + 1}: ${q.template}</h3>
-                        <div class="quiz-options">
-                `;
-                
-                q.options.forEach((option, oIndex) => {
-                    quizHTML += `
-                        <div class="quiz-option" onclick="selectOption(${qIndex}, ${oIndex})">
-                            ${option}
-                        </div>
-                    `;
-                });
-                
-                quizHTML += `
-                        </div>
-                        <div class="quiz-feedback" id="feedback${qIndex}"></div>
-                    </div>
-                `;
-            });
-            
-            document.getElementById('quizQuestionsContainer').innerHTML = quizHTML;
-            document.getElementById('quizModal').style.display = "flex";
-            document.getElementById('quizQuestionsContainer').scrollTop = 0;
-        }
+        
         
         // Get topic for a level
         function getLevelTopic(level) {
@@ -672,104 +679,7 @@
             ];
             return topics[level - 1] || "the Constitution";
         }
-        
-        // Select an option in the quiz
-        function selectOption(qIndex, oIndex) {
-            const questionDiv = document.getElementById(`question${qIndex}`);
-            const options = questionDiv.querySelectorAll('.quiz-option');
-            
-            options.forEach(opt => opt.classList.remove('selected'));
-            options[oIndex].classList.add('selected');
-            
-            // Store the selected answer
-            if (gameState.currentQuizQuestions && gameState.currentQuizQuestions[qIndex]) {
-                gameState.currentQuizQuestions[qIndex].selected = oIndex;
-            }
-        }
-        
-        // Submit the quiz
-        function submitQuiz(level) {
-            const questions = gameState.currentQuizQuestions;
-            let allAnswered = true;
-            let score = 0;
-            
-            questions.forEach((q, qIndex) => {
-                const feedbackDiv = document.getElementById(`feedback${qIndex}`);
                 
-                if (q.selected === undefined) {
-                    allAnswered = false;
-                    feedbackDiv.textContent = "Please select an answer!";
-                    feedbackDiv.className = "quiz-feedback incorrect";
-                    feedbackDiv.style.display = "block";
-                    return;
-                }
-                
-                if (q.selected === q.answer) {
-                    score++;
-                    feedbackDiv.innerHTML = `<i class="fas fa-check"></i> Correct! ${q.explanation}`;
-                    feedbackDiv.className = "quiz-feedback correct";
-                } else {
-                    feedbackDiv.innerHTML = `<i class="fas fa-times"></i> Incorrect. The correct answer is: ${q.options[q.answer]}. ${q.explanation}`;
-                    feedbackDiv.className = "quiz-feedback incorrect";
-                }
-                feedbackDiv.style.display = "block";
-            });
-            
-            if (!allAnswered) return;
-            
-            // Calculate percentage score
-            const percentageScore = (score / questions.length) * 100;
-            
-            // Update level progress (store the highest percentage achieved)
-            if (percentageScore > (gameState.levelProgress[level] || 0)) {
-                gameState.levelProgress[level] = percentageScore;
-            }
-            
-            // Check if this level can be marked as completed (at least 75% score)
-            if (percentageScore >= 75 && level === gameState.currentLevel) {
-                gameState.completedLevels++;
-                gameState.currentLevel = Math.min(gameState.currentLevel + 1, gameState.totalLevels);
-                gameState.score += score * 10; // Add to total score
-                
-                // Earn badge
-                const badge = document.getElementById(`badge${level}`);
-                if (badge) {
-                    badge.classList.remove('locked');
-                    gameState.badgesEarned++;
-                }
-                
-                // Unlock next level if applicable
-                if (level < gameState.totalLevels) {
-                    const nextLevel = document.getElementById(`level${level + 1}`);
-                    if (nextLevel) {
-                        nextLevel.classList.remove('locked');
-                        nextLevel.querySelector('.btn').disabled = false;
-                        nextLevel.querySelector('.lock-icon').style.display = "none";
-                        nextLevel.querySelector('span').innerHTML = '<i class="fas fa-check"></i> Available';
-                        nextLevel.querySelector('span').style.color = getLevelColor(level + 1);
-                    }
-                }
-                
-                // Check if all levels are completed
-                if (gameState.completedLevels === gameState.totalLevels) {
-                    setTimeout(() => {
-                        showCertificate();
-                    }, 1000);
-                }
-            }
-            
-            // Show result
-            setTimeout(() => {
-                if (percentageScore >= 75) {
-                    alert(`Congratulations! You scored ${score}/${questions.length} (${Math.round(percentageScore)}%) in Level ${level}!`);
-                } else {
-                    alert(`You scored ${score}/${questions.length} (${Math.round(percentageScore)}%). You need at least 75% to complete this level. Try again!`);
-                }
-                closeModal();
-                updateProgress();
-                updateProfile();
-            }, 1000);
-        }
         
         // Get color for a level
         function getLevelColor(level) {
@@ -847,11 +757,12 @@ document.getElementById('certificateName').textContent = username;
                 score: gameState.score,
                 levelProgress: gameState.levelProgress
             };
-            localStorage.setItem('constitutionQuestUser', JSON.stringify(userData));
+           localStorage.setItem('constitutionQuestUser', JSON.stringify({
+        ...gameState,
+        user: gameState.user
+    }));
         }
         
-        // Initialize the page when loaded
-        window.onload = init;
         
         // When a section is completed
         function updateLearningProgress(section, progress) {
@@ -892,6 +803,7 @@ document.getElementById('certificateName').textContent = username;
                 profileModal.style.display = 'none';
             }
         });
+        window.onload = init;
     </script>
 </body>
 </html>

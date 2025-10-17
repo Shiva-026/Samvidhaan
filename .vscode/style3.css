@@ -404,6 +404,26 @@ body {
     color: #bdc3c7;
 }
 
+/* Loading animation */
+.loading {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+    color: #3498db;
+}
+
+.loading:after {
+    content: '...';
+    animation: dots 1.5s steps(5, end) infinite;
+}
+
+@keyframes dots {
+    0%, 20% { color: rgba(0,0,0,0); text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); }
+    40% { color: #3498db; text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); }
+    60% { text-shadow: .25em 0 0 #3498db, .5em 0 0 rgba(0,0,0,0); }
+    80%, 100% { text-shadow: .25em 0 0 #3498db, .5em 0 0 #3498db; }
+}
+
 /* Footer */
 .footer {
     text-align: center;
@@ -519,11 +539,13 @@ body {
 
 .quiz-option:hover {
     background: #e0e0e0;
+     border-color: #3498db;
 }
 
 .quiz-option.selected {
     background: #3498db;
     color: white;
+    border-color: #2980b9;
 }
 
 .quiz-feedback {
@@ -538,12 +560,14 @@ body {
     background: #d4edda;
     color: #155724;
     display: block;
+      border: 1px solid #c3e6cb;
 }
 
 .quiz-feedback.incorrect {
     background: #f8d7da;
     color: #721c24;
     display: block;
+    border: 1px solid #f5c6cb;
 }
 
 /* Certificate Modal */

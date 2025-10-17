@@ -311,110 +311,85 @@
         </div>
     </div>
 
-    <script>
-        // Timeline interaction
-        function toggleTimelineItem(item) {
-            item.classList.toggle('active');
-        }
+  <script>
+  let currentQuestionIndex = 0;
+  let questions = [];
 
-        // Quiz data
-        const quizzes = [
-            {
-                question: "Which was the first official document that proposed a Constituent Assembly for India?",
-                options: {
-                    A: "Government of India Act 1935",
-                    B: "Nehru Report 1928",
-                    C: "M.N. Roy's proposal in 1934",
-                    D: "Cabinet Mission Plan 1946"
-                },
-                answer: "C",
-                feedback: "Correct! M.N. Roy, a pioneer of the communist movement in India, was the first to propose the idea of a Constituent Assembly in 1934."
-            },
-            {
-                question: "Who was elected as the permanent Chairman (President) of the Constituent Assembly?",
-                options: {
-                    A: "Jawaharlal Nehru",
-                    B: "Dr. Rajendra Prasad",
-                    C: "Dr. B.R. Ambedkar",
-                    D: "Sardar Vallabhbhai Patel"
-                },
-                answer: "B",
-                feedback: "Correct! Dr. Rajendra Prasad was elected as the permanent President of the Constituent Assembly on December 11, 1946."
-            },
-            {
-                question: "How many members were in the Drafting Committee of the Constitution?",
-                options: {
-                    A: "5",
-                    B: "7",
-                    C: "9",
-                    D: "11"
-                },
-                answer: "B",
-                feedback: "Correct! The Drafting Committee had 7 members: Dr. B.R. Ambedkar (Chairman), N. Gopalaswami Ayyangar, Alladi Krishnaswami Ayyar, K.M. Munshi, Syed Mohammad Saadulla, B.L. Mitter (replaced by N. Madhava Rao), and D.P. Khaitan (replaced by T.T. Krishnamachari)."
-            },
-            {
-                question: "Who did the calligraphy for the original Constitution of India?",
-                options: {
-                    A: "Nandalal Bose",
-                    B: "Prem Behari Narain Raizada",
-                    C: "Beohar Rammanohar Sinha",
-                    D: "Abanindranath Tagore"
-                },
-                answer: "B",
-                feedback: "Correct! Prem Behari Narain Raizada (Saxena) did the calligraphy in flowing italic style with a nib and ink."
-            },
-            {
-                question: "Why was January 26 chosen as the date for Constitution to come into force?",
-                options: {
-                    A: "It was the day India got independence",
-                    B: "It commemorates the 1930 Purna Swaraj declaration",
-                    C: "It was Dr. Ambedkar's birthday",
-                    D: "It was the day Constituent Assembly first met"
-                },
-                answer: "B",
-                feedback: "Correct! January 26 was chosen to honor the 1930 declaration of Purna Swaraj (complete independence) by the Indian National Congress."
-            }
-        ];
+  async function loadQuestions() {
+    try {
+      const res = await fetch("http://localhost:5000/history/questions");
+      questions = await res.json();
+    } catch (err) {
+      console.error("Error loading questions:", err);
+      alert("Failed to load history questions.");
+    }
+  }
 
-        let currentQuizIndex = 0;
+  function showQuiz(index, event) {
+    if (event) event.stopPropagation();
+    currentQuestionIndex = index;
+    const q = questions[index];
+    document.getElementById('quizQuestion').textContent = q.question;
+    document.getElementById('optionA').textContent = q.option_a;
+    document.getElementById('optionB').textContent = q.option_b;
+    document.getElementById('optionC').textContent = q.option_c;
+    document.getElementById('optionD').textContent = q.option_d;
+    document.getElementById('quizFeedback').textContent = '';
+    document.getElementById('quizFeedback').style.color = '#000';
+    document.getElementById('quizModal').style.display = 'flex';
+  }
 
-        function showQuiz(index, event) {
-            event.stopPropagation();
-            currentQuizIndex = index;
-            const quiz = quizzes[index];
-            document.getElementById('quizQuestion').textContent = quiz.question;
-            document.getElementById('optionA').textContent = quiz.options.A;
-            document.getElementById('optionB').textContent = quiz.options.B;
-            document.getElementById('optionC').textContent = quiz.options.C;
-            document.getElementById('optionD').textContent = quiz.options.D;
-            document.getElementById('quizFeedback').textContent = '';
-            document.getElementById('quizModal').style.display = 'flex';
-        }
+  async function checkAnswer(optionLetter) {
+    const questionId = questions[currentQuestionIndex].id;
+    try {
+      const res = await fetch("http://localhost:5000/history/check-answer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: questionId, selectedOption: optionLetter }),
+      });
+      const data = await res.json();
+      const feedback = document.getElementById("quizFeedback");
 
-        function closeQuiz() {
-            document.getElementById('quizModal').style.display = 'none';
-        }
+      if (data.correct) {
+        feedback.textContent = "✅ Correct! Great job!";
+        feedback.style.color = "#4CAF50";
+      } else {
+        feedback.textContent = `❌ Incorrect. The correct answer was: ${data.correctAnswerText}`;
+        feedback.style.color = "#F44336";
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error checking answer.");
+    }
+  }
 
-        function checkAnswer(answer) {
-            const quiz = quizzes[currentQuizIndex];
-            const feedback = document.getElementById('quizFeedback');
-            
-            if (answer === quiz.answer) {
-                feedback.textContent = "✓ Correct! " + quiz.feedback;
-                feedback.style.color = "#4CAF50";
-            } else {
-                feedback.textContent = "✗ Incorrect. The correct answer is: " + quiz.options[quiz.answer];
-                feedback.style.color = "#F44336";
-            }
-        }
+  function closeQuiz() {
+    document.getElementById('quizModal').style.display = 'none';
+  }
 
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('quizModal')) {
-                closeQuiz();
-            }
-        }
-    </script>
+  window.onclick = function(event) {
+    if (event.target == document.getElementById('quizModal')) {
+      closeQuiz();
+    }
+  }
+
+  function toggleTimelineItem(element) {
+  // Close all open timeline items
+  const items = document.querySelectorAll('.timeline-item');
+  items.forEach(item => {
+    if (item !== element) {
+      item.classList.remove('active');
+    }
+  });
+
+  // Toggle the clicked one
+  element.classList.toggle('active');
+}
+
+  window.onload = loadQuestions;
+</script>
+
+
     <!-- Google Translate Script -->
     <script type="text/javascript">
         function googleTranslateElementInit() {

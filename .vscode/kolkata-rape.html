@@ -212,161 +212,84 @@
     </div>
 
     <script>
-        let currentQuestion = 0;
-        let score = 0;
-        const questions = [
-            {
-                question: 'When did the Kolkata rape case that shocked the nation occur?',
-                options: [
-                    '2010',
-                    '2012',
-                    '2015',
-                    '2019'
-                ],
-                correctAnswer: 'B'
-            },
-            {
-                question: 'What was particularly shocking about the Kolkata rape case?',
-                options: [
-                    'The victim was a foreign tourist',
-                    'It happened in a moving car in public view',
-                    'The perpetrators were police officers',
-                    'The victim was a minor'
-                ],
-                correctAnswer: 'B'
-            },
-            {
-                question: 'Where exactly in Kolkata did the incident occur?',
-                options: [
-                    'Park Street',
-                    'Howrah Bridge',
-                    'Victoria Memorial',
-                    'New Market'
-                ],
-                correctAnswer: 'A'
-            },
-            {
-                question: 'What was the occupation of the main accused in the Kolkata rape case?',
-                options: [
-                    'Businessman',
-                    'Politician',
-                    'Police officer',
-                    'Taxi driver'
-                ],
-                correctAnswer: 'A'
-            },
-            {
-                question: 'What significant legal change followed public outrage over the Kolkata case?',
-                options: [
-                    'Introduction of faster trials for sexual assault cases',
-                    'Stricter bail conditions for rape accused',
-                    'Better protection for witnesses',
-                    'All of the above'
-                ],
-                correctAnswer: 'D'
-            }
-        ];
+  let currentQuestionIndex = 0;
+  let score = 0;
+  let questions = [];
 
-        function updateProgressBar() {
-            const progressPercent = (currentQuestion / questions.length) * 100;
-            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
-        }
+  async function loadQuestions() {
+    try {
+      const res = await fetch("http://localhost:5000/kolkata/questions");
+      const data = await res.json();
+      if (data.success) {
+        questions = data.questions;
+        showQuestion();
+      } else {
+        alert("Failed to load questions.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error loading questions.");
+    }
+  }
 
-        function updateScoreDisplay() {
-            document.getElementById('score-display').textContent = `Score: ${score}`;
-        }
+  function showQuestion() {
+    const q = questions[currentQuestionIndex];
+    document.getElementById("question-text").innerText = q.question;
+    document.querySelectorAll(".answer-btn")[0].innerText = q.option_a;
+    document.querySelectorAll(".answer-btn")[1].innerText = q.option_b;
+    document.querySelectorAll(".answer-btn")[2].innerText = q.option_c;
+    document.querySelectorAll(".answer-btn")[3].innerText = q.option_d;
 
-        function showFeedback(message, isCorrect) {
-            const feedbackElement = document.getElementById('feedback');
-            feedbackElement.textContent = message;
-            feedbackElement.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
-            feedbackElement.style.display = 'block';
-        }
+    document.getElementById("feedback").style.display = "none";
+    document.getElementById("next-question-btn").disabled = true;
+  }
 
-        function submitAnswer(answer) {
-            const correctAnswer = questions[currentQuestion].correctAnswer;
-            const feedbackElement = document.getElementById('feedback');
-            
-            if (answer === correctAnswer) {
-                score++;
-                updateScoreDisplay();
-                showFeedback('Correct! Well done!', true);
-            } else {
-                const correctOption = questions[currentQuestion].options[correctAnswer.charCodeAt(0) - 65];
-                showFeedback(`Incorrect. The correct answer was: ${correctOption}`, false);
-            }
-            
-            // Disable all answer buttons after submission
-            const buttons = document.querySelectorAll('.answer-btn');
-            buttons.forEach(button => {
-                button.disabled = true;
-                button.style.opacity = '0.7';
-            });
-            
-            // Enable next question button
-            document.getElementById('next-question-btn').disabled = false;
-        }
+  async function submitAnswer(optionLetter) {
+    const questionId = questions[currentQuestionIndex].id;
+    try {
+      const res = await fetch("http://localhost:5000/kolkata/check-answer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: questionId, selectedOption: optionLetter }),
+      });
+      const data = await res.json();
 
-        function loadNextQuestion() {
-            // Hide feedback
-            document.getElementById('feedback').style.display = 'none';
-            
-            currentQuestion++;
-            updateProgressBar();
-            
-            if (currentQuestion < questions.length) {
-                const questionData = questions[currentQuestion];
-                document.getElementById('question-text').innerText = questionData.question;
-                
-                const buttons = document.querySelectorAll('.answer-btn');
-                buttons.forEach((button, index) => {
-                    button.innerText = questionData.options[index];
-                    button.disabled = false;
-                    button.style.opacity = '1';
-                });
-                
-                // Disable next question button until answer is selected
-                document.getElementById('next-question-btn').disabled = true;
-            } else {
-                // Quiz completed
-                const percentage = Math.round((score / questions.length) * 100);
-                let message;
-                
-                if (percentage >= 80) {
-                    message = `Excellent! You scored ${score}/${questions.length} (${percentage}%)`;
-                } else if (percentage >= 60) {
-                    message = `Good job! You scored ${score}/${questions.length} (${percentage}%)`;
-                } else {
-                    message = `You scored ${score}/${questions.length} (${percentage}%). Keep learning!`;
-                }
-                
-                alert(message);
-                
-                // Reset quiz
-                currentQuestion = 0;
-                score = 0;
-                updateProgressBar();
-                updateScoreDisplay();
-                const questionData = questions[currentQuestion];
-                document.getElementById('question-text').innerText = questionData.question;
-                
-                const buttons = document.querySelectorAll('.answer-btn');
-                buttons.forEach((button, index) => {
-                    button.innerText = questionData.options[index];
-                    button.disabled = false;
-                    button.style.opacity = '1';
-                });
-                
-                // Disable next question button until answer is selected
-                document.getElementById('next-question-btn').disabled = true;
-            }
-        }
+      const feedback = document.getElementById("feedback");
+      if (data.correct) {
+        score++;
+        feedback.textContent = "✅ Correct! Well done!";
+        feedback.className = "feedback correct";
+      } else {
+        feedback.textContent = `❌ Incorrect. The correct answer was: ${data.correctAnswerText}`;
+        feedback.className = "feedback incorrect";
+      }
+      feedback.style.display = "block";
+      updateScoreDisplay();
+      document.getElementById("next-question-btn").disabled = false;
+    } catch (err) {
+      console.error(err);
+      alert("Error submitting answer.");
+    }
+  }
 
-        // Initialize
-        updateProgressBar();
-        updateScoreDisplay();
-        // Disable next question button until answer is selected
-        document.getElementById('next-question-btn').disabled = true;
-    </script>
+  function loadNextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+      showQuestion();
+    } else {
+      alert(`Quiz complete! Your score: ${score}/${questions.length}`);
+      currentQuestionIndex = 0;
+      score = 0;
+      loadQuestions(); // restart quiz
+    }
+  }
+
+  function updateScoreDisplay() {
+    document.getElementById("score-display").textContent = `Score: ${score}`;
+  }
+
+  window.onload = loadQuestions;
+</script>
+
 </body>
 </html>

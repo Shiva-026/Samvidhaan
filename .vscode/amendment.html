@@ -259,6 +259,40 @@
       }
     }
 
+    /* Loading animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+.loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Error states */
+.error-message {
+    background-color: #fecaca;
+    color: #7f1d1d;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+    border-left: 4px solid #ef4444;
+}
+
     @media (max-width: 650px) {
       .game-container {
         grid-template-columns: repeat(3, 1fr);
@@ -341,44 +375,11 @@
   </div>
 
   <script>
-    // Game data
-    const amendmentData = [
-      {
-        id: "first",
-        number: "1st",
-        title: "First Amendment (1951)",
-        shortDesc: "Added Ninth Schedule",
-        description: "The First Amendment added the Ninth Schedule to protect land reform laws from judicial review. It also introduced restrictions on free speech and extended affirmative action.",
-        impact: "Enabled land reforms and protected social justice laws."
-      },
-      {
-        id: "fortysecond",
-        number: "42nd",
-        title: "42nd Amendment (1976)",
-        shortDesc: "The 'Mini-Constitution'",
-        description: "Introduced during Emergency; added 'Socialist', 'Secular' to the Preamble, introduced Fundamental Duties, and gave more power to the Central Government.",
-        impact: "Made extensive structural changes to the Constitution."
-      },
-      {
-        id: "seventythird",
-        number: "73rd",
-        title: "73rd Amendment (1992)",
-        shortDesc: "Panchayati Raj",
-        description: "Constitutionalized Panchayati Raj Institutions, ensuring local governance and representation for SC/ST and women.",
-        impact: "Strengthened grassroots democracy in India."
-      },
-      {
-        id: "onehundredfirst",
-        number: "101st",
-        title: "101st Amendment (2016)",
-        shortDesc: "Introduced GST",
-        description: "Launched Goods and Services Tax replacing many indirect taxes. Created GST Council for coordination.",
-        impact: "Unified Indian market under a single tax regime."
-      }
-    ];
+    // API Configuration
+    const API_BASE_URL = 'http://localhost:5000';
 
     // Game state variables
-    let cards = [], hasFlippedCard = false, lockBoard = false;
+    let amendmentData = [], cards = [], hasFlippedCard = false, lockBoard = false;
     let firstCard, secondCard;
     let moves = 0, matches = 0, score = 0, matchedPairs = [];
 
@@ -388,167 +389,279 @@
     const matchesDisplay = document.getElementById("matches");
     const infoContent = document.getElementById("infoContent");
     const restartBtn = document.getElementById("restartBtn");
+    const gameContainer = document.getElementById("gameContainer");
 
     // Initialize game
-    function initGame() {
-      restartBtn.addEventListener('click', resetGame);
-      startGame();
+    async function initGame() {
+        try {
+            // Show loading state
+            infoContent.innerHTML = '<p>Loading amendments...</p>';
+            
+            // Load amendments from backend
+            const response = await fetch(`${API_BASE_URL}/amendments/game-data`);
+            const data = await response.json();
+            
+            if (!data.success) {
+                throw new Error(data.message);
+            }
+            
+            amendmentData = data.amendments.map(amendment => ({
+                id: amendment.id.toString(),
+                number: amendment.amendment_number,
+                title: amendment.amendment_title,
+                shortDesc: amendment.short_description,
+                description: amendment.full_description,
+                impact: amendment.impact,
+                year: amendment.year
+            }));
+            
+            restartBtn.addEventListener('click', resetGame);
+            startGame();
+            
+        } catch (error) {
+            console.error('Error initializing game:', error);
+            infoContent.innerHTML = `
+                <div class="info-highlight" style="background-color: #fecaca; color: #7f1d1d;">
+                    Error loading amendments: ${error.message}
+                </div>
+                <button class="restart-btn" onclick="initGame()">Retry</button>
+            `;
+        }
     }
 
     // Update score display and save to localStorage
     function updateScore() {
-      score = matches * 100 - Math.floor(moves * 0.5);
-      if (score < 0) score = 0;
-      scoreDisplay.textContent = `Score: ${score}`;
-      
-      // Save the score to localStorage for StarNavigator to access
-      localStorage.setItem('amendmentScore', score.toString());
-      
-      // Update the total score in StarNavigator
-      updateTotalCivicScore();
+        score = matches * 100 - Math.floor(moves * 0.5);
+        if (score < 0) score = 0;
+        scoreDisplay.textContent = `Score: ${score}`;
+        
+        // Save the score to localStorage
+        localStorage.setItem('amendmentScore', score.toString());
+        
+        // Update the total score in StarNavigator
+        updateTotalCivicScore();
+        
+        // Save score to database if user is logged in
+        saveScoreToDatabase();
+    }
+
+    // Save score to backend database
+    async function saveScoreToDatabase() {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            const response = await fetch(`${API_BASE_URL}/amendments/save-score`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    score: score,
+                    moves: moves,
+                    matches: matches
+                })
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                console.log('Score saved to database');
+            }
+        } catch (error) {
+            console.error('Error saving score to database:', error);
+        }
     }
 
     // Update the total civic score in StarNavigator
     function updateTotalCivicScore() {
-      // Calculate total score by combining all quiz scores
-      let total = 0;
-      const quizzes = ['preamble', 'amendment', 'fundamentalrights'];
-      
-      quizzes.forEach(quiz => {
-        const score = localStorage.getItem(`${quiz}Score`);
-        if (score) {
-          total += parseInt(score);
-        }
-      });
-      
-      // Save the total score for StarNavigator
-      localStorage.setItem('totalCivicScore', total.toString());
+        let total = 0;
+        const quizzes = ['preamble', 'amendment', 'fundamentalrights'];
+        
+        quizzes.forEach(quiz => {
+            const score = localStorage.getItem(`${quiz}Score`);
+            if (score) {
+                total += parseInt(score);
+            }
+        });
+        
+        localStorage.setItem('totalCivicScore', total.toString());
     }
 
     // Create game cards
     function createCards() {
-      const gameContainer = document.getElementById("gameContainer");
-      gameContainer.innerHTML = "";
-      cards = [];
+        gameContainer.innerHTML = "";
+        cards = [];
 
-      const gameCards = [...amendmentData, ...amendmentData].sort(() => 0.5 - Math.random());
+        if (amendmentData.length === 0) {
+            gameContainer.innerHTML = '<p>No amendment data available</p>';
+            return;
+        }
 
-      gameCards.forEach(card => {
-        const memoryCard = document.createElement("div");
-        memoryCard.classList.add("memory-card");
-        memoryCard.dataset.id = card.id;
-        memoryCard.innerHTML = `
-          <div class="card-front" data-number="${card.number}"></div>
-          <div class="card-back">${card.shortDesc}</div>
-        `;
-        memoryCard.addEventListener("click", flipCard);
-        gameContainer.appendChild(memoryCard);
-        cards.push(memoryCard);
-      });
+        // Create pairs for memory game
+        const gameCards = [...amendmentData, ...amendmentData].sort(() => 0.5 - Math.random());
+
+        gameCards.forEach((card, index) => {
+            const memoryCard = document.createElement("div");
+            memoryCard.classList.add("memory-card");
+            memoryCard.dataset.id = card.id;
+            memoryCard.dataset.index = index;
+            memoryCard.innerHTML = `
+                <div class="card-front" data-number="${card.number}"></div>
+                <div class="card-back">${card.shortDesc}</div>
+            `;
+            memoryCard.addEventListener("click", flipCard);
+            gameContainer.appendChild(memoryCard);
+            cards.push(memoryCard);
+        });
     }
 
     // Flip card logic
     function flipCard() {
-      if (lockBoard || this === firstCard || this.classList.contains("matched")) return;
-      
-      this.classList.add("flipped");
+        if (lockBoard || this === firstCard || this.classList.contains("matched")) return;
+        
+        this.classList.add("flipped");
 
-      if (!hasFlippedCard) {
-        hasFlippedCard = true;
-        firstCard = this;
-        return;
-      }
+        if (!hasFlippedCard) {
+            hasFlippedCard = true;
+            firstCard = this;
+            return;
+        }
 
-      secondCard = this;
-      lockBoard = true;
-      moves++;
-      movesDisplay.textContent = moves;
-      checkForMatch();
+        secondCard = this;
+        lockBoard = true;
+        moves++;
+        movesDisplay.textContent = moves;
+        checkForMatch();
     }
 
     // Check if cards match
     function checkForMatch() {
-      const isMatch = firstCard.dataset.id === secondCard.dataset.id;
-      
-      if (isMatch) {
-        handleMatch();
-      } else {
-        setTimeout(() => {
-          firstCard.classList.remove("flipped");
-          secondCard.classList.remove("flipped");
-          resetBoard();
-        }, 1000);
-      }
+        const isMatch = firstCard.dataset.id === secondCard.dataset.id;
+        
+        if (isMatch) {
+            handleMatch();
+        } else {
+            setTimeout(() => {
+                firstCard.classList.remove("flipped");
+                secondCard.classList.remove("flipped");
+                resetBoard();
+            }, 1000);
+        }
     }
 
     // Handle matched cards
     function handleMatch() {
-      const id = firstCard.dataset.id;
-      displayAmendmentInfo(id);
-      firstCard.classList.add("matched");
-      secondCard.classList.add("matched");
-      firstCard.removeEventListener("click", flipCard);
-      secondCard.removeEventListener("click", flipCard);
-      resetBoard();
-      matches++;
-      matchesDisplay.textContent = matches;
-      updateScore();
-      
-      if (matches === amendmentData.length) {
-        setTimeout(() => {
-          infoContent.innerHTML += `
-            <div class="info-highlight celebration">
-              🎉 Congratulations! You completed the game with ${score} points!
-            </div>
-          `;
-        }, 500);
-      }
+        const id = firstCard.dataset.id;
+        displayAmendmentInfo(id);
+        firstCard.classList.add("matched");
+        secondCard.classList.add("matched");
+        firstCard.removeEventListener("click", flipCard);
+        secondCard.removeEventListener("click", flipCard);
+        resetBoard();
+        matches++;
+        matchesDisplay.textContent = matches;
+        updateScore();
+        
+        if (matches === amendmentData.length) {
+            setTimeout(() => {
+                infoContent.innerHTML += `
+                    <div class="info-highlight celebration">
+                        🎉 Congratulations! You completed the game with ${score} points!
+                    </div>
+                `;
+                
+                // Save final score
+                updateScore();
+            }, 500);
+        }
     }
 
     // Display amendment information
     function displayAmendmentInfo(id) {
-      const amendment = amendmentData.find(a => a.id === id);
-      infoContent.innerHTML = `
-        <h3>${amendment.title}</h3>
-        <div class="info-highlight">${amendment.shortDesc}</div>
-        <p><strong>Key Provisions:</strong> ${amendment.description}</p>
-        <p><strong>Impact:</strong> ${amendment.impact}</p>
-      `;
+        const amendment = amendmentData.find(a => a.id === id);
+        if (!amendment) return;
+        
+        infoContent.innerHTML = `
+            <h3>${amendment.title}</h3>
+            <div class="info-highlight">${amendment.shortDesc}</div>
+            <p><strong>Year:</strong> ${amendment.year}</p>
+            <p><strong>Key Provisions:</strong> ${amendment.description}</p>
+            <p><strong>Impact:</strong> ${amendment.impact}</p>
+        `;
     }
 
     // Reset board state
     function resetBoard() {
-      [hasFlippedCard, lockBoard] = [false, false];
-      [firstCard, secondCard] = [null, null];
+        [hasFlippedCard, lockBoard] = [false, false];
+        [firstCard, secondCard] = [null, null];
     }
 
     // Start a new game
-    function startGame() {
-      moves = 0;
-      matches = 0;
-      score = 0;
-      matchedPairs = [];
-      movesDisplay.textContent = "0";
-      matchesDisplay.textContent = "0";
-      scoreDisplay.textContent = "Score: 0";
-      infoContent.innerHTML = `
-        <p>Match two cards to reveal information about important constitutional amendments.</p>
-        <div class="info-highlight">Each match will display detailed information about the amendment.</div>
-      `;
-      createCards();
+    async function startGame() {
+        moves = 0;
+        matches = 0;
+        score = 0;
+        matchedPairs = [];
+        movesDisplay.textContent = "0";
+        matchesDisplay.textContent = "0";
+        scoreDisplay.textContent = "Score: 0";
+        
+        if (amendmentData.length === 0) {
+            await initGame();
+            return;
+        }
+        
+        infoContent.innerHTML = `
+            <p>Match two cards to reveal information about important constitutional amendments.</p>
+            <div class="info-highlight">Each match will display detailed information about the amendment.</div>
+        `;
+        createCards();
     }
 
     // Reset the game completely
-    function resetGame() {
-      if (confirm("Are you sure you want to reset the game?")) {
-        localStorage.removeItem('amendmentScore');
-        updateTotalCivicScore();
-        startGame();
-      }
+    async function resetGame() {
+        if (confirm("Are you sure you want to reset the game?")) {
+            localStorage.removeItem('amendmentScore');
+            updateTotalCivicScore();
+            
+            // Reload new amendments from backend
+            try {
+                const response = await fetch(`${API_BASE_URL}/amendments/game-data`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    amendmentData = data.amendments.map(amendment => ({
+                        id: amendment.id.toString(),
+                        number: amendment.amendment_number,
+                        title: amendment.amendment_title,
+                        shortDesc: amendment.short_description,
+                        description: amendment.full_description,
+                        impact: amendment.impact,
+                        year: amendment.year
+                    }));
+                }
+            } catch (error) {
+                console.error('Error reloading amendments:', error);
+            }
+            
+            startGame();
+        }
     }
+
+    // Enhanced error handling
+    window.addEventListener('error', function(e) {
+        console.error('Game error:', e.error);
+        infoContent.innerHTML = `
+            <div class="info-highlight" style="background-color: #fecaca; color: #7f1d1d;">
+                Game error occurred. Please refresh the page.
+            </div>
+        `;
+    });
 
     // Initialize the game when page loads
     window.addEventListener('DOMContentLoaded', initGame);
-  </script>
+</script>
+
 </body>
 </html>

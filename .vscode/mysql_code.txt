@@ -1,0 +1,481 @@
+-- Database creation
+CREATE DATABASE IF NOT EXISTS samvidhan;
+USE samvidhan;
+
+-- Users table with case-insensitive collation
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE COLLATE utf8mb4_general_ci,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Game scores table
+CREATE TABLE IF NOT EXISTS game_scores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    game_type VARCHAR(50) NOT NULL,
+    score INT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY (user_id, game_type),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Learning progress table
+CREATE TABLE IF NOT EXISTS learning_progress (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    section VARCHAR(100) NOT NULL,
+    progress INT NOT NULL DEFAULT 0 CHECK (progress BETWEEN 0 AND 100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY (user_id, section),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Create indexes for better performance
+CREATE INDEX idx_user_username ON users(username);
+CREATE INDEX idx_user_email ON users(email);
+CREATE INDEX idx_scores_user ON game_scores(user_id);
+CREATE INDEX idx_progress_user ON learning_progress(user_id);
+
+SELECT * FROM users;
+SELECT * FROM game_scores;
+SELECT * FROM learning_progress;
+
+-- cretaing a table to store questions for kolkata rape case
+
+CREATE TABLE kolkata_quiz (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  question TEXT NOT NULL,
+  option_a VARCHAR(255) NOT NULL,
+  option_b VARCHAR(255) NOT NULL,
+  option_c VARCHAR(255) NOT NULL,
+  option_d VARCHAR(255) NOT NULL,
+  correct_option CHAR(1) NOT NULL
+);
+
+-- Insert sample questions
+INSERT INTO kolkata_quiz (question, option_a, option_b, option_c, option_d, correct_option) VALUES
+('When did the Kolkata rape case that shocked the nation occur?', '2010', '2012', '2015', '2019', 'B'),
+('What was particularly shocking about the Kolkata rape case?', 'The victim was a foreign tourist', 'It happened in a moving car in public view', 'The perpetrators were police officers', 'The victim was a minor', 'B'),
+('Where exactly in Kolkata did the incident occur?', 'Park Street', 'Howrah Bridge', 'Victoria Memorial', 'New Market', 'A'),
+('What was the occupation of the main accused in the Kolkata rape case?', 'Businessman', 'Politician', 'Police officer', 'Taxi driver', 'A'),
+('What significant legal change followed public outrage over the Kolkata case?', 'Introduction of faster trials for sexual assault cases', 'Stricter bail conditions for rape accused', 'Better protection for witnesses', 'All of the above', 'D');
+
+select * from kolkata_quiz;
+
+
+-- Nirbhaya Quiz Table
+CREATE TABLE IF NOT EXISTS nirbhaya_quiz (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question_text TEXT NOT NULL,
+    option_a VARCHAR(255) NOT NULL,
+    option_b VARCHAR(255) NOT NULL,
+    option_c VARCHAR(255) NOT NULL,
+    option_d VARCHAR(255) NOT NULL,
+    correct_answer CHAR(1) NOT NULL, -- 'A','B','C','D'
+    explanation TEXT
+);
+
+SELECT * FROM nirbhaya_quiz;
+
+-- Example Insert
+INSERT INTO nirbhaya_quiz (question_text, option_a, option_b, option_c, option_d, correct_answer, explanation)
+VALUES
+('What was the main catalyst for the amendments in the laws related to sexual violence in India?', 
+ 'The Nirbhaya case', 
+ 'The Delhi Gang Rape case', 
+ 'The Vishaka Guidelines', 
+ 'The Rape Law Review', 
+ 'A',
+ 'The Nirbhaya case (2012 Delhi gang rape) was the main catalyst that led to significant amendments in Indian laws regarding sexual violence.'),
+
+('What significant legislation was enacted following the Nirbhaya case?', 
+ 'The Protection of Human Rights Act', 
+ 'The Criminal Law (Amendment) Act, 2013', 
+ 'The Sexual Harassment of Women at Workplace Act', 
+ 'The Juvenile Justice Act', 
+ 'B',
+ 'The Criminal Law (Amendment) Act, 2013 was enacted as a direct response to the Nirbhaya case, introducing stricter punishments for sexual offenses.'),
+
+('Which new offenses were included in the Criminal Law (Amendment) Act, 2013?', 
+ 'Stalking and Acid Attacks', 
+ 'Child Marriage and Domestic Violence', 
+ 'Human Trafficking and Cyber Crime', 
+ 'All of the Above', 
+ 'A',
+ 'The 2013 amendment specifically added stalking, voyeurism, and acid attacks as punishable offenses.'),
+
+('How did the amendments affect the legal treatment of juveniles involved in serious crimes?', 
+ 'Reduced the minimum age for trial as an adult', 
+ 'Allowed harsher penalties for juveniles', 
+ 'Increased the age of juvenile offenders to 21', 
+ 'Reformed the juvenile justice system to handle serious crimes differently', 
+ 'D',
+ 'The Juvenile Justice Act was amended in 2015 to allow juveniles aged 16-18 accused of heinous crimes to be tried as adults.'),
+
+('What was a key feature of the new laws concerning women\'s safety after the Nirbhaya case?', 
+ 'Enhanced penalties for sexual offenses', 
+ 'Introduction of Fast Track Courts for rape cases', 
+ 'Establishment of a National Crime Records Bureau', 
+ 'All of the Above', 
+ 'D',
+ 'All these measures were implemented as part of the comprehensive reforms following the Nirbhaya case.');
+
+
+CREATE TABLE history_quiz (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  question TEXT NOT NULL,
+  option_a VARCHAR(255),
+  option_b VARCHAR(255),
+  option_c VARCHAR(255),
+  option_d VARCHAR(255),
+  correct_option CHAR(1)
+);
+
+INSERT INTO history_quiz (question, option_a, option_b, option_c, option_d, correct_option) VALUES
+("Which was the first official document that proposed a Constituent Assembly for India?",
+ "Government of India Act 1935", "Nehru Report 1928", "M.N. Roy's proposal in 1934", "Cabinet Mission Plan 1946", "C"),
+("Who was elected as the permanent Chairman (President) of the Constituent Assembly?",
+ "Jawaharlal Nehru", "Dr. Rajendra Prasad", "Dr. B.R. Ambedkar", "Sardar Vallabhbhai Patel", "B"),
+("How many members were in the Drafting Committee of the Constitution?",
+ "5", "7", "9", "11", "B"),
+("Who did the calligraphy for the original Constitution of India?",
+ "Nandalal Bose", "Prem Behari Narain Raizada", "Beohar Rammanohar Sinha", "Abanindranath Tagore", "B"),
+("Why was January 26 chosen as the date for Constitution to come into force?",
+ "It was the day India got independence", "It commemorates the 1930 Purna Swaraj declaration", "It was Dr. Ambedkar's birthday", "It was the day Constituent Assembly first met", "B");
+
+select * from history_quiz;
+
+
+-- Table for Level 1: Constitution Basics
+CREATE TABLE IF NOT EXISTS learn_level1_quiz (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question_text TEXT NOT NULL,
+    option_a VARCHAR(255) NOT NULL,
+    option_b VARCHAR(255) NOT NULL,
+    option_c VARCHAR(255) NOT NULL,
+    option_d VARCHAR(255) NOT NULL,
+    correct_answer CHAR(1) NOT NULL, -- 'a', 'b', 'c', or 'd'
+    explanation TEXT
+);
+
+SELECT * FROM learn_level1_quiz;
+
+-- Table for Level 2: Preamble & Fundamental Rights
+CREATE TABLE IF NOT EXISTS learn_level2_quiz (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question_text TEXT NOT NULL,
+    option_a VARCHAR(255) NOT NULL,
+    option_b VARCHAR(255) NOT NULL,
+    option_c VARCHAR(255) NOT NULL,
+    option_d VARCHAR(255) NOT NULL,
+    correct_answer CHAR(1) NOT NULL,
+    explanation TEXT
+);
+SELECT * FROM learn_level2_quiz;
+
+-- Table for Level 3: Directive Principles & Duties
+CREATE TABLE IF NOT EXISTS learn_level3_quiz (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question_text TEXT NOT NULL,
+    option_a VARCHAR(255) NOT NULL,
+    option_b VARCHAR(255) NOT NULL,
+    option_c VARCHAR(255) NOT NULL,
+    option_d VARCHAR(255) NOT NULL,
+    correct_answer CHAR(1) NOT NULL,
+    explanation TEXT
+);
+SELECT * FROM learn_level3_quiz;
+
+-- Table for Level 4: Government Structure
+CREATE TABLE IF NOT EXISTS learn_level4_quiz (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question_text TEXT NOT NULL,
+    option_a VARCHAR(255) NOT NULL,
+    option_b VARCHAR(255) NOT NULL,
+    option_c VARCHAR(255) NOT NULL,
+    option_d VARCHAR(255) NOT NULL,
+    correct_answer CHAR(1) NOT NULL,
+    explanation TEXT
+);
+SELECT * FROM learn_level4_quiz;
+
+-- Table for Level 5: Amendments & Special Features
+CREATE TABLE IF NOT EXISTS learn_level5_quiz (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question_text TEXT NOT NULL,
+    option_a VARCHAR(255) NOT NULL,
+    option_b VARCHAR(255) NOT NULL,
+    option_c VARCHAR(255) NOT NULL,
+    option_d VARCHAR(255) NOT NULL,
+    correct_answer CHAR(1) NOT NULL,
+    explanation TEXT
+);
+SELECT * FROM learn_level5_quiz;
+
+-- Insert sample data for Level 1
+INSERT INTO learn_level1_quiz (question_text, option_a, option_b, option_c, option_d, correct_answer, explanation) VALUES
+('When was the Constitution of India adopted by the Constituent Assembly?', '15 August 1947', '26 January 1950', '26 November 1949', '2 October 1948', 'c', 'The Constitution was adopted on 26 November 1949 and came into effect on 26 January 1950.'),
+('Who is regarded as the chief architect of the Indian Constitution?', 'Mahatma Gandhi', 'Jawaharlal Nehru', 'B.R. Ambedkar', 'Sardar Patel', 'c', 'Dr. B.R. Ambedkar is widely regarded as the chief architect of the Indian Constitution.'),
+('How many articles does the Indian Constitution originally have?', '395', '448', '250', '500', 'a', 'The original Constitution had 395 articles in 22 parts and 8 schedules.'),
+('The Indian Constitution was drafted by the Constituent Assembly which was set up under:', 'Government of India Act 1935', 'Indian Independence Act 1947', 'Cabinet Mission Plan 1946', 'Mountbatten Plan', 'c', 'The Constituent Assembly was set up under the Cabinet Mission Plan of 1946.'),
+('The Constitution of India was enacted by the Constituent Assembly on:', '26 January 1950', '26 November 1949', '15 August 1947', '26 December 1949', 'b', 'The Constitution was enacted on 26 November 1949 and came into force on 26 January 1950.');
+
+-- Insert sample data for Level 2
+INSERT INTO learn_level2_quiz (question_text, option_a, option_b, option_c, option_d, correct_answer, explanation) VALUES
+('Which part of the Indian Constitution contains the Fundamental Rights?', 'Part I', 'Part II', 'Part III', 'Part IV', 'c', 'Part III (Articles 12-35) contains the Fundamental Rights.'),
+('Which Fundamental Right is called the "Heart and Soul" of the Constitution by Dr. Ambedkar?', 'Right to Equality', 'Right to Freedom', 'Right to Constitutional Remedies', 'Right Against Exploitation', 'c', 'Article 32 (Right to Constitutional Remedies) was called the heart and soul of the Constitution.'),
+('Which article guarantees the Right to Equality?', 'Article 14', 'Article 19', 'Article 21', 'Article 25', 'a', 'Article 14 guarantees equality before law and equal protection of laws.'),
+('The Preamble of the Indian Constitution was inspired by:', 'US Constitution', 'French Constitution', 'Irish Constitution', 'All of the above', 'd', 'The Preamble draws inspiration from multiple sources including the US, French, and Irish constitutions.'),
+('Which Fundamental Right cannot be suspended during emergency?', 'Right to Equality', 'Right to Freedom', 'Right to Life and Personal Liberty', 'Right to Constitutional Remedies', 'c', 'Article 21 (Right to Life) cannot be suspended even during emergency.');
+
+-- Insert sample data for Level 3
+INSERT INTO learn_level3_quiz (question_text, option_a, option_b, option_c, option_d, correct_answer, explanation) VALUES
+('Which article contains the Directive Principles of State Policy?', 'Article 36-51', 'Article 14-35', 'Article 52-78', 'Article 79-124', 'a', 'Directive Principles of State Policy are contained in Part IV (Articles 36-51).'),
+('The Fundamental Duties were added to the Constitution by which amendment?', '42nd Amendment', '44th Amendment', '73rd Amendment', '86th Amendment', 'a', 'The Fundamental Duties were added by the 42nd Amendment in 1976.'),
+('How many Fundamental Duties are there in the Indian Constitution?', '10', '11', '12', '9', 'b', 'There are currently 11 Fundamental Duties in Article 51A.'),
+('Which Directive Principle was made a Fundamental Right by the 86th Amendment?', 'Right to Education', 'Right to Work', 'Right to Health', 'Right to Housing', 'a', 'Right to Education was elevated from DPSP to Fundamental Right by the 86th Amendment.'),
+('The concept of Directive Principles of State Policy was borrowed from:', 'US Constitution', 'Irish Constitution', 'British Constitution', 'Canadian Constitution', 'b', 'The DPSP concept was borrowed from the Irish Constitution.');
+
+-- Insert sample data for Level 4
+INSERT INTO learn_level4_quiz (question_text, option_a, option_b, option_c, option_d, correct_answer, explanation) VALUES
+('Which article deals with the composition of the Parliament?', 'Article 79', 'Article 52', 'Article 124', 'Article 148', 'a', 'Article 79 deals with the composition of the Parliament.'),
+('The President of India is elected by:', 'Direct election by people', 'Members of Parliament', 'Members of State Legislatures', 'Electoral College consisting of MPs and MLAs', 'd', 'The President is elected by an Electoral College consisting of elected members of Parliament and State Legislatures.'),
+('Which article deals with the appointment of the Prime Minister?', 'Article 74', 'Article 75', 'Article 76', 'Article 77', 'b', 'Article 75 deals with the appointment of the Prime Minister by the President.'),
+('The Supreme Court of India was established under which article?', 'Article 124', 'Article 32', 'Article 226', 'Article 143', 'a', 'Article 124 establishes the Supreme Court of India.'),
+('The concept of Judicial Review is borrowed from:', 'British Constitution', 'US Constitution', 'French Constitution', 'Canadian Constitution', 'b', 'The concept of Judicial Review was borrowed from the US Constitution.');
+
+-- Insert sample data for Level 5
+INSERT INTO learn_level5_quiz (question_text, option_a, option_b, option_c, option_d, correct_answer, explanation) VALUES
+('Which article deals with the amendment of the Constitution?', 'Article 368', 'Article 352', 'Article 370', 'Article 356', 'a', 'Article 368 deals with the amendment procedure of the Constitution.'),
+('The first amendment to the Indian Constitution was made in:', '1950', '1951', '1952', '1953', 'b', 'The first amendment was made in 1951 to add restrictions on freedom of speech.'),
+('Which amendment introduced the Anti-Defection Law?', '42nd Amendment', '44th Amendment', '52nd Amendment', '73rd Amendment', 'c', 'The 52nd Amendment in 1985 introduced the Anti-Defection Law.'),
+('The concept of Basic Structure of the Constitution was established in which case?', 'Golaknath Case', 'Kesavananda Bharati Case', 'Minerva Mills Case', 'S.R. Bommai Case', 'b', 'The Basic Structure doctrine was established in the Kesavananda Bharati case (1973).'),
+('Which amendment introduced the National Judicial Appointments Commission?', '99th Amendment', '100th Amendment', '101st Amendment', '102nd Amendment', 'a', 'The 99th Amendment introduced NJAC which was later struck down by the Supreme Court.');
+
+
+-- Create spin_wheel_questions table
+CREATE TABLE IF NOT EXISTS spin_wheel_questions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    topic VARCHAR(100) NOT NULL,
+    question_text TEXT NOT NULL,
+    option_a VARCHAR(255) NOT NULL,
+    option_b VARCHAR(255) NOT NULL,
+    option_c VARCHAR(255) NOT NULL,
+    option_d VARCHAR(255) NOT NULL,
+    correct_answer CHAR(1) NOT NULL, -- 'a', 'b', 'c', or 'd'
+    explanation TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert sample data for all topics
+INSERT INTO spin_wheel_questions (topic, question_text, option_a, option_b, option_c, option_d, correct_answer, explanation) VALUES
+('Preamble', 'Which word was added to the Preamble by the 42nd Amendment?', 'Socialist', 'Democratic', 'Republic', 'Justice', 'a', 'The words ''Socialist'' and ''Secular'' were added by the 42nd Amendment in 1976.'),
+('Preamble', 'The Preamble begins with which phrase?', 'We the People of India', 'In the name of God', 'India is a Republic', 'Justice for All', 'a', 'The Preamble begins with ''We the People of India'', establishing popular sovereignty.'),
+('Preamble', 'Which concept is NOT mentioned in the Preamble?', 'Liberty', 'Equality', 'Federalism', 'Fraternity', 'c', 'Federalism is not mentioned in the Preamble, though it''s a basic feature of the Constitution.'),
+
+('Fundamental Rights', 'Which article is known as the ''Heart and Soul of the Constitution''?', 'Article 14', 'Article 19', 'Article 21', 'Article 32', 'd', 'Article 32 (Right to Constitutional Remedies) was called the ''heart and soul'' by Dr. Ambedkar.'),
+('Fundamental Rights', 'Which Fundamental Right cannot be suspended during emergency?', 'Right to Equality', 'Right to Freedom', 'Right to Life', 'Right to Religion', 'c', 'Article 21 (Right to Life) cannot be suspended even during emergency.'),
+('Fundamental Rights', 'Which article prohibits untouchability?', 'Article 15', 'Article 16', 'Article 17', 'Article 18', 'c', 'Article 17 abolishes untouchability and its practice in any form.'),
+
+('Directive Principles', 'Which part of the Constitution contains Directive Principles?', 'Part III', 'Part IV', 'Part V', 'Part VI', 'b', 'Directive Principles are in Part IV (Articles 36-51) of the Constitution.'),
+('Directive Principles', 'Which Directive Principle relates to uniform civil code?', 'Article 40', 'Article 44', 'Article 48', 'Article 51', 'b', 'Article 44 directs the state to secure a uniform civil code for citizens.'),
+('Directive Principles', 'The Directive Principles are inspired by which country?', 'USA', 'UK', 'Ireland', 'Canada', 'c', 'Directive Principles are inspired by the Irish Constitution.'),
+
+-- Add similar inserts for all other topics...
+('Fundamental Duties', 'Fundamental Duties were added by which amendment?', '42nd', '44th', '73rd', '86th', 'a', 'The 42nd Amendment in 1976 added Fundamental Duties.'),
+('Fundamental Duties', 'How many Fundamental Duties are there?', '8', '10', '11', '12', 'c', 'There are currently 11 Fundamental Duties in Article 51A.'),
+('Fundamental Duties', 'Which duty was added by the 86th Amendment?', 'Protect environment', 'Develop scientific temper', 'Provide education to children', 'Respect national flag', 'c', 'The 86th Amendment added the duty for parents to educate children 6-14 years.');
+
+INSERT INTO spin_wheel_questions (topic, question_text, option_a, option_b, option_c, option_d, correct_answer, explanation) VALUES
+-- Articles 1–10
+('Articles 1-10', 'What does Article 1 of the Indian Constitution declare India as?', 'Union of States', 'Federation of States', 'Republic of India', 'Sovereign Nation', 'a', 'Article 1 declares India as a "Union of States".'),
+('Articles 1-10', 'Which Article deals with the admission or establishment of new states?', 'Article 2', 'Article 3', 'Article 4', 'Article 5', 'a', 'Article 2 deals with the admission or establishment of new states.'),
+('Articles 1-10', 'Which Article defines the territories of India?', 'Article 1', 'Article 2', 'Article 3', 'Article 4', 'a', 'Article 1 defines the territories of India.'),
+
+-- Articles 11–20
+('Articles 11-20', 'Which Article gives Parliament the power to regulate the right of citizenship?', 'Article 10', 'Article 11', 'Article 12', 'Article 9', 'b', 'Article 11 empowers the Parliament to regulate the right of citizenship by law.'),
+('Articles 11-20', 'Which Article provides protection against double jeopardy and self-incrimination?', 'Article 20', 'Article 19', 'Article 18', 'Article 17', 'a', 'Article 20 provides protection in respect of conviction for offenses, including double jeopardy and self-incrimination.'),
+('Articles 11-20', 'Which Article abolishes untouchability?', 'Article 17', 'Article 18', 'Article 16', 'Article 19', 'a', 'Article 17 abolishes untouchability and forbids its practice in any form.'),
+
+-- Articles 21–30
+('Articles 21-30', 'Which Article guarantees the protection of life and personal liberty?', 'Article 21', 'Article 20', 'Article 22', 'Article 23', 'a', 'Article 21 guarantees the protection of life and personal liberty.'),
+('Articles 21-30', 'Which Article provides protection against arrest and detention in certain cases?', 'Article 22', 'Article 20', 'Article 23', 'Article 24', 'a', 'Article 22 provides protection against arrest and detention in certain cases.'),
+('Articles 21-30', 'Which Article ensures minorities the right to establish and administer educational institutions?', 'Article 29', 'Article 30', 'Article 28', 'Article 27', 'b', 'Article 30 ensures minorities the right to establish and administer educational institutions.'),
+
+-- Articles 31–40
+('Articles 31-40', 'Which Article was removed by the 44th Amendment Act, 1978?', 'Article 31', 'Article 33', 'Article 35', 'Article 34', 'a', 'Article 31, which dealt with the right to property, was removed by the 44th Amendment.'),
+('Articles 31-40', 'Which Article promotes equal pay for equal work for both men and women?', 'Article 39(d)', 'Article 38', 'Article 36', 'Article 40', 'a', 'Article 39(d) directs the state to ensure equal pay for equal work for both men and women.'),
+('Articles 31-40', 'Which Article promotes the organization of village panchayats?', 'Article 40', 'Article 38', 'Article 39', 'Article 37', 'a', 'Article 40 directs the state to organize village panchayats.'),
+
+-- Important Amendments
+('Important Amendments', 'Which amendment introduced the Anti-Defection Law?', '42nd', '52nd', '61st', '73rd', 'b', 'The 52nd Amendment (1985) added the 10th Schedule (Anti-Defection Law).'),
+('Important Amendments', 'Which amendment reduced voting age from 21 to 18?', '42nd', '44th', '61st', '73rd', 'c', 'The 61st Amendment (1988) reduced the voting age to 18 years.'),
+('Important Amendments', 'Which amendment is called "Mini-Constitution"?', '42nd', '44th', '73rd', '86th', 'a', 'The 42nd Amendment (1976) made widespread constitutional changes.'),
+
+-- Schedules
+('Schedules', 'Which Schedule contains the list of official languages of India?', 'Eighth Schedule', 'First Schedule', 'Tenth Schedule', 'Fifth Schedule', 'a', 'The Eighth Schedule lists the official languages of India.'),
+('Schedules', 'Which Schedule deals with the division of powers between the Union and the States?', 'Seventh Schedule', 'Sixth Schedule', 'Third Schedule', 'Fourth Schedule', 'a', 'The Seventh Schedule deals with the distribution of powers between Union and State governments.'),
+('Schedules', 'Which Schedule contains provisions regarding disqualification of MPs and MLAs on the ground of defection?', 'Tenth Schedule', 'Eleventh Schedule', 'Twelfth Schedule', 'Fourth Schedule', 'a', 'The Tenth Schedule, also known as the Anti-Defection Law, deals with disqualification due to defection.');
+
+-- Create amendments table
+CREATE TABLE IF NOT EXISTS amendments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    amendment_number VARCHAR(20) NOT NULL,
+    amendment_title VARCHAR(255) NOT NULL,
+    short_description TEXT NOT NULL,
+    full_description TEXT NOT NULL,
+    impact TEXT NOT NULL,
+    year INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert sample amendment data
+INSERT INTO amendments (amendment_number, amendment_title, short_description, full_description, impact, year) VALUES
+('1st', 'First Amendment (1951)', 'Added Ninth Schedule', 
+ 'The First Amendment added the Ninth Schedule to protect land reform laws from judicial review. It also introduced restrictions on free speech and extended affirmative action.',
+ 'Enabled land reforms and protected social justice laws.', 1951),
+
+('42nd', '42nd Amendment (1976)', 'The ''Mini-Constitution''', 
+ 'Introduced during Emergency; added ''Socialist'', ''Secular'' to the Preamble, introduced Fundamental Duties, and gave more power to the Central Government.',
+ 'Made extensive structural changes to the Constitution.', 1976),
+
+('73rd', '73rd Amendment (1992)', 'Panchayati Raj', 
+ 'Constitutionalized Panchayati Raj Institutions, ensuring local governance and representation for SC/ST and women.',
+ 'Strengthened grassroots democracy in India.', 1992),
+
+('101st', '101st Amendment (2016)', 'Introduced GST', 
+ 'Launched Goods and Services Tax replacing many indirect taxes. Created GST Council for coordination.',
+ 'Unified Indian market under a single tax regime.', 2016),
+
+('44th', '44th Amendment (1978)', 'Post-Emergency Reforms', 
+ 'Restored civil liberties by making it harder to declare emergency, and strengthened fundamental rights.',
+ 'Protected democracy by preventing misuse of emergency powers.', 1978),
+
+('86th', '86th Amendment (2002)', 'Right to Education', 
+ 'Made education a fundamental right for children aged 6-14 years and added Fundamental Duty for parents.',
+ 'Ensured free and compulsory education for all children.', 2002),
+
+('61st', '61st Amendment (1989)', 'Voting Age Reduction', 
+ 'Reduced the voting age from 21 years to 18 years for Lok Sabha and state legislative assembly elections.',
+ 'Increased youth participation in democratic process.', 1989),
+
+('52nd', '52nd Amendment (1985)', 'Anti-Defection Law', 
+ 'Added Tenth Schedule to prevent defection of elected representatives from one party to another.',
+ 'Provided stability to elected governments.', 1985);
+ 
+ 
+ -- Create preamble_questions table
+CREATE TABLE IF NOT EXISTS preamble_questions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question_text TEXT NOT NULL,
+    option_a VARCHAR(255) NOT NULL,
+    option_b VARCHAR(255) NOT NULL,
+    option_c VARCHAR(255) NOT NULL,
+    option_d VARCHAR(255) NOT NULL,
+    correct_answer CHAR(1) NOT NULL, -- 'a', 'b', 'c', or 'd'
+    explanation TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create preamble_cards table for flip cards
+CREATE TABLE IF NOT EXISTS preamble_cards (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    card_title VARCHAR(255) NOT NULL,
+    card_content TEXT NOT NULL,
+    card_type ENUM('overview', 'values', 'justice', 'legal', 'historical') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert sample questions
+INSERT INTO preamble_questions (question_text, option_a, option_b, option_c, option_d, correct_answer, explanation) VALUES
+('What does the Preamble of the Indian Constitution represent?', 
+ 'The Constitution''s chapters', 
+ 'The core values and goals of the country', 
+ 'The list of fundamental rights', 
+ 'The historical background of the Constitution', 
+ 'b', 
+ 'The Preamble represents the core values, philosophy, and goals of the Indian Constitution.'),
+
+('Which of these is NOT a core value mentioned in the Preamble?', 
+ 'Secular', 
+ 'Democratic', 
+ 'Monarchial', 
+ 'Socialist', 
+ 'c', 
+ 'Monarchial is not mentioned in the Preamble. India is a Republic, not a Monarchy.'),
+
+('What are the types of justice mentioned in the Preamble?', 
+ 'Social, Economic, Political', 
+ 'Legal, Economic, Social', 
+ 'Political, Legal, Social', 
+ 'Economic, Political, Legal', 
+ 'a', 
+ 'The Preamble mentions Social, Economic, and Political justice.'),
+
+('Is the Preamble enforceable by law?', 
+ 'Yes', 
+ 'No', 
+ 'Only partially', 
+ 'Only in certain cases', 
+ 'b', 
+ 'The Preamble is not enforceable by law but is crucial in interpreting the Constitution.'),
+
+('On what date was the Preamble of the Indian Constitution adopted?', 
+ 'August 15, 1947', 
+ 'January 26, 1950', 
+ 'November 26, 1949', 
+ 'January 1, 1950', 
+ 'b', 
+ 'The Preamble was adopted on January 26, 1950, when the Constitution came into effect.'),
+
+('Which words were added to the Preamble by the 42nd Amendment?', 
+ 'Socialist and Secular', 
+ 'Democratic and Republic', 
+ 'Justice and Liberty', 
+ 'Equality and Fraternity', 
+ 'a', 
+ 'The words ''Socialist'' and ''Secular'' were added by the 42nd Amendment in 1976.'),
+
+('The Preamble begins with which phrase?', 
+ 'We the People of India', 
+ 'In the name of God', 
+ 'India is a Republic', 
+ 'Justice for All', 
+ 'a', 
+ 'The Preamble begins with ''We the People of India'', establishing popular sovereignty.'),
+
+('Which concept emphasizes that India is not under any foreign domination?', 
+ 'Socialist', 
+ 'Sovereign', 
+ 'Secular', 
+ 'Democratic', 
+ 'b', 
+ 'Sovereign means India is independent and not under any foreign control.');
+
+-- Insert flip card data
+INSERT INTO preamble_cards (card_title, card_content, card_type) VALUES
+('Preamble Overview', 
+ 'The Preamble is an introductory statement that outlines the fundamental principles and values of the Constitution. It serves as the guiding light for interpreting the Constitution.', 
+ 'overview'),
+
+('Core Values', 
+ 'Sovereign - Independent nation<br>Socialist - Social and economic equality<br>Secular - No official religion<br>Democratic - People''s government<br>Republic - Elected head of state', 
+ 'values'),
+
+('Justice Values', 
+ 'Social Justice - Equal social status<br>Economic Justice - Equal economic opportunities<br>Political Justice - Equal political rights', 
+ 'justice'),
+
+('Legal Status', 
+ 'The Preamble is not enforceable by law but is crucial in interpreting the Constitution. It reflects the basic structure and philosophy of the Constitution.', 
+ 'legal'),
+
+('Historical Context', 
+ 'The Preamble was adopted on January 26, 1950, marking India''s transition to a Republic. It was inspired by the Objectives Resolution moved by Jawaharlal Nehru.', 
+ 'historical');
